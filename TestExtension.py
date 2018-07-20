@@ -2,7 +2,6 @@
 # 测试拓展
 # create by ye jiaquan in 2018/07/18
 
-# import re
 import random
 import time
 import hashlib
@@ -21,6 +20,7 @@ settings = {
     'dev': {'ip': 'localhost', 'port': '8080'},
     'prod': {'ip': 'aladdin.zj.chinamobile.com', 'port': '80'},
     'test': {'ip': '10.70.194.177', 'port': '80'},
+    'ssss': {'ip': '10.78.235.38', 'port': '31091'},
     'sss': {'ip': '10.70.62.16', 'port': '8080'}
 }
 
@@ -144,7 +144,7 @@ apis = {
                     'isRealtime': '1',
                     'originUrl': 'https://www.baidu.com',
                     'ruleStr': '#98260<20',
-                    'sites': '[{"opera":"or","latitude":"30.321228350169445","ptype":"ADDR","radius":"1000",'
+                    'sites': '[{"opera":"or","latitude":"30.321228350169445","ptype":"all","radius":"1000",'
                              '"longitude":"120.0681886350031"}] '
                 }
         },
@@ -298,18 +298,20 @@ if __name__ == '__main__':
 
     # 测试设置列表
     tests = [
-        ['prod', '修改竞价价格', [{'paramKey': 'price', 'paramValue': ''}]],
+        # ['test', '新建竞价活动', []],
+        # ['prod', '修改竞价状态', []],
+        ['test', '修改竞价价格', [{'paramKey': 'price', 'paramValue': ''}]],
 
-        ['prod', '新建模板', []],
-        ['prod', '新建活动', []],
-        ['prod', '新建竞价活动', []],
-        ['prod', '修改竞价状态', []],
-        ['prod', '修改竞价价格', []],
-        ['prod', '查询竞价结果', []],
-        ['prod', '查询实时竞价结果', []],
-        ['prod', '查询竞价状态', []],
-        ['prod', '洞察类', []],
-        ['prod', 'tdtest', '查询标签信息', []]
+        ['test', '新建模板', []],
+        ['test', '新建活动', []],
+        ['test', '新建竞价活动', []],
+        ['test', '修改竞价状态', []],
+        ['test', '修改竞价价格', []],
+        ['test', '查询竞价结果', []],
+        ['test', '查询实时竞价结果', []],
+        ['test', '查询竞价状态', []],
+        ['test', '洞察类', []],
+        ['test', '查询标签信息', []]
     ]
 
     # 多个api测试多次
@@ -339,5 +341,5 @@ if __name__ == '__main__':
         print(result)
 
     logTimeConsum('总耗时：', space=t)
-    # 平均值去掉最小值与最大值
+    # 平均值去掉最小值与最大值(因为第一次连接耗时长)
     logTimeConsum('去最值平均耗时：', space=(t - max - min) / (size - 2))
