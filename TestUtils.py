@@ -77,13 +77,12 @@ def logTimeConsum(desc, start=0, stop=0, space=0):
 def selectApi(setting, api, edit):
     settings = st.Settings()
     set = settings.settings
-
     settings.autoSys()
     url = 'http://' + str(set['settings'][setting]['ip']) + ':' + str(set['settings'][setting]['port']) +\
           str(set['apis'][api]['url'])
     set['apis'][api]['body']['sys'] = set['sys'][set['settings']['sysSetting']['user']]
-    for _ in range(len(edit)):
-        set['apis'][api]['body'][edit[_]['paramKey']] = edit[_]['paramValue']
+    for i in edit:
+        set['apis'][api]['body'][i] = edit[i]
     print('请求方式：' + set['apis'][api]['type'] + '，测试URI：' + url)
     print('请求参数：')
     for i in set['apis'][api]['body']:

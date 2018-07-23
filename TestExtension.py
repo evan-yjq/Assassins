@@ -14,27 +14,23 @@ if __name__ == '__main__':
 
     # 测试设置列表
     tests = [
-        # ['openapi_devtest', '新建竞价活动', []],
-        # ['openapi_devprod', '修改竞价状态', []],
-        ['openapi_test', '新建竞价活动', []],
-        ['openapi_test', 'EPrice', [{'paramKey': 'price', 'paramValue': ''}]],
-
-        ['openapi_test', '新建模板', []],
-        ['openapi_test', '新建活动', []],
-        ['openapi_test', '修改竞价状态', []],
-        ['openapi_test', '修改竞价价格', []],
-        ['openapi_test', '查询竞价结果', []],
-        ['openapi_test', '查询实时竞价结果', []],
-        ['openapi_test', '查询竞价状态', []],
-        ['openapi_test', '洞察类', []],
-        ['openapi_test', '查询标签信息', []]
+        ['openapi_test', 'CrtBidAct', []],
+        ['openapi_test', 'EBidPrice', {'price': ''}],
+        ['openapi_test', 'CrtTpl', []],
+        ['openapi_test', 'CrtAct', []],
+        ['openapi_test', 'EBidStatus', []],
+        ['openapi_test', 'GetBidInfo', []],
+        ['openapi_test', 'GetCurrentBidInfo', []],
+        ['openapi_test', 'GetBidAct', []],
+        ['openapi_test', 'GetActInfo', []],
+        ['openapi_test', 'GetTagsInfo', []]
     ]
 
     # 按顺序测试
     # testNo = range(2)
     #
     # 自己挑选测试
-    testNo = [1]
+    testNo = [1, 1, 1]
     #
     # 多个api测试多次
     # testNo = range(len(tests))
@@ -45,8 +41,8 @@ if __name__ == '__main__':
 
     for _ in testNo:
         # 自定义参数
-        if tests[_][1] == 'EPrice':
-            tests[_][2][0]['paramValue'] = tu.randomPrice(0.00, 3.00)
+        if tests[_][1] == 'EBidPrice':
+            tests[_][2]['price'] = tu.randomPrice(0.00, 3.00)
         # 设置开始计时时间
         start = int(round(time.time() * 1000))
         # 多个api测试多次

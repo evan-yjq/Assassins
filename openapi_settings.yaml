@@ -22,21 +22,23 @@ sys:
     industry: 01
 
 apis:
+#  新建模板
   CrtTpl:
     type: post
     url: /openapi/template/new
     body:
-      sys: <sys>
+      sys:
       channelId: SMSPAAS
       modelTitle: 喜传单
       modelSign: 喜传单
       location: 0
       modelContent: 2M微端，2秒下载！2018最经典传奇终于回归！装备全爆端游品质！{$var1}，退订回T
+#  新建活动
   CrtAct:
     type: post
     url: /openapi/activities/new
     body:
-      sys: <sys>
+      sys:
       channelId: CMPP
       actName: test9
       cgpId: 339
@@ -47,11 +49,12 @@ apis:
       triggerCon: 2018-07-27 11:08:00
       fromNo: 10658618999
       isBid: Y
+#  新建竞价活动
   CrtBidAct:
     type: post
     url: /openapi/activities/bid/new
     body:
-      sys: <sys>
+      sys:
       busiId: 2
       actName: 百度
       sendContent: 百度一下，你就知道${var1}
@@ -65,49 +68,56 @@ apis:
       originUrl: https://www.baidu.com
       ruleStr: '#98260<20'
       sites: '[{"opera":"or","latitude":"30.321228350169445","ptype":"all","radius":"1000","longitude":"120.0681886350031"}]'
-  EStatus:
+#  修改竞价状态
+  EBidStatus:
     type: post
     url: /openapi/activities/bid/status/modify/
     body:
-      sys: <sys>
+      sys:
       actId: 104
       status: cancel
-  EPrice:
+#  修改竞价价格
+  EBidPrice:
     type: post
     url: /openapi/activities/bid/price/modify/
     body:
-      sys: <sys>
+      sys:
       price: 0.01
       actId: 104
+#  查询竞价结果
   GetBidInfo:
     type: get
     url: /openapi/activities/bid/result/
     body:
-      sys: <sys>
+      sys:
       param: 104
+#  查询实时竞价结果
   GetCurrentBidInfo:
     type: get
     url: /openapi/activities/bid/current/result/
     body:
-      sys: <sys>
+      sys:
       param: 104
-  GetBidAct:
+#  查询竞价状态
+  GetBidActInfo:
     type: get
     url: /openapi/activities/bid/
     body:
-      sys: <sys>
+      sys:
       param: 104
-  GetAct:
+#  洞察类
+  GetActInfo:
     type: get
     url: /openapi/activities/result/
     body:
-      sys: <sys>
+      sys:
       param: 194
-  GetTags:
+#  查询标签信息
+  GetTagsInfo:
     type: get
     url: /openapi/tags/
     body:
-      sys: <sys>
+      sys:
       param: LG02
 
 
