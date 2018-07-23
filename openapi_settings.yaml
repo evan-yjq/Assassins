@@ -16,10 +16,10 @@ settings:
 
 sys:
   tdtest:
-    appkey: tdtest
-    city: 571
-    county: 571A
-    industry: 01
+    appkey: 'tdtest'
+    city: '571'
+    county: '571A'
+    industry: '01'
 
 apis:
 #  新建模板

@@ -14,7 +14,7 @@ if __name__ == '__main__':
 
     # 测试设置列表
     tests = [
-        ['openapi_test', 'CrtBidAct', []],
+        ['openapi_test', 'CrtBidAct', {}],
         ['openapi_test', 'EBidPrice', {'price': ''}],
         ['openapi_test', 'CrtTpl', []],
         ['openapi_test', 'CrtAct', []],
@@ -30,7 +30,7 @@ if __name__ == '__main__':
     # testNo = range(2)
     #
     # 自己挑选测试
-    testNo = [1, 1, 1]
+    testNo = [0, 0, 0]
     #
     # 多个api测试多次
     # testNo = range(len(tests))
