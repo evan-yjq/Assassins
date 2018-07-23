@@ -1,18 +1,17 @@
 settings:
   headers:
-    Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+    Content-Type: 'application/x-www-form-urlencoded; charset=UTF-8'
   sysSetting:
-    user: tdtest
-    pwd: 1qaz@WSX
+    tdtest: '1qaz@WSX'
   dev:
     ip: localhost
-    port: 8080
+    port: '8080'
   prod:
     ip: aladdin.zj.chinamobile.com
-    port: 80
+    port: '80'
   test:
-    ip: 10.70.194.177
-    port: 80
+    ip: '10.70.194.177'
+    port: '80'
 
 sys:
   tdtest:
@@ -47,7 +46,7 @@ apis:
       sendCnt: 999
       sendMethod: 1
       triggerCon: 2018-07-27 11:08:00
-      fromNo: 10658618999
+      fromNo: '10658618999'
       isBid: Y
 #  新建竞价活动
   CrtBidAct:

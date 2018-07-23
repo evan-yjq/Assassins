@@ -38,7 +38,7 @@ def post(url, data, headers):
 # create by ye jiaquan in 2018/07/19
 def randomPrice(s=0.0, p=5.0):
     if p < s:
-        print('结束参数小于起始参数')
+        print "结束参数小于起始参数"
         return 0.00
     return "%.2f" % random.uniform(s, p)
 
@@ -58,36 +58,49 @@ def logTimeConsum(desc, start=0, stop=0, space=0):
     ms = space % 1000
     ss = (space / 1000) % 60
     mi = (space / 1000) / 60
-    print(desc + str(mi) + ' min ' + str(ss) + ' s ' + str(ms) + ' ms')
-    print('-----------------------------------------------------------------------------------------------------------')
+    print "%s%s min %s s %s ms" % (desc, mi, ss, ms)
+    print "------------------------------------------------------------------------------------------------------------"
     return space
 
 
-# editing(正在开发)
-# 自动拼接apiUrl
-# @setting  服务器配置名
-# @api      接口配置名
-# @edit     需要实时修改的参数变量
-#           参数类型为数组，数组中为set
-#           set的第一个参数名为paramKey，参数值为需要修改的变量名
-#           第二个参数名为paramValue，参数值为修改的变量值
-# create by ye jiaquan in 2018/07/18
-#         修改时间                      修改原因
-# 2018/07/19 by ye jiaquan     删除传入sign参数，将自动生成sys放进此方法
-def selectApi(setting, api, edit):
-    settings = st.Settings()
-    set = settings.settings
-    settings.autoSys()
-    url = 'http://' + str(set['settings'][setting]['ip']) + ':' + str(set['settings'][setting]['port']) +\
-          str(set['apis'][api]['url'])
-    set['apis'][api]['body']['sys'] = set['sys'][set['settings']['sysSetting']['user']]
-    for i in edit:
-        set['apis'][api]['body'][i] = edit[i]
-    print('请求方式：' + set['apis'][api]['type'] + '，测试URI：' + url)
-    print('请求参数：')
-    for i in set['apis'][api]['body']:
-        print "%s:%s" % (i, set['apis'][api]['body'][i])
-    if set['apis'][api]['type'] == 'post':
-        return post(url, set['apis'][api]['body'], set['settings']['headers'])
-    else:
-        return get(url + set['apis'][api]['body']['param'], set['apis'][api]['body'], set['settings']['headers'])
+class TestInfo:
+    def __init__(self, setting, signUser, api, edit):
+        self.setting = setting
+        self.signUser = signUser
+        self.api = api
+        self.edit = edit
+
+
+class Utils:
+    def __init__(self, name):
+        self.settings = st.Settings(name)
+
+    # editing(正在开发)
+    # 自动拼接apiUrl
+    # @setting  服务器配置名
+    # @signUser sign用户名
+    # @api      接口配置名
+    # @edit     需要实时修改的参数变量
+    #           参数类型为数组，数组中为set
+    #           set的第一个参数名为paramKey，参数值为需要修改的变量名
+    #           第二个参数名为paramValue，参数值为修改的变量值
+    # create by ye jiaquan in 2018/07/18
+    #         修改时间                      修改原因
+    # 2018/07/19 by ye jiaquan     删除传入sign参数，将自动生成sys放进此方法
+    def selectApi(self, setting, signUser, api, edit):
+        set = self.settings.settings
+        self.settings.autoSys(signUser)
+        apis = set['apis']
+        settings = set['settings']
+        url = "http://%s:%s%s" % (settings[setting]['ip'], settings[setting]['port'], apis[api]['url'])
+        apis[api]['body']['sys'] = set['sys'][signUser]
+        for i in edit:
+            apis[api]['body'][i] = edit[i]
+        print "请求方式：%s，测试URI：%s" % (apis[api]['type'] , url)
+        print "请求参数："
+        for i in apis[api]['body']:
+            print "%s:%s" % (i, apis[api]['body'][i])
+        if apis[api]['type'] == 'post':
+            return post(url, apis[api]['body'], settings['headers'])
+        else:
+            return get(url + apis[api]['body']['param'], apis[api]['body'], settings['headers'])
