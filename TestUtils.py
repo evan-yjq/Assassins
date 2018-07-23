@@ -75,15 +75,20 @@ def logTimeConsum(desc, start=0, stop=0, space=0):
 #         修改时间                      修改原因
 # 2018/07/19 by ye jiaquan     删除传入sign参数，将自动生成sys放进此方法
 def selectApi(setting, api, edit):
-    st.autoSys()
-    url = 'http://' + st.settings[setting]['ip'] + ':' + st.settings[setting]['port'] + st.apis[api]['url']
+    settings = st.Settings()
+    set = settings.settings
+
+    settings.autoSys()
+    url = 'http://' + str(set['settings'][setting]['ip']) + ':' + str(set['settings'][setting]['port']) +\
+          str(set['apis'][api]['url'])
+    set['apis'][api]['body']['sys'] = set['sys'][set['settings']['sysSetting']['user']]
     for _ in range(len(edit)):
-        st.apis[api]['body'][edit[_]['paramKey']] = edit[_]['paramValue']
-    print('请求方式：'+st.apis[api]['type']+'，测试URI：' + url)
+        set['apis'][api]['body'][edit[_]['paramKey']] = edit[_]['paramValue']
+    print('请求方式：' + set['apis'][api]['type'] + '，测试URI：' + url)
     print('请求参数：')
-    for i in st.apis[api]['body']:
-        print "%s:%s" % (i, st.apis[api]['body'][i])
-    if st.apis[api]['type'] == 'post':
-        return post(url, st.apis[api]['body'], st.settings['headers'])
+    for i in set['apis'][api]['body']:
+        print "%s:%s" % (i, set['apis'][api]['body'][i])
+    if set['apis'][api]['type'] == 'post':
+        return post(url, set['apis'][api]['body'], set['settings']['headers'])
     else:
-        return get(url + st.apis[api]['param'], st.apis[api]['body'], st.settings['headers'])
+        return get(url + set['apis'][api]['body']['param'], set['apis'][api]['body'], set['settings']['headers'])
