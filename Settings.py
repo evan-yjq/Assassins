@@ -16,14 +16,16 @@ class Settings:
     # create by ye jiaquan in 2018/07/19
     def autoSys(self):
         millis = int(round(time.time() * 1000))
+        settings = self.settings['settings']
+        sys = self.settings['sys']
         strs = str(millis) + "&" + \
-               str(self.settings['settings']['sysSetting']['pwd']) + "&" + \
-               str(self.settings['sys'][self.settings['settings']['sysSetting']['user']]['city']) + "&" + \
-               str(self.settings['sys'][self.settings['settings']['sysSetting']['user']]['county']) + "&" + \
-               str(self.settings['sys'][self.settings['settings']['sysSetting']['user']]['industry']) + "&" + \
-               str(self.settings['sys'][self.settings['settings']['sysSetting']['user']]['appkey'])
-        self.settings['sys'][self.settings['settings']['sysSetting']['user']]['timestamp'] = str(millis)
-        self.settings['sys'][self.settings['settings']['sysSetting']['user']]['sign'] = hashlib.md5(strs.encode('utf-8').lower()).hexdigest()
+               str(settings['sysSetting']['pwd']) + "&" + \
+               str(sys[settings['sysSetting']['user']]['city']) + "&" + \
+               str(sys[settings['sysSetting']['user']]['county']) + "&" + \
+               str(sys[settings['sysSetting']['user']]['industry']) + "&" + \
+               str(sys[settings['sysSetting']['user']]['appkey'])
+        sys[settings['sysSetting']['user']]['timestamp'] = str(millis)
+        sys[settings['sysSetting']['user']]['sign'] = hashlib.md5(strs.encode('utf-8').lower()).hexdigest()
         # print('sys(' + settings['sysSetting']['user'] + '):' + str(sys[settings['sysSetting']['user']]))
 
 
