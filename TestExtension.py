@@ -14,16 +14,16 @@ if __name__ == '__main__':
 
     # 测试设置列表
     tests = [
-        ['openapi_test', 'CrtBidAct', {}],
-        ['openapi_test', 'EBidPrice', {'price': ''}],
-        ['openapi_test', 'CrtTpl', []],
-        ['openapi_test', 'CrtAct', []],
-        ['openapi_test', 'EBidStatus', []],
-        ['openapi_test', 'GetBidInfo', []],
-        ['openapi_test', 'GetCurrentBidInfo', []],
-        ['openapi_test', 'GetBidAct', []],
-        ['openapi_test', 'GetActInfo', []],
-        ['openapi_test', 'GetTagsInfo', []]
+        ['test', 'CrtBidAct', {}],
+        ['test', 'EBidPrice', {'price': ''}],
+        ['test', 'CrtTpl', []],
+        ['test', 'CrtAct', []],
+        ['test', 'EBidStatus', []],
+        ['test', 'GetBidInfo', []],
+        ['test', 'GetCurrentBidInfo', []],
+        ['test', 'GetBidAct', []],
+        ['test', 'GetActInfo', []],
+        ['test', 'GetTagsInfo', []]
     ]
 
     # 按顺序测试
