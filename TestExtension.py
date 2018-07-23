@@ -55,7 +55,7 @@ def autoSys():
            str(sys[settings['sysSetting']['user']]['appkey'])
     sys[settings['sysSetting']['user']]['timestamp'] = str(millis)
     sys[settings['sysSetting']['user']]['sign'] = hashlib.md5(strs.encode('utf-8').lower()).hexdigest()
-    print('sys(' + settings['sysSetting']['user'] + '):' + str(sys[settings['sysSetting']['user']]))
+    # print('sys(' + settings['sysSetting']['user'] + '):' + str(sys[settings['sysSetting']['user']]))
 
 
 # done(开发完成)
@@ -263,7 +263,11 @@ def selectApi(setting, api, edit):
     url = 'http://' + settings[setting]['ip'] + ':' + settings[setting]['port'] + apis[api]['url']
     for _ in range(len(edit)):
         apis[api]['body'][edit[_]['paramKey']] = edit[_]['paramValue']
-    print('测试URI：' + url)
+    if not onlyShowAvgTime:
+        print('请求类型：' + apis[api]['type'] + '，测试URI：' + url)
+        print('请求参数：')
+        for i in apis[api]['body']:
+            print "%s=" % i, apis[api]['body'][i]
     if apis[api]['type'] == 'post':
         return post(url, apis[api]['body'])
     else:
@@ -285,12 +289,20 @@ def logTimeConsum(desc, start=0, stop=0, space=0):
     ms = space % 1000
     ss = (space / 1000) % 60
     mi = (space / 1000) / 60
-    print(desc + str(mi) + ' min ' + str(ss) + ' s ' + str(ms) + ' ms')
+    if not onlyShowAvgTime or desc == '去最值平均耗时：':
+        print(desc + "%d" % mi + ' min ' + "%d" % ss + ' s ' + "%d" % ms + ' ms')
+        print('-------------------------------------------------------------------------------------------------------')
     return space
 
 
 # 主方法
 if __name__ == '__main__':
+    onlyShowAvgTime = False
+    showURI = True
+    showParam = True
+    showResult = True
+    showTime = True
+
     # 初始化总时间
     t = 0
     max = 0
@@ -300,7 +312,7 @@ if __name__ == '__main__':
     tests = [
         # ['test', '新建竞价活动', []],
         # ['prod', '修改竞价状态', []],
-        ['test', '修改竞价价格', [{'paramKey': 'price', 'paramValue': ''}]],
+        ['prod', '修改竞价价格', [{'paramKey': 'price', 'paramValue': ''}]],
 
         ['test', '新建模板', []],
         ['test', '新建活动', []],
@@ -317,7 +329,7 @@ if __name__ == '__main__':
     # 多个api测试多次
     # size = len(tests)
     # 单个api测试多次
-    size = 10
+    size = 3
     for _ in range(size):
         # 自定义参数
         # if _ == 0:
@@ -330,6 +342,8 @@ if __name__ == '__main__':
         result = selectApi(tests[0][0], tests[0][1], tests[0][2])
         # 设置结束计时时间
         stop = int(round(time.time() * 1000))
+        if not onlyShowAvgTime:
+            print('返回结果：' + result)
         space = logTimeConsum('耗时：', start, stop)
         if _ == 0:
             min = space
@@ -338,8 +352,8 @@ if __name__ == '__main__':
         if min > space:
             min = space
         t += space
-        print(result)
 
     logTimeConsum('总耗时：', space=t)
     # 平均值去掉最小值与最大值(因为第一次连接耗时长)
-    logTimeConsum('去最值平均耗时：', space=(t - max - min) / (size - 2))
+    if size > 2:
+        logTimeConsum('去最值平均耗时：', space=(t - max - min) / (size - 2))
