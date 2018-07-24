@@ -15,15 +15,19 @@ if __name__ == '__main__':
 
     # 测试设置列表
     tests = [
+        # 创建
         info('test', 'tdtest', 'CrtTpl', {}),
         info('test', 'tdtest', 'CrtAct', {}),
         info('test', 'tdtest', 'CrtBid', {}),
+        # 修改
         info('test', 'tdtest', 'EBidSt', {}),
         info('prod', 'tdtest', 'EBidPr', {'price': ''}),
+        # 获取
         info('test', 'tdtest', 'GBidIf', {}),
         info('test', 'tdtest', 'GCBdIf', {}),
         info('test', 'tdtest', 'GBdAIf', {}),
         info('test', 'tdtest', 'GActIf', {}),
+        # 耗时，建议单独测
         info('test', 'tdtest', 'GTagIf', {})
     ]
 
