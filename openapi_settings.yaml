@@ -3,6 +3,8 @@ settings:
     Content-Type: 'application/x-www-form-urlencoded; charset=UTF-8'
   sysSetting:
     tdtest: '1qaz@WSX'
+    santikeji: '1qaz@WSX'
+    asiainfojj: '1qaz@WSX'
   dev:
     ip: localhost
     port: '8080'
@@ -19,7 +21,18 @@ sys:
     city: '571'
     county: '571A'
     industry: '01'
+  santikeji:
+    appkey: 'santikeji'
+    city: '571'
+    county: '571A'
+    industry: 'LG11'
+  asiainfojj:
+    appkey: 'asiainfojj'
+    city: '571'
+    county: '571A'
+    industry: '01'
 
+#api名称最好控制在6位
 apis:
 #  新建模板
   CrtTpl:
@@ -49,7 +62,7 @@ apis:
       fromNo: '10658618999'
       isBid: Y
 #  新建竞价活动
-  CrtBidAct:
+  CrtBid:
     type: post
     url: /openapi/activities/bid/new
     body:
@@ -68,7 +81,7 @@ apis:
       ruleStr: '#98260<20'
       sites: '[{"opera":"or","latitude":"30.321228350169445","ptype":"all","radius":"1000","longitude":"120.0681886350031"}]'
 #  修改竞价状态
-  EBidStatus:
+  EBidSt:
     type: post
     url: /openapi/activities/bid/status/modify/
     body:
@@ -76,7 +89,7 @@ apis:
       actId: 104
       status: cancel
 #  修改竞价价格
-  EBidPrice:
+  EBidPr:
     type: post
     url: /openapi/activities/bid/price/modify/
     body:
@@ -84,35 +97,35 @@ apis:
       price: 0.01
       actId: 104
 #  查询竞价结果
-  GetBidInfo:
+  GBidIf:
     type: get
     url: /openapi/activities/bid/result/
     body:
       sys:
       param: 104
 #  查询实时竞价结果
-  GetCurrentBidInfo:
+  GCBdIf:
     type: get
     url: /openapi/activities/bid/current/result/
     body:
       sys:
       param: 104
 #  查询竞价状态
-  GetBidActInfo:
+  GBdAIf:
     type: get
     url: /openapi/activities/bid/
     body:
       sys:
       param: 104
 #  洞察类
-  GetActInfo:
+  GActIf:
     type: get
     url: /openapi/activities/result/
     body:
       sys:
       param: 194
 #  查询标签信息
-  GetTagsInfo:
+  GTagIf:
     type: get
     url: /openapi/tags/
     body:

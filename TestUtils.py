@@ -96,7 +96,7 @@ class Utils:
         apis[api]['body']['sys'] = set['sys'][signUser]
         for i in edit:
             apis[api]['body'][i] = edit[i]
-        print "请求方式：%s，测试URI：%s" % (apis[api]['type'] , url)
+        print "请求方式：%s，测试URI：%s" % (apis[api]['type'], url)
         print "请求参数："
         for i in apis[api]['body']:
             print "%s:%s" % (i, apis[api]['body'][i])
