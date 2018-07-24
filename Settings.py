@@ -8,7 +8,7 @@ import yaml
 
 class Settings:
     def __init__(self, name):
-        with open('/demo/settings/'+name, "r") as yaml_file:
+        with open(name, "r") as yaml_file:
             self.settings = yaml.load(yaml_file.read())
 
     # done(开发完成)

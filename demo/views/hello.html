@@ -54,103 +54,25 @@
         </nav>
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
             <div class="row">
-                <div class="col-md-5">
-                    <label for="InputSettings">
+                <div class="col-md-7">
+                    <label class="SettingLabel" for="InputSettings">
                         配置文件
                     </label>
-                    <select class="custom-select d-block w-100 select-setting" id="InputSettings" required="">
-                        <option value="">选择...</option>
-                        <option>openapi_settings</option>
-                    </select>
+                    <div class="row">
+                        <div class="col-md-7">
+                            <select class="custom-select d-block w-100 select-setting" id="InputSettings" required="">
+                                <option value="">选择...</option>
+                            </select>
+                        </div>
+                        <div class="col-md-5 addApiButtonView"></div>
+                    </div>
                 </div>
             </div>
-            <div class="form-group addApi">
-                <div class="row">
-                    <!--服务器配置名-->
-                    <div class="col-md-auto">
-                        <label>
-                            服务器名
-                        </label>
-                        <input class="form-control" size="5" type="text"/>
-                    </div>
-                    <!--Sign用户名-->
-                    <div class="col-md-auto">
-                        <label>
-                            Sign用户
-                        </label>
-                        <input class="form-control" size="5" type="text"/>
-                    </div>
-                    <!--选择api-->
-                    <div class="col-md-auto">
-                        <label for="InputApis">
-                            测试api
-                        </label>
-                        <select class="custom-select d-block w-100" id="InputApis" required="">
-                            <option value="">选择...</option>
-                            <option>新建模板</option>
-                        </select>
-                    </div>
-                    <!--自定义参数-->
-                    <div class="col-md-auto">
-                        <label for="InputApis">
-                            修改参数
-                        </label>
-                        <div class="row">
-                            <div class="col-md-auto">
-                                <div class="row">
-                                    <div class="col-md-auto d-flex">
-                                        <b class="d-flex align-items-center">key:</b>
-                                    </div>
-                                    <div class="col-md-auto">
-                                        <select class="custom-select d-block w-100" required="" title="参数">
-                                            <option value="">选择...</option>
-                                            <option>channelId</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-auto">
-                                <div class="row">
-                                    <div class="col-md-auto d-flex">
-                                        <b class="d-flex align-items-center">value:</b>
-                                    </div>
-                                    <div class="col-md-auto">
-                                        <input class="form-control" size="8" type="text"/>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-auto d-flex">
-                                <a class="d-flex align-items-center" href="#">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
-                                </a>
-                                <br>
-                                <a class="d-flex align-items-center" href="#">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="8" y1="12" x2="16" y2="12"></line></svg>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <!--测试次数-->
-                    <div class="col-md-auto">
-                        <label>
-                            测试次数(0~9999)
-                        </label>
-                        <input class="form-control" type="text" size="4" maxlength="4" onkeyup="value=value.replace(/[^\d]/g,'')"/>
-                    </div>
-                    <!--增加api-->
-                    <div class="col-md-auto d-flex">
-                        <a class="d-flex align-items-center" href="#">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
-                        </a>
-                        <br>
-                        <a class="d-flex align-items-center" href="#">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="8" y1="12" x2="16" y2="12"></line></svg>
-                        </a>
-                    </div>
-                </div>
+            <br>
+            <div class="form-group addApiView">
             </div>
 
-            <button class="btn btn-primary tmp">
+            <button class="btn btn-primary go">
                 提交测试
             </button>
             <div id="result"></div>
