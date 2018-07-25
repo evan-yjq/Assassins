@@ -2,6 +2,7 @@
 # 测试拓展
 # create by ye jiaquan in 2018/07/18
 import sys
+import argparse
 import time
 import json
 import TestUtils as utils
@@ -9,50 +10,30 @@ from TestUtils import TestInfo as info
 
 # 主方法
 if __name__ == '__main__':
-    util = utils.Utils("./demo/settings/" + sys.argv[1] + ".yaml")
+    parser = argparse.ArgumentParser()
+    # 添加参数
+    parser.add_argument("setting")
+    parser.add_argument("serverName")
+    parser.add_argument("signUser")
+    parser.add_argument("apiKey")
+    parser.add_argument("cnt")
+    parser.add_argument('params')
+    args = parser.parse_args()
+
+    util = utils.Utils("./demo/settings/" + args.setting + ".yaml")
     # 初始化总时间
     t = 0
     max = 0
     min = 0
 
-    # 测试设置列表
-    # tests = [
-    #     # 创建
-    #     info('test', 'tdtest', 'CrtTpl', {}),
-    #     info('test', 'tdtest', 'CrtAct', {}),
-    #     info('test', 'tdtest', 'CrtBid', {}),
-    #     # 修改
-    #     info('test', 'tdtest', 'EBidSt', {}),
-    #     info('prod', 'tdtest', 'EBidPr', {'price': ''}),
-    #     # 获取
-    #     info('test', 'tdtest', 'GBidIf', {}),
-    #     info('test', 'tdtest', 'GCBdIf', {}),
-    #     info('test', 'tdtest', 'GBdAIf', {}),
-    #     info('test', 'tdtest', 'GActIf', {}),
-    #     # 耗时，建议单独测
-    #     info('test', 'tdtest', 'GTagIf', {})
-    # ]
-
-    # 按顺序测试
-    # testNo = range(2)
-    #
-    # 自己挑选测试
-    # testNo = [4]
-
-    # 多个api测试多次
-    # testNo = range(len(tests))
-    #
-    # 单个api测试多次
-    # n:测试次数
-    # testNo = range(n)
     print "{"
     edit = {}
     try:
-        edit = json.loads(sys.argv[6])
+        edit = json.loads(args.params)
     except:
         pass
-    test = info(sys.argv[2], sys.argv[3], sys.argv[4], edit)
-    size = int(sys.argv[5])
+    test = info(args.serverName, args.signUser, args.apiKey, edit)
+    size = int(args.cnt)
     # for i in testNo:
     for i in range(size):
         # test = tests[i]

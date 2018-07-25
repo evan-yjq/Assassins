@@ -55,18 +55,19 @@
         </nav>
         <main role="main" class="col-md-11 ml-sm-auto col-lg-11 pt-3 px-4">
             <div class="row">
-                <div class="col-md-7">
+                <div class="col-md-auto">
                     <label class="SettingLabel" for="InputSettings">
                         配置文件
                     </label>
-                    <div class="row">
-                        <div class="col-md-7">
-                            <select class="custom-select d-block w-100 select-setting" id="InputSettings" required="">
-                                <option value="">选择...</option>
-                            </select>
-                        </div>
-                        <div class="col-md-5 addApiButtonView"></div>
+                    <div>
+                        <select class="custom-select d-block w-100 select-setting" id="InputSettings" required="">
+                            <option value="">选择...</option>
+                        </select>
                     </div>
+                </div>
+                <div class="col-md-auto">
+                    <label style="visibility: hidden">'</label>
+                    <div class="addApiButtonView"></div>
                 </div>
             </div>
             <br>

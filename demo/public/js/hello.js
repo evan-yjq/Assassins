@@ -39,7 +39,7 @@ $('body').on('click', '.go', function () {
             const paramN = apiAndParam[i][j];
             const key = $('.select-param' + paramN).val();
             const value = $('.param-value' + paramN).val();
-            params = params + '"' + key + '": "' + value + '",';
+            params = params + '\\"' + key + '\\":\\"' + value + '\\",';
         }
         params = params.substr(0, params.length - 1);
         params = params + '}';
@@ -197,30 +197,34 @@ function addApi2View() {
         '                    <!--自定义参数-->\n' +
         '                    <div class="col-md-auto paramView param' + apiNo + '">\n' +
         '                        <label for="InputApis">' +
-        '                            参数(默认采用配置中值)' +
+        '                            参数(默认采用配置值)' +
         '                            <a href="javascript:void(0);" onclick="addParam2View(' + apiNo + ')">' +
         '                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>' +
         '                            </a>' +
         '                        </label>\n' +
         '                    </div>\n' +
         '                    <!--测试次数-->\n' +
-        '                    <div class="col-md-3">\n' +
+        '                    <div class="col-md-auto">\n' +
         '                        <label>\n' +
-        '                            测试次数(0~9999)\n' +
+        '                            测试量<9999\n' +
         '                        </label>\n' +
-        '                        <div class="row">\n' +
-        '                           <div class="col-md-5">\n' +
-        '                               <input class="form-control cnt" value="1" type="text" size="4" maxlength="4" onkeyup="value=value.replace(/[^\\d]/g,\'\')"/>\n' +
-        '                           </div>\n' +
-        '                           <!--删除api-->\n' +
-        '                           <div class="col-md-auto d-flex">\n' +
-        '                               <button class="btn btn-danger pull-right delApiButton" onclick="removeApi(' + apiNo + ')">\n' +
-        '                               移除</button>\n' +
-        '                           </div>' +
-        '                           <div class="col-md-3 result' + apiNo + '">' +
-        '                           </div>' +
+        '                        <div>\n' +
+        '                            <input class="form-control cnt" value="1" type="text" size="4" maxlength="4" onkeyup="value=value.replace(/[^\\d]/g,\'\')"/>\n' +
         '                        </div>\n' +
         '                    </div>\n' +
+        '                    <!--删除api-->\n' +
+        '                    <div class="col-md-auto">\n' +
+        '                        <div class="row">\n' +
+        '                            <div class="col-md-auto">' +
+        '                                <label style="visibility: hidden">\'</label>' +
+        '                                <button class="btn btn-danger w-100 delApiButton" onclick="removeApi(' + apiNo + ')">移除</button>\n' +
+        '                            </div>' +
+        '                            <div class="col-md-auto">' +
+        '                                <label style="visibility: hidden">\'</label>' +
+        '                                <div class="result' + apiNo + '" align="center"></div>' +
+        '                            </div>' +
+        '                        </div>\n' +
+        '                    </div>' +
         '                </div>\n' +
         '                <br class="apiRow row' + apiNo + '">');
     $('.addApiView').append(tmp);
@@ -230,7 +234,7 @@ function addApi2View() {
 
 function showAddApiButton() {
     if (apis !== undefined) {
-        const s = $('<button class="btn btn-success pull-right addApiButton">\n' +
+        const s = $('<button class="btn btn-success d-block w-100 addApiButton">\n' +
             '添加Api</button>\n');
         $('.addApiButtonView').append(s)
     }
@@ -242,7 +246,7 @@ function get_test_result(setting, serverName, signUser, apiKey, cnt, params, api
         $('#modalLong' + apiN).remove();
     }
     const loading = $(
-        '<div class="loader-inner loading' + apiN + '" style="position: absolute; bottom: 7px;">\n' +
+        '<div class="loader-inner loading' + apiN + '">\n' +
         '<div class="loader-line-wrap">\n' +
         '<div class="loader-line"></div>\n' +
         '</div>\n' +
@@ -275,9 +279,9 @@ function get_test_result(setting, serverName, signUser, apiKey, cnt, params, api
         timeout: 120000 * cnt,
         success: function (data) {
             $('.result' + apiN).find('.loading' + apiN).length === 0 ? '' : $('.loading' + apiN).remove();
-            const t = $('<a data-toggle="modal" data-target="#modalLong' + apiN + '" class="resultA' + apiN + '" style="position: absolute; bottom: 12px;" href="javascript:void(0);">详细</a>' +
+            const t = $('<button data-toggle="modal" data-target="#modalLong' + apiN + '" class="btn btn-dark w-100 resultA' + apiN + '">Info</button>' +
                 '<!-- Modal -->\n' +
-                '<div class="modal fade" id="modalLong' + apiN + '" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">\n' +
+                '<div align="left" class="modal fade" id="modalLong' + apiN + '" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">\n' +
                 '  <div class="modal-dialog modal-lg" role="document">\n' +
                 '    <div class="modal-content">\n' +
                 '      <div class="modal-header">\n' +
@@ -295,7 +299,7 @@ function get_test_result(setting, serverName, signUser, apiKey, cnt, params, api
             $('.result' + apiN).append(t);
         },
         error: function () {
-
+            $('.result' + apiN).find('.loading' + apiN).length === 0 ? '' : $('.loading' + apiN).remove();
         },
         complete: function () {
 
