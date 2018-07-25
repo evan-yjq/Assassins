@@ -9,8 +9,8 @@ $(function () {
 });
 
 $('body').on('change', '.select-setting', function () {
-    var s = document.getElementById("InputSettings").value;
-    var setting_name = s.length >= 1 ? s : "";
+    const s = document.getElementById("InputSettings").value;
+    const setting_name = s.length >= 1 ? s : "";
     get_setting(setting_name);
 });
 
@@ -20,31 +20,31 @@ $('body').on('click', '.addApiButton', function () {
 
 $('body').on('click', '.go', function () {
     for (let i = 0; i < apiAndParam.length; i++) {
-        if (apiAndParam[i]===undefined)continue;
-        var setting = document.getElementById("InputSettings").value;
-        var serverName = $('.row'+i).find('.serverName').val();
-        var signUser = $('.row'+i).find('.signUser').val();
-        var apiName = $('.row'+i).find('.select-api').val();
-        var cnt = $('.row'+i).find('.cnt').val();
-        var len_ = Object.keys(apis).length;
-        var apiKey = "";
-        for (var j = 0; j < len_; j++) {
-            if (Object.values(apis)[j]['name'] === apiName){
+        if (apiAndParam[i] === undefined) continue;
+        const setting = document.getElementById("InputSettings").value;
+        const serverName = $('.row' + i).find('.serverName').val();
+        const signUser = $('.row' + i).find('.signUser').val();
+        const apiName = $('.row' + i).find('.select-api').val();
+        const cnt = $('.row' + i).find('.cnt').val();
+        const len_ = Object.keys(apis).length;
+        let apiKey = "";
+        for (let j = 0; j < len_; j++) {
+            if (Object.values(apis)[j]['name'] === apiName) {
                 apiKey = Object.keys(apis)[j];
                 break
             }
         }
-        var params = '{';
+        let params = '{';
         for (let j = 0; j < apiAndParam[i].length; j++) {
-            var paramN = apiAndParam[i][j];
-            var key = $('.select-param'+paramN).val();
-            var value = $('.param-value'+paramN).val();
+            const paramN = apiAndParam[i][j];
+            const key = $('.select-param' + paramN).val();
+            const value = $('.param-value' + paramN).val();
             params = params + '"' + key + '": "' + value + '",';
         }
         params = params.substr(0, params.length - 1);
         params = params + '}';
         // console.log('setting:', setting, 'serverName:', serverName, 'signUser:', signUser, 'apiKey:', apiKey, 'cnt:', cnt)
-        if (setting === "" || serverName === "" || signUser === "" || apiKey === "" || cnt === ""){
+        if (setting === "" || serverName === "" || signUser === "" || apiKey === "" || cnt === "") {
             alert("请将表单填写完整，并删除无效参数");
             return
         }
@@ -53,52 +53,57 @@ $('body').on('click', '.go', function () {
 
 });
 
-function removeApi(no) {
-    $('.addApiView').find('.row' + no).length === 0 ? '' : $('.row' + no).remove();
-    delete apiAndParam[no];
+function removeApi(apiN) {
+    $('.addApiView').find('.row' + apiN).length === 0 ? '' : $('.row' + apiN).remove();
+    delete apiAndParam[apiN];
 }
 
-function removeParam(api, no) {
-    if (no === undefined) {
-        $('.param'+api).find('.paramRow').length === 0 ? '' : $('.paramRow').remove();
-        apiAndParam[api].splice(0, apiAndParam[api].length)
-    }else {
-        $('.param' + api).find('.paramO' + no).length === 0 ? '' : $('.paramO' + no).remove();
-        for (let i = 0; i < apiAndParam[api].length; i++) {
-            if (apiAndParam[api][i] === no) {
-                apiAndParam[api].splice(i, 1)
+function removeParam(apiN, paramN) {
+    if (paramN === undefined) {
+        if ($('.result' + apiN).find('.resultA' + apiN).length !== 0) {
+            $('.resultA' + apiN).remove();
+            $('#modalLong' + apiN).remove();
+        }
+        $('.param' + apiN).find('.paramRow').length === 0 ? '' : $('.param' + apiN).find('.paramRow').remove();
+        apiAndParam[apiN].splice(0, apiAndParam[apiN].length)
+    } else {
+        $('.param' + apiN).find('.paramO' + paramN).length === 0 ? '' : $('.paramO' + paramN).remove();
+        for (let i = 0; i < apiAndParam[apiN].length; i++) {
+            if (apiAndParam[apiN][i] === paramN) {
+                apiAndParam[apiN].splice(i, 1);
                 break
             }
         }
     }
 }
 
-function addParam2View(no) {
-    var apiName = document.getElementById("InputApis"+no).value;
-    var len_ = Object.keys(apis).length;
-    var apiKey;
-    for (var i = 0; i < len_; i++) {
-        if (Object.values(apis)[i]['name'] === apiName){
+function addParam2View(apiN) {
+    let i;
+    const apiName = document.getElementById("InputApis" + apiN).value;
+    const len_ = Object.keys(apis).length;
+    let apiKey;
+    for (i = 0; i < len_; i++) {
+        if (Object.values(apis)[i]['name'] === apiName) {
             apiKey = Object.keys(apis)[i];
             break
         }
     }
-    var paramSelect = '';
-    var params = Object.values(apis)[i]['body'];
+    let paramSelect = '';
+    const params = Object.values(apis)[i]['body'];
     for (let i = 0; i < Object.keys(params).length; i++) {
         paramSelect = paramSelect + '<option>' + Object.keys(params)[i] + '</option>\n';
     }
-    var t = $(
-        '                        <div class="row paramRow paramO'+paramNo+'">\n' +
+    const t = $(
+        '                        <div class="row paramRow paramO' + paramNo + '">\n' +
         '                            <div class="col-md-auto">\n' +
         '                                <div class="row">\n' +
         '                                    <div class="col-md-auto d-flex">\n' +
         '                                        <b class="d-flex align-items-center">key:</b>\n' +
         '                                    </div>\n' +
         '                                    <div class="col-md-auto">\n' +
-        '                                        <select class="custom-select d-block w-100 select-param'+paramNo+'" required="" title="参数">\n' +
+        '                                        <select class="custom-select d-block w-100 select-param' + paramNo + '" required="" title="参数">\n' +
         '                                            <option value="">选择...</option>\n' +
-        paramSelect+
+        paramSelect +
         '                                        </select>\n' +
         '                                    </div>\n' +
         '                                </div>\n' +
@@ -109,53 +114,55 @@ function addParam2View(no) {
         '                                        <b class="d-flex align-items-center">value:</b>\n' +
         '                                    </div>\n' +
         '                                    <div class="col-md-auto">\n' +
-        '                                        <input class="form-control param-value'+paramNo+'" size="8" type="text"/>\n' +
+        '                                        <input class="form-control param-value' + paramNo + '" size="8" type="text"/>\n' +
         '                                    </div>\n' +
         '                                </div>\n' +
         '                            </div>\n' +
         '                            <div class="col-md-auto d-flex">\n' +
         '                                <br>\n' +
-        '                                <a class="d-flex align-items-center" href="javascript:void(0);" onclick="removeParam('+no+','+paramNo+')">\n' +
+        '                                <a class="d-flex align-items-center" href="javascript:void(0);" onclick="removeParam(' + apiN + ',' + paramNo + ')">\n' +
         '                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="8" y1="12" x2="16" y2="12"></line></svg>\n' +
         '                                </a>\n' +
         '                            </div>\n' +
-        '                        </div>\n'+
-        '                        <br class="paramRow paramO'+paramNo+'">'
+        '                        </div>\n' +
+        '                        <br class="paramRow paramO' + paramNo + '">'
     );
-    apiAndParam[no].push(paramNo);
-    paramNo = paramNo+1;
-    $('.param'+ no).append(t)
+    apiAndParam[apiN].push(paramNo);
+    paramNo = paramNo + 1;
+    $('.param' + apiN).append(t)
 }
 
 function addApi2View() {
+    let len_api;
+    let len_setting;
     try {
-        var len_api = Object.keys(apis).length;
-        var len_setting = Object.keys(settings).length;
+        len_api = Object.keys(apis).length;
+        len_setting = Object.keys(settings).length;
     } catch (e) {
         if ($('.error-info').length === 0) {
-            var t = $('<p class="error-info" style="color: red"> 请选择正确的配置文件</p>');
+            const t = $('<p class="error-info" style="color: red"> 请选择正确的配置文件</p>');
             $('.SettingLabel').append(t)
         }
         return
     }
 
-    var apiSelect = '';
-    var serverSelect = '';
-    var signSelect = '';
+    let apiSelect = '';
+    let serverSelect = '';
+    let signSelect = '';
     for (let i = 0; i < len_api; i++) {
         apiSelect = apiSelect + '<option>' + Object.values(apis)[i]['name'] + '</option>\n';
     }
     for (let i = 0; i < len_setting; i++) {
-        if (Object.keys(settings)[i] === 'sysSetting'){
-            var sys = Object.values(settings)[i];
+        if (Object.keys(settings)[i] === 'sysSetting') {
+            const sys = Object.values(settings)[i];
             for (let j = 0; j < Object.keys(sys).length; j++) {
                 signSelect = signSelect + '<option>' + Object.keys(sys)[j] + '</option>\n';
             }
-        }else if (Object.keys(Object.values(settings)[i])[0] === 'ip' && Object.keys(Object.values(settings)[i])[1] === 'port'){
+        } else if (Object.keys(Object.values(settings)[i])[0] === 'ip' && Object.keys(Object.values(settings)[i])[1] === 'port') {
             serverSelect = serverSelect + '<option>' + Object.keys(settings)[i] + '</option>\n';
         }
     }
-    var tmp = $(
+    const tmp = $(
         '<div class="row apiRow row' + apiNo + '">\n' +
         '                    <!--服务器配置名-->\n' +
         '                    <div class="col-md-auto">\n' +
@@ -182,7 +189,7 @@ function addApi2View() {
         '                        <label for="InputApis">\n' +
         '                            测试api\n' +
         '                        </label>\n' +
-        '                        <select class="custom-select d-block w-100 select-api" id="InputApis'+apiNo+'" required="" onchange="removeParam('+apiNo+')">\n' +
+        '                        <select class="custom-select d-block w-100 select-api" id="InputApis' + apiNo + '" required="" onchange="removeParam(' + apiNo + ')">\n' +
         '                            <option value="">选择...</option>\n' +
         apiSelect +
         '                        </select>\n' +
@@ -210,11 +217,11 @@ function addApi2View() {
         '                               <button class="btn btn-danger pull-right delApiButton" onclick="removeApi(' + apiNo + ')">\n' +
         '                               移除</button>\n' +
         '                           </div>' +
-        '                           <div class="col-md-3 result'+apiNo+'">' +
-        '                           </div>'+
+        '                           <div class="col-md-3 result' + apiNo + '">' +
+        '                           </div>' +
         '                        </div>\n' +
         '                    </div>\n' +
-        '                </div>\n'+
+        '                </div>\n' +
         '                <br class="apiRow row' + apiNo + '">');
     $('.addApiView').append(tmp);
     apiAndParam[apiNo] = [];
@@ -223,28 +230,54 @@ function addApi2View() {
 
 function showAddApiButton() {
     if (apis !== undefined) {
-        var s = $('<button class="btn btn-success pull-right addApiButton">\n' +
+        const s = $('<button class="btn btn-success pull-right addApiButton">\n' +
             '添加Api</button>\n');
         $('.addApiButtonView').append(s)
     }
 }
 
 function get_test_result(setting, serverName, signUser, apiKey, cnt, params, apiN) {
-    if ($('.result'+apiN).find('.resultA'+apiN).length !== 0) {
+    if ($('.result' + apiN).find('.resultA' + apiN).length !== 0) {
         $('.resultA' + apiN).remove();
         $('#modalLong' + apiN).remove();
     }
+    const loading = $(
+        '<div class="loader-inner loading' + apiN + '" style="position: absolute; bottom: 7px;">\n' +
+        '<div class="loader-line-wrap">\n' +
+        '<div class="loader-line"></div>\n' +
+        '</div>\n' +
+        '<div class="loader-line-wrap">\n' +
+        '<div class="loader-line"></div>\n' +
+        '</div>\n' +
+        '<div class="loader-line-wrap">\n' +
+        '<div class="loader-line"></div>\n' +
+        '</div>\n' +
+        '<div class="loader-line-wrap">\n' +
+        '<div class="loader-line"></div>\n' +
+        '</div>\n' +
+        '<div class="loader-line-wrap">\n' +
+        '<div class="loader-line"></div>\n' +
+        '</div>\n' +
+        '</div>'
+    );
+    $('.result' + apiN).append(loading);
     $.ajax({
         type: 'get',
         url: '/get_test_result',
-        data: {'setting': setting,'serverName': serverName, 'signUser': signUser, 'apiKey': apiKey, 'cnt': cnt, 'params': params},
+        data: {
+            'setting': setting,
+            'serverName': serverName,
+            'signUser': signUser,
+            'apiKey': apiKey,
+            'cnt': cnt,
+            'params': params
+        },
         timeout: 120000 * cnt,
         success: function (data) {
-            console.log(data);
-            data.replace('\r', '</div><div>');
-            var t = $('<a data-toggle="modal" data-target="#modalLong'+apiN+'" class="resultA'+apiN+'" style="position: absolute; bottom: 0;" href="javascript:void(0);">详细</a>'+
+            $('.result' + apiN).find('.loading' + apiN).length === 0 ? '' : $('.loading' + apiN).remove();
+            const t = $('<a data-toggle="modal" data-target="#modalLong' + apiN + '" class="resultA' + apiN + '" style="position: absolute; bottom: 12px;" href="javascript:void(0);">详细</a>' +
                 '<!-- Modal -->\n' +
-                '<div class="modal fade" id="modalLong'+apiN+'" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">\n' +
+                '<div class="modal fade" id="modalLong' + apiN + '" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">\n' +
                 '  <div class="modal-dialog modal-lg" role="document">\n' +
                 '    <div class="modal-content">\n' +
                 '      <div class="modal-header">\n' +
@@ -254,12 +287,12 @@ function get_test_result(setting, serverName, signUser, apiKey, cnt, params, api
                 '        </button>\n' +
                 '      </div>\n' +
                 '      <div class="modal-body">\n' +
-                 data+
+                data +
                 '      </div>\n' +
                 '    </div>\n' +
                 '  </div>\n' +
                 '</div>');
-            $('.result'+apiN).append(t);
+            $('.result' + apiN).append(t);
         },
         error: function () {
 
@@ -304,9 +337,9 @@ function get_setting_name_list() {
         data: {},
         timeout: 20000,
         success: function (data) {
-            var t = '';
+            let t = '';
             for (let i = 0; i < data.length; i++) {
-                t = t + '<option class="setting-option">'+data[i]+'</option>'
+                t = t + '<option class="setting-option">' + data[i] + '</option>'
             }
             $('.select-setting').append($(t))
         },
