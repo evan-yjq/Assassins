@@ -34,9 +34,21 @@ $('body').on('click', '.go', function () {
                 break
             }
         }
-
+        var params = '{';
+        for (let j = 0; j < apiAndParam[i].length; j++) {
+            var paramN = apiAndParam[i][j];
+            var key = $('.select-param'+paramN).val();
+            var value = $('.param-value'+paramN).val();
+            params = params + '"' + key + '": "' + value + '",';
+        }
+        params = params.substr(0, params.length - 1);
+        params = params + '}';
         // console.log('setting:', setting, 'serverName:', serverName, 'signUser:', signUser, 'apiKey:', apiKey, 'cnt:', cnt)
-        get_test_result(setting, serverName, signUser, apiKey, cnt)
+        if (setting === "" || serverName === "" || signUser === "" || apiKey === "" || cnt === ""){
+            alert("请将表单填写完整，并删除无效参数");
+            return
+        }
+        get_test_result(setting, serverName, signUser, apiKey, cnt, params, i)
     }
 
 });
@@ -49,7 +61,7 @@ function removeApi(no) {
 function removeParam(api, no) {
     if (no === undefined) {
         $('.param'+api).find('.paramRow').length === 0 ? '' : $('.paramRow').remove();
-        apiAndParam[api].splice(0, apiAndParam[api].length-1)
+        apiAndParam[api].splice(0, apiAndParam[api].length)
     }else {
         $('.param' + api).find('.paramO' + no).length === 0 ? '' : $('.paramO' + no).remove();
         for (let i = 0; i < apiAndParam[api].length; i++) {
@@ -84,7 +96,7 @@ function addParam2View(no) {
         '                                        <b class="d-flex align-items-center">key:</b>\n' +
         '                                    </div>\n' +
         '                                    <div class="col-md-auto">\n' +
-        '                                        <select class="custom-select d-block w-100 select-param'+no+'" required="" title="参数">\n' +
+        '                                        <select class="custom-select d-block w-100 select-param'+paramNo+'" required="" title="参数">\n' +
         '                                            <option value="">选择...</option>\n' +
         paramSelect+
         '                                        </select>\n' +
@@ -97,7 +109,7 @@ function addParam2View(no) {
         '                                        <b class="d-flex align-items-center">value:</b>\n' +
         '                                    </div>\n' +
         '                                    <div class="col-md-auto">\n' +
-        '                                        <input class="form-control" size="8" type="text"/>\n' +
+        '                                        <input class="form-control param-value'+paramNo+'" size="8" type="text"/>\n' +
         '                                    </div>\n' +
         '                                </div>\n' +
         '                            </div>\n' +
@@ -107,7 +119,8 @@ function addParam2View(no) {
         '                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="8" y1="12" x2="16" y2="12"></line></svg>\n' +
         '                                </a>\n' +
         '                            </div>\n' +
-        '                        </div>\n'
+        '                        </div>\n'+
+        '                        <br class="paramRow paramO'+paramNo+'">'
     );
     apiAndParam[no].push(paramNo);
     paramNo = paramNo+1;
@@ -116,7 +129,8 @@ function addParam2View(no) {
 
 function addApi2View() {
     try {
-        var len_ = Object.keys(apis).length;
+        var len_api = Object.keys(apis).length;
+        var len_setting = Object.keys(settings).length;
     } catch (e) {
         if ($('.error-info').length === 0) {
             var t = $('<p class="error-info" style="color: red"> 请选择正确的配置文件</p>');
@@ -126,8 +140,20 @@ function addApi2View() {
     }
 
     var apiSelect = '';
-    for (var i = 0; i < len_; i++) {
+    var serverSelect = '';
+    var signSelect = '';
+    for (let i = 0; i < len_api; i++) {
         apiSelect = apiSelect + '<option>' + Object.values(apis)[i]['name'] + '</option>\n';
+    }
+    for (let i = 0; i < len_setting; i++) {
+        if (Object.keys(settings)[i] === 'sysSetting'){
+            var sys = Object.values(settings)[i];
+            for (let j = 0; j < Object.keys(sys).length; j++) {
+                signSelect = signSelect + '<option>' + Object.keys(sys)[j] + '</option>\n';
+            }
+        }else if (Object.keys(Object.values(settings)[i])[0] === 'ip' && Object.keys(Object.values(settings)[i])[1] === 'port'){
+            serverSelect = serverSelect + '<option>' + Object.keys(settings)[i] + '</option>\n';
+        }
     }
     var tmp = $(
         '<div class="row apiRow row' + apiNo + '">\n' +
@@ -136,14 +162,20 @@ function addApi2View() {
         '                        <label>\n' +
         '                            服务器名\n' +
         '                        </label>\n' +
-        '                        <input class="form-control serverName" size="5" type="text"/>\n' +
+        '                        <select class="custom-select d-block w-100 serverName" required="">\n' +
+        '                            <option value="">选择...</option>\n' +
+        serverSelect +
+        '                        </select>\n' +
         '                    </div>\n' +
         '                    <!--Sign用户名-->\n' +
         '                    <div class="col-md-auto">\n' +
         '                        <label>\n' +
         '                            Sign用户\n' +
         '                        </label>\n' +
-        '                        <input class="form-control signUser" size="5" type="text"/>\n' +
+        '                        <select class="custom-select d-block w-100 signUser" required="">\n' +
+        '                            <option value="">选择...</option>\n' +
+        signSelect +
+        '                        </select>\n' +
         '                    </div>\n' +
         '                    <!--选择api-->\n' +
         '                    <div class="col-md-auto">\n' +
@@ -165,19 +197,21 @@ function addApi2View() {
         '                        </label>\n' +
         '                    </div>\n' +
         '                    <!--测试次数-->\n' +
-        '                    <div class="col-md-auto">\n' +
+        '                    <div class="col-md-3">\n' +
         '                        <label>\n' +
         '                            测试次数(0~9999)\n' +
         '                        </label>\n' +
         '                        <div class="row">\n' +
-        '                           <div class="col-md-8">\n' +
+        '                           <div class="col-md-5">\n' +
         '                               <input class="form-control cnt" value="1" type="text" size="4" maxlength="4" onkeyup="value=value.replace(/[^\\d]/g,\'\')"/>\n' +
         '                           </div>\n' +
         '                           <!--删除api-->\n' +
-        '                           <div class="col-md-4 d-flex">\n' +
+        '                           <div class="col-md-auto d-flex">\n' +
         '                               <button class="btn btn-danger pull-right delApiButton" onclick="removeApi(' + apiNo + ')">\n' +
         '                               移除</button>\n' +
-        '                           </div>\n' +
+        '                           </div>' +
+        '                           <div class="col-md-3 result'+apiNo+'">' +
+        '                           </div>'+
         '                        </div>\n' +
         '                    </div>\n' +
         '                </div>\n'+
@@ -195,14 +229,37 @@ function showAddApiButton() {
     }
 }
 
-function get_test_result(setting, serverName, signUser, apiKey, cnt) {
+function get_test_result(setting, serverName, signUser, apiKey, cnt, params, apiN) {
+    if ($('.result'+apiN).find('.resultA'+apiN).length !== 0) {
+        $('.resultA' + apiN).remove();
+        $('#modalLong' + apiN).remove();
+    }
     $.ajax({
         type: 'get',
         url: '/get_test_result',
-        data: {'setting': setting,'serverName': serverName, 'signUser': signUser, 'apiKey': apiKey, 'cnt': cnt},
+        data: {'setting': setting,'serverName': serverName, 'signUser': signUser, 'apiKey': apiKey, 'cnt': cnt, 'params': params},
         timeout: 120000 * cnt,
         success: function (data) {
-            alert(data)
+            console.log(data);
+            data.replace('\r', '</div><div>');
+            var t = $('<a data-toggle="modal" data-target="#modalLong'+apiN+'" class="resultA'+apiN+'" style="position: absolute; bottom: 0;" href="javascript:void(0);">详细</a>'+
+                '<!-- Modal -->\n' +
+                '<div class="modal fade" id="modalLong'+apiN+'" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">\n' +
+                '  <div class="modal-dialog modal-lg" role="document">\n' +
+                '    <div class="modal-content">\n' +
+                '      <div class="modal-header">\n' +
+                '        <h5 class="modal-title" id="exampleModalLongTitle">详细信息</h5>\n' +
+                '        <button type="button" class="close" data-dismiss="modal" aria-label="Close">\n' +
+                '          <span aria-hidden="true">&times;</span>\n' +
+                '        </button>\n' +
+                '      </div>\n' +
+                '      <div class="modal-body">\n' +
+                 data+
+                '      </div>\n' +
+                '    </div>\n' +
+                '  </div>\n' +
+                '</div>');
+            $('.result'+apiN).append(t);
         },
         error: function () {
 
@@ -214,15 +271,15 @@ function get_test_result(setting, serverName, signUser, apiKey, cnt) {
 }
 
 function get_setting(setting_name) {
+    $('body').find('.error-info').length === 0 ? '' : $('.error-info').remove();
+    $('.addApiView').find('.apiRow').length === 0 ? '' : $('.apiRow').remove();
+    $('.addApiButtonView').find('.addApiButton').length === 0 ? '' : $('.addApiButton').remove();
     $.ajax({
         type: 'get',
         url: '/get_settings',
         data: {'setting_name': setting_name},
         timeout: 20000,
         success: function (data) {
-            $('body').find('.error-info').length === 0 ? '' : $('.error-info').remove();
-            $('.addApiView').find('.apiRow').length === 0 ? '' : $('.apiRow').remove();
-            $('.addApiButtonView').find('.addApiButton').length === 0 ? '' : $('.addApiButton').remove();
             apis = data['apis'];
             settings = data['settings'];
             apiAndParam = [];
@@ -230,9 +287,6 @@ function get_setting(setting_name) {
             showAddApiButton();
         },
         error: function () {
-            $('body').find('.error-info').length === 0 ? '' : $('.error-info').remove();
-            $('.addApiView').find('.apiRow').length === 0 ? '' : $('.apiRow').remove();
-            $('.addApiButtonView').find('.addApiButton').length === 0 ? '' : $('.addApiButton').remove();
             apiAndParam = [];
             apiNo = 0
         },
@@ -243,13 +297,13 @@ function get_setting(setting_name) {
 }
 
 function get_setting_name_list() {
+    $('.select-setting').find('.setting-option').length === 0 ? '' : $('.error-info').remove();
     $.ajax({
         type: 'get',
         url: '/get_setting_name_list',
         data: {},
         timeout: 20000,
         success: function (data) {
-            $('.select-setting').find('.setting-option').length === 0 ? '' : $('.error-info').remove();
             var t = '';
             for (let i = 0; i < data.length; i++) {
                 t = t + '<option class="setting-option">'+data[i]+'</option>'
@@ -257,7 +311,7 @@ function get_setting_name_list() {
             $('.select-setting').append($(t))
         },
         error: function () {
-            $('.select-setting').find('.setting-option').length === 0 ? '' : $('.error-info').remove();
+
         },
         complete: function () {
 
