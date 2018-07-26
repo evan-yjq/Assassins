@@ -19,11 +19,10 @@ $('body').on('click', '.addApiButton', function () {
 });
 
 $('body').on('click', '.go', function () {
+    const setting = document.getElementById("InputSettings").value;
     for (let i = 0; i < apiAndParam.length; i++) {
         if (apiAndParam[i] === undefined) continue;
-        const setting = document.getElementById("InputSettings").value;
         const serverName = $('.row' + i).find('.serverName').val();
-        // const signUser = $('.row' + i).find('.signUser').val();
         const apiName = $('.row' + i).find('.select-api').val();
         const cnt = $('.row' + i).find('.cnt').val();
         const len_ = Object.keys(apis).length;
@@ -53,7 +52,55 @@ $('body').on('click', '.go', function () {
         }
         get_test_result(setting, serverName, apiKey, cnt, params, i)
     }
+});
 
+$('body').on('click', '.save-settings', function () {
+    let setting = '{';
+    setting = setting + '\"setting\":\"' + document.getElementById("InputSettings").value + '\",';
+    setting = setting + '\"api\":{';
+    let k = 0;
+    for (let i = 0; i < apiAndParam.length; i++) {
+        if (apiAndParam[i] === undefined) continue;
+        setting = setting + '\"'+i+'\":{';
+        const apiName = $('.row' + i).find('.select-api').val();
+        const len_ = Object.keys(apis).length;
+        let apiKey = "";
+        for (let j = 0; j < len_; j++) {
+            if (Object.values(apis)[j]['name'] === apiName) {
+                apiKey = Object.keys(apis)[j];
+                break
+            }
+        }
+        setting = setting + '\"serverName\":"' + $('.row' + i).find('.serverName').val() + '",';
+        setting = setting + '\"cnt\":"' + $('.row' + i).find('.cnt').val() + '",';
+        setting = setting + '\"apiKey\":"' + apiKey + '",';
+        setting = setting + '\"params\":';
+        let params = '{';
+        for (let j = 0; j < apiAndParam[i].length; j++) {
+            const paramN = apiAndParam[i][j];
+            const key = $('.select-param' + paramN).val();
+            const value = $('.param-value' + paramN).val();
+            params = params + '\"' + key + '\":\"' + value + '\",';
+            if (j === apiAndParam[i].length - 1) {
+                params = params.substring(0, params.lastIndexOf(','));
+            }
+        }
+        params = params + '}';
+        setting = setting + params;
+        setting = setting + '},';
+        k = k + 1;
+    }
+    if (k > 0) {
+        setting = setting.substring(0, setting.lastIndexOf(','));
+    }
+    setting = setting + '}';
+    setting = setting + '}';
+    try {
+        JSON.parse(setting);
+    }catch (e) {
+        alert("参数错误")
+    }
+    save_setting(setting)
 });
 
 function removeApi(apiN) {
@@ -237,7 +284,7 @@ function addApi2View() {
 }
 
 function showAddApiButton() {
-    if (apis !== undefined) {
+    if (apis !== undefined && settings !== undefined) {
         const s = $('<button class="btn btn-success d-block w-100 addApiButton">\n' +
             '添加Api</button>\n');
         $('.addApiButtonView').append(s)
@@ -317,6 +364,7 @@ function get_setting(setting_name) {
     $('body').find('.error-info').length === 0 ? '' : $('.error-info').remove();
     $('.addApiView').find('.apiRow').length === 0 ? '' : $('.apiRow').remove();
     $('.addApiButtonView').find('.addApiButton').length === 0 ? '' : $('.addApiButton').remove();
+    $('.addApiButtonView').find('.importApiButton').length === 0 ? '' : $('.importApiButton').remove();
     $.ajax({
         type: 'get',
         url: '/get_settings',
@@ -328,6 +376,11 @@ function get_setting(setting_name) {
             apiAndParam = [];
             apiNo = 0;
             showAddApiButton();
+            if (data['api'] !== undefined && data['setting'] !== undefined) {
+                const s = $('<button class="btn btn-success d-block w-100 importApiButton">\n' +
+                    '导入配置</button>\n');
+                $('.addApiButtonView').append(s)
+            }
         },
         error: function () {
             apiAndParam = [];
@@ -355,6 +408,51 @@ function get_setting_name_list() {
         },
         error: function () {
 
+        },
+        complete: function () {
+
+        }
+    });
+}
+
+function save_setting(setting) {
+    $('.saveResult').remove();
+    const settingName = document.getElementById("InputSettings").value + "-1";
+    const loading = $(
+        '<div class="col-md-auto loading">' +
+        '<div class="loader-inner">\n' +
+        '<div class="loader-line-wrap">\n' +
+        '<div class="loader-line"></div>\n' +
+        '</div>\n' +
+        '<div class="loader-line-wrap">\n' +
+        '<div class="loader-line"></div>\n' +
+        '</div>\n' +
+        '<div class="loader-line-wrap">\n' +
+        '<div class="loader-line"></div>\n' +
+        '</div>\n' +
+        '<div class="loader-line-wrap">\n' +
+        '<div class="loader-line"></div>\n' +
+        '</div>\n' +
+        '<div class="loader-line-wrap">\n' +
+        '<div class="loader-line"></div>\n' +
+        '</div>\n' +
+        '</div>' +
+        '</div>'
+    );
+    $('.button-view').append(loading);
+    $.ajax({
+        type: 'post',
+        url: '/settings/save',
+        data: {'settingName': settingName, 'settings': setting},
+        timeout: 20000,
+        success: function (data) {
+            $('.loading').remove();
+            $('#textarea').remove();
+            $('.button-view').append($('<p class="saveResult">保存成功</p>'))
+        },
+        error: function () {
+            $('.loading').remove()
+            $('.button-view').append($('<p class="saveResult">保存成功</p>'))
         },
         complete: function () {
 
