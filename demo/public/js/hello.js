@@ -1,5 +1,7 @@
 let apis;
 let settings;
+let api;
+let setting;
 let apiNo = 0;
 let paramNo = 0;
 let apiAndParam = {};
@@ -16,6 +18,10 @@ $('body').on('change', '.select-setting', function () {
 
 $('body').on('click', '.addApiButton', function () {
     addApi2View()
+});
+
+$('body').on('click', '.importApiButton', function () {
+    import_setting()
 });
 
 $('body').on('click', '.go', function () {
@@ -198,17 +204,10 @@ function addApi2View() {
 
     let apiSelect = '';
     let serverSelect = '';
-    let signSelect = '';
     for (let i = 0; i < len_api; i++) {
         apiSelect = apiSelect + '<option>' + Object.values(apis)[i]['name'] + '</option>\n';
     }
     for (let i = 0; i < len_setting; i++) {
-        // if (Object.keys(settings)[i] === 'sysSetting') {
-        //     const sys = Object.values(settings)[i];
-        //     for (let j = 0; j < Object.keys(sys).length; j++) {
-        //         signSelect = signSelect + '<option>' + Object.keys(sys)[j] + '</option>\n';
-        //     }
-        // } else
         if (Object.keys(Object.values(settings)[i])[0] === 'ip' && Object.keys(Object.values(settings)[i])[1] === 'port') {
             serverSelect = serverSelect + '<option>' + Object.keys(settings)[i] + '</option>\n';
         }
@@ -225,16 +224,6 @@ function addApi2View() {
         serverSelect +
         '                        </select>\n' +
         '                    </div>\n' +
-        // '                    <!--Sign用户名-->\n' +
-        // '                    <div class="col-md-auto">\n' +
-        // '                        <label>\n' +
-        // '                            Sign用户\n' +
-        // '                        </label>\n' +
-        // '                        <select class="custom-select d-block w-100 signUser" required="">\n' +
-        // '                            <option value="">选择...</option>\n' +
-        // signSelect +
-        // '                        </select>\n' +
-        // '                    </div>\n' +
         '                    <!--选择api-->\n' +
         '                    <div class="col-md-auto">\n' +
         '                        <label for="InputApis">\n' +
@@ -287,6 +276,10 @@ function showAddApiButton() {
     if (apis !== undefined && settings !== undefined) {
         const s = $('<button class="btn btn-success d-block w-100 addApiButton">\n' +
             '添加Api</button>\n');
+        $('.addApiButtonView').append(s)
+    }else if (api !== undefined && setting !== undefined) {
+        const s = $('<button class="btn btn-success d-block w-100 importApiButton">\n' +
+            '导入配置</button>\n');
         $('.addApiButtonView').append(s)
     }
 }
@@ -361,6 +354,7 @@ function get_test_result(setting, serverName, apiKey, cnt, params, apiN) {
 }
 
 function get_setting(setting_name) {
+    $('.saveResult').remove();
     $('body').find('.error-info').length === 0 ? '' : $('.error-info').remove();
     $('.addApiView').find('.apiRow').length === 0 ? '' : $('.apiRow').remove();
     $('.addApiButtonView').find('.addApiButton').length === 0 ? '' : $('.addApiButton').remove();
@@ -373,14 +367,11 @@ function get_setting(setting_name) {
         success: function (data) {
             apis = data['apis'];
             settings = data['settings'];
+            api = data['api'];
+            setting = data['setting']
             apiAndParam = [];
             apiNo = 0;
             showAddApiButton();
-            if (data['api'] !== undefined && data['setting'] !== undefined) {
-                const s = $('<button class="btn btn-success d-block w-100 importApiButton">\n' +
-                    '导入配置</button>\n');
-                $('.addApiButtonView').append(s)
-            }
         },
         error: function () {
             apiAndParam = [];
@@ -392,8 +383,11 @@ function get_setting(setting_name) {
     });
 }
 
-function get_setting_name_list() {
-    $('.select-setting').find('.setting-option').length === 0 ? '' : $('.error-info').remove();
+function get_setting_name_list(select) {
+    if ($('.select-setting').find('.setting-option').length !== 0) {
+        $('.error-info').remove();
+        $('.setting-option').remove();
+    }
     $.ajax({
         type: 'get',
         url: '/get_setting_name_list',
@@ -402,7 +396,11 @@ function get_setting_name_list() {
         success: function (data) {
             let t = '';
             for (let i = 0; i < data.length; i++) {
-                t = t + '<option class="setting-option">' + data[i] + '</option>'
+                if (data[i] === select){
+                    t = t + '<option class="setting-option" selected = "selected">' + data[i] + '</option>'
+                } else {
+                    t = t + '<option class="setting-option">' + data[i] + '</option>'
+                }
             }
             $('.select-setting').append($(t))
         },
@@ -413,6 +411,16 @@ function get_setting_name_list() {
 
         }
     });
+}
+
+function import_setting() {
+    var len_setting = $('.setting-option').length;
+    for (let i = 0; i <= len_setting; i++) {
+        if (document.getElementById("InputSettings")[i].value === setting)
+            document.getElementById("InputSettings")[i].selected=true;
+    }
+    console.log(setting);
+    console.log(api);
 }
 
 function save_setting(setting) {
@@ -448,10 +456,12 @@ function save_setting(setting) {
         success: function (data) {
             $('.loading').remove();
             $('#textarea').remove();
-            $('.button-view').append($('<p class="saveResult">保存成功</p>'))
+            $('.button-view').append($('<p class="saveResult">保存成功</p>'));
+            var tmp = document.getElementById("InputSettings").value;
+            get_setting_name_list(tmp);
         },
         error: function () {
-            $('.loading').remove()
+            $('.loading').remove();
             $('.button-view').append($('<p class="saveResult">保存成功</p>'))
         },
         complete: function () {
