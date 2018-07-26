@@ -8,7 +8,7 @@
 
     <script src="/js/jquery-1.11.1.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
-    <title>测试扩展</title>
+    <title>测试扩展-配置</title>
 </head>
 <body>
 <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
@@ -20,19 +20,20 @@
         </li>
     </ul>
 </nav>
+
 <div class="container-fluid">
     <div class="row">
         <nav class="col-md-1 d-none d-md-block bg-light sidebar">
             <div class="sidebar-sticky">
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#">
+                        <a class="nav-link" href="/">
                             <span data-feather="home"></span>
                             测试设置
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/jump_settings">
+                        <a class="nav-link active" href="#">
                             <span data-feather="file"></span>
                             配置信息
                         </a>
@@ -67,24 +68,19 @@
                 </div>
                 <div class="col-md-auto">
                     <label style="visibility: hidden">'</label>
-                    <div class="addApiButtonView"></div>
+                    <div class="row button-view"></div>
                 </div>
             </div>
             <br>
-            <div class="form-group addApiView">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="dataT"></div>
+                </div>
             </div>
-
-            <button class="btn btn-primary go">
-                提交测试
-            </button>
-            <button class="btn btn-primary save-settings">
-                保存配置
-            </button>
-            <div id="result"></div>
         </main>
     </div>
 </div>
 <script src="/js/utils.js"></script>
-<script src="/js/hello.js"></script>
+<script src="/js/settings.js"></script>
 </body>
 </html>

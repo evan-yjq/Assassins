@@ -1,24 +1,13 @@
 # encoding:utf-8
 # 读取设置，自动生成数据
 # create by ye jiaquan in 2018/07/23
-import hashlib
-import time
+
 import yaml
 
+settings = {}
 
-class Settings:
-    def __init__(self, name):
-        with open(name, "r") as yaml_file:
-            self.settings = yaml.load(yaml_file.read())
 
-    # done(开发完成)
-    # 自动生成sys
-    # create by ye jiaquan in 2018/07/19
-    def autoSys(self, signUser):
-        millis = int(round(time.time() * 1000))
-        settings = self.settings['settings']
-        sys = self.settings['sys']
-        strs = "%s&%s&%s&%s&%s&%s" % (millis, settings['sysSetting'][signUser], sys[signUser]['city'],
-                                      sys[signUser]['county'], sys[signUser]['industry'], signUser)
-        sys[signUser]['timestamp'] = str(millis)
-        sys[signUser]['sign'] = hashlib.md5(strs.encode('utf-8').lower()).hexdigest()
+def setSetting(name):
+    global settings
+    with open(name, "r") as yaml_file:
+        settings = yaml.load(yaml_file.read())

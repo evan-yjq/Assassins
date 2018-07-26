@@ -23,7 +23,7 @@ $('body').on('click', '.go', function () {
         if (apiAndParam[i] === undefined) continue;
         const setting = document.getElementById("InputSettings").value;
         const serverName = $('.row' + i).find('.serverName').val();
-        const signUser = $('.row' + i).find('.signUser').val();
+        // const signUser = $('.row' + i).find('.signUser').val();
         const apiName = $('.row' + i).find('.select-api').val();
         const cnt = $('.row' + i).find('.cnt').val();
         const len_ = Object.keys(apis).length;
@@ -39,16 +39,19 @@ $('body').on('click', '.go', function () {
             const paramN = apiAndParam[i][j];
             const key = $('.select-param' + paramN).val();
             const value = $('.param-value' + paramN).val();
-            params = params + '\\"' + key + '\\":\\"' + value + '\\",';
+            params = params + '\"' + key + '\":\"' + value + '\",';
+            if (j === apiAndParam[i].length - 1) {
+                params = params.substring(0, params.lastIndexOf(','));
+            }
         }
-        params = params.substr(0, params.length - 1);
         params = params + '}';
+
         // console.log('setting:', setting, 'serverName:', serverName, 'signUser:', signUser, 'apiKey:', apiKey, 'cnt:', cnt)
-        if (setting === "" || serverName === "" || signUser === "" || apiKey === "" || cnt === "") {
+        if (setting === "" || serverName === "" || apiKey === "" || cnt === "") {
             alert("请将表单填写完整，并删除无效参数");
             return
         }
-        get_test_result(setting, serverName, signUser, apiKey, cnt, params, i)
+        get_test_result(setting, serverName, apiKey, cnt, params, i)
     }
 
 });
@@ -153,12 +156,13 @@ function addApi2View() {
         apiSelect = apiSelect + '<option>' + Object.values(apis)[i]['name'] + '</option>\n';
     }
     for (let i = 0; i < len_setting; i++) {
-        if (Object.keys(settings)[i] === 'sysSetting') {
-            const sys = Object.values(settings)[i];
-            for (let j = 0; j < Object.keys(sys).length; j++) {
-                signSelect = signSelect + '<option>' + Object.keys(sys)[j] + '</option>\n';
-            }
-        } else if (Object.keys(Object.values(settings)[i])[0] === 'ip' && Object.keys(Object.values(settings)[i])[1] === 'port') {
+        // if (Object.keys(settings)[i] === 'sysSetting') {
+        //     const sys = Object.values(settings)[i];
+        //     for (let j = 0; j < Object.keys(sys).length; j++) {
+        //         signSelect = signSelect + '<option>' + Object.keys(sys)[j] + '</option>\n';
+        //     }
+        // } else
+        if (Object.keys(Object.values(settings)[i])[0] === 'ip' && Object.keys(Object.values(settings)[i])[1] === 'port') {
             serverSelect = serverSelect + '<option>' + Object.keys(settings)[i] + '</option>\n';
         }
     }
@@ -167,23 +171,23 @@ function addApi2View() {
         '                    <!--服务器配置名-->\n' +
         '                    <div class="col-md-auto">\n' +
         '                        <label>\n' +
-        '                            服务器名\n' +
+        '                            服务器地址\n' +
         '                        </label>\n' +
         '                        <select class="custom-select d-block w-100 serverName" required="">\n' +
         '                            <option value="">选择...</option>\n' +
         serverSelect +
         '                        </select>\n' +
         '                    </div>\n' +
-        '                    <!--Sign用户名-->\n' +
-        '                    <div class="col-md-auto">\n' +
-        '                        <label>\n' +
-        '                            Sign用户\n' +
-        '                        </label>\n' +
-        '                        <select class="custom-select d-block w-100 signUser" required="">\n' +
-        '                            <option value="">选择...</option>\n' +
-        signSelect +
-        '                        </select>\n' +
-        '                    </div>\n' +
+        // '                    <!--Sign用户名-->\n' +
+        // '                    <div class="col-md-auto">\n' +
+        // '                        <label>\n' +
+        // '                            Sign用户\n' +
+        // '                        </label>\n' +
+        // '                        <select class="custom-select d-block w-100 signUser" required="">\n' +
+        // '                            <option value="">选择...</option>\n' +
+        // signSelect +
+        // '                        </select>\n' +
+        // '                    </div>\n' +
         '                    <!--选择api-->\n' +
         '                    <div class="col-md-auto">\n' +
         '                        <label for="InputApis">\n' +
@@ -240,7 +244,7 @@ function showAddApiButton() {
     }
 }
 
-function get_test_result(setting, serverName, signUser, apiKey, cnt, params, apiN) {
+function get_test_result(setting, serverName, apiKey, cnt, params, apiN) {
     if ($('.result' + apiN).find('.resultA' + apiN).length !== 0) {
         $('.resultA' + apiN).remove();
         $('#modalLong' + apiN).remove();
@@ -271,7 +275,6 @@ function get_test_result(setting, serverName, signUser, apiKey, cnt, params, api
         data: {
             'setting': setting,
             'serverName': serverName,
-            'signUser': signUser,
             'apiKey': apiKey,
             'cnt': cnt,
             'params': params
@@ -290,7 +293,10 @@ function get_test_result(setting, serverName, signUser, apiKey, cnt, params, api
                 '          <span aria-hidden="true">&times;</span>\n' +
                 '        </button>\n' +
                 '      </div>\n' +
-                '      <div class="modal-body">\n' +
+                '      <div class="modal-body">' +
+                // '<textarea class="w-100" wrap="hard">' +
+                // formatJson(data) +
+                // '</textarea>' +
                 data +
                 '      </div>\n' +
                 '    </div>\n' +

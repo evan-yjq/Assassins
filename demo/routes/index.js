@@ -5,11 +5,17 @@ const fs = require("fs");
 const join = require('path').join;
 const pa = require('path');
 const cp=require('child_process');
+var markdown = require( "markdown" ).markdown;
 
 
-router.get('/', function (req, res, next) {
-
+router.get('/', function (req, res) {
     res.render('hello');
+});
+
+router.get('/get_todo_list', function (req, res) {
+    const mark = fs.readFileSync("TodoList.md").toString();
+    res.send(markdown.toHTML(mark));
+    res.end();
 });
 
 router.get('/get_settings', function (req, res) {
@@ -29,7 +35,7 @@ router.get('/get_setting_name_list', function (req, res) {
 });
 
 router.get('/get_test_result', function (req, res) {
-    var option = req.query.setting+' '+req.query.serverName+' '+req.query.signUser+' '+req.query.apiKey+' '+req.query.cnt+' \''+req.query.params+'\' ';
+    var option = req.query.setting+' '+req.query.serverName+' '+req.query.apiKey+' '+req.query.cnt+' \''+req.query.params+'\' ';
     cp.exec('python2.7 TestExtension.py '+option, function(err, stdout, stderr){
         if (err) console.log('stderr', err);
         if (stdout) {
@@ -37,6 +43,14 @@ router.get('/get_test_result', function (req, res) {
             res.end()
         }
     });
+});
+
+router.get('/jump_settings', function (req, res) {
+    res.render('settings');
+});
+
+router.get('/jump_todo', function (req, res) {
+    res.render('todo')
 });
 
 function findSync(startPath) {

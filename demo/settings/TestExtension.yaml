@@ -1,0 +1,6 @@
+settings:
+    headers: {Content-Type: 'application/x-www-form-urlencoded; charset=UTF-8'}
+    dev: {ip: localhost, port: '3000'}
+apis:
+    GetSetNameList: {name: 获取设置名list, type: get, url: /get_setting_name_list, body: {param: ""}}
+    GetTestResult: {name: 获取测试结果, type: get, url: /get_test_result, body: {setting: "", serverName: "", apiKey: "", cnt: "", sys: "", param: ""}}
