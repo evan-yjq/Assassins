@@ -70,6 +70,7 @@
   - group_user(id, user_id, group_id); -- 分组-用户关联，可通过user_id找到其归属的group_id，也可通过group_id获取分组内的成员user_id
   - setting(setting_id, setting_file); -- 配置信息，存储配置信息的文件路径
   - group_setting(id, group_id, setting_id); -- 分组-配置关联，一般通过group_id获取setting_id
+- 配置可勾选，只测试勾选的配置
 - 后台返回数据的处理，更好的显示方式
 - 后台返回数据过长的处理，一个好的解决方案（过长的返回结果拒绝打印？
 - 手机端界面的适配

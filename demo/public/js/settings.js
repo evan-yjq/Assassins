@@ -99,7 +99,8 @@ function save_setting() {
             $('#textarea').remove();
         },
         error: function () {
-            $('.loading').remove()
+            $('.loading').remove();
+            show_save_btn()
         },
         complete: function () {
 

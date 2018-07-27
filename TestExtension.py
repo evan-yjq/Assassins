@@ -8,6 +8,10 @@ import TestUtils as utils
 from TestUtils import TestInfo as info
 import Settings as st
 
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
+
 # 主方法
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

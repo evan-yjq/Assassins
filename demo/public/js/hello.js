@@ -5,16 +5,17 @@ let setting;
 let apiNo = 0;
 let paramNo = 0;
 let apiAndParam = {};
+let main;
 
 $(function () {
     get_setting_name_list();
 });
 
-$('body').on('change', '.select-setting', function () {
+function changeSelectSetting(callback) {
     const s = document.getElementById("InputSettings").value;
     const setting_name = s.length >= 1 ? s : "";
-    get_setting(setting_name);
-});
+    get_setting(setting_name, callback);
+}
 
 $('body').on('click', '.addApiButton', function () {
     addApi2View()
@@ -147,7 +148,7 @@ function addParam2View(apiN) {
     let paramSelect = '';
     const params = Object.values(apis)[i]['body'];
     for (let i = 0; i < Object.keys(params).length; i++) {
-        paramSelect = paramSelect + '<option>' + Object.keys(params)[i] + '</option>\n';
+        paramSelect = paramSelect + '<option class="param-option">' + Object.keys(params)[i] + '</option>\n';
     }
     const t = $(
         '                        <div class="row paramRow paramO' + paramNo + '">\n' +
@@ -185,7 +186,8 @@ function addParam2View(apiN) {
     );
     apiAndParam[apiN].push(paramNo);
     paramNo = paramNo + 1;
-    $('.param' + apiN).append(t)
+    $('.param' + apiN).append(t);
+    return paramNo-1;
 }
 
 function addApi2View() {
@@ -195,21 +197,22 @@ function addApi2View() {
         len_api = Object.keys(apis).length;
         len_setting = Object.keys(settings).length;
     } catch (e) {
-        if ($('.error-info').length === 0) {
-            const t = $('<p class="error-info" style="color: red"> 请选择正确的配置文件</p>');
-            $('.SettingLabel').append(t)
+        if ($('.error-info').length !== 0) {
+            $('.error-info').remove();
         }
+        const t = $('<p class="error-info" style="color: red"> 请选择正确的配置文件</p>');
+        $('.SettingLabel').append(t)
         return
     }
 
     let apiSelect = '';
     let serverSelect = '';
     for (let i = 0; i < len_api; i++) {
-        apiSelect = apiSelect + '<option>' + Object.values(apis)[i]['name'] + '</option>\n';
+        apiSelect = apiSelect + '<option class="api-option">' + Object.values(apis)[i]['name'] + '</option>\n';
     }
     for (let i = 0; i < len_setting; i++) {
         if (Object.keys(Object.values(settings)[i])[0] === 'ip' && Object.keys(Object.values(settings)[i])[1] === 'port') {
-            serverSelect = serverSelect + '<option>' + Object.keys(settings)[i] + '</option>\n';
+            serverSelect = serverSelect + '<option class="server-option">' + Object.keys(settings)[i] + '</option>\n';
         }
     }
     const tmp = $(
@@ -270,14 +273,15 @@ function addApi2View() {
     $('.addApiView').append(tmp);
     apiAndParam[apiNo] = [];
     apiNo = apiNo + 1;
+    return apiNo-1;
 }
 
 function showAddApiButton() {
-    if (apis !== undefined && settings !== undefined) {
+    if (main === 1) {
         const s = $('<button class="btn btn-success d-block w-100 addApiButton">\n' +
             '添加Api</button>\n');
         $('.addApiButtonView').append(s)
-    }else if (api !== undefined && setting !== undefined) {
+    }else if (main === 2){
         const s = $('<button class="btn btn-success d-block w-100 importApiButton">\n' +
             '导入配置</button>\n');
         $('.addApiButtonView').append(s)
@@ -353,7 +357,7 @@ function get_test_result(setting, serverName, apiKey, cnt, params, apiN) {
     });
 }
 
-function get_setting(setting_name) {
+function get_setting(setting_name, callback) {
     $('.saveResult').remove();
     $('body').find('.error-info').length === 0 ? '' : $('.error-info').remove();
     $('.addApiView').find('.apiRow').length === 0 ? '' : $('.apiRow').remove();
@@ -365,13 +369,19 @@ function get_setting(setting_name) {
         data: {'setting_name': setting_name},
         timeout: 20000,
         success: function (data) {
-            apis = data['apis'];
-            settings = data['settings'];
-            api = data['api'];
-            setting = data['setting']
+            if (data['apis'] !== undefined) main = 1;
+            else if (data['api'] !== undefined) main = 2;
+            else main = 3;
+
+            apis = data['apis'] === undefined ? apis : data['apis'];
+            settings = data['settings'] === undefined ? settings : data['settings'];
+            api = data['api'] === undefined ? api : data['api'];
+            setting = data['setting'] === undefined ? setting : data['setting'];
             apiAndParam = [];
             apiNo = 0;
             showAddApiButton();
+            if (callback !== undefined)
+                callback();
         },
         error: function () {
             apiAndParam = [];
@@ -414,13 +424,72 @@ function get_setting_name_list(select) {
 }
 
 function import_setting() {
-    var len_setting = $('.setting-option').length;
+    const len_setting = $('.setting-option').length;
+    var setting_select = document.getElementById("InputSettings");
+    var setting_f = false;
     for (let i = 0; i <= len_setting; i++) {
-        if (document.getElementById("InputSettings")[i].value === setting)
-            document.getElementById("InputSettings")[i].selected=true;
+        if (setting_select[i].value === setting) {
+            setting_select[i].selected = true;
+            setting_f = true;
+            break
+        }
     }
-    console.log(setting);
-    console.log(api);
+    if (!setting_f){
+        if ($('.error-info').length !== 0) {
+            $('.error-info').remove();
+        }
+        const t = $('<p class="error-info" style="color: red">没有该配置的主配置文件</p>');
+        $('.SettingLabel').append(t);
+    } else {
+        changeSelectSetting(function () {
+            const len_api = Object.keys(api).length;
+            for (let i = 0; i < len_api; i++) {
+                const a = Object.values(api)[i];
+                const apiN = addApi2View();
+                const serverNames = $('.row' + i).find('.serverName').find('.server-option');
+                const select_apis = $('.row'+i).find('.select-api').find('.api-option');
+                const cnt = $('.row'+i).find('.cnt');
+                for (let j = 0; j < serverNames.length; j++) {
+                    if (serverNames[j].value === a['serverName']) {
+                        serverNames[j].selected = true;
+                        break
+                    }
+                }
+                for (let j = 0; j < select_apis.length; j++) {
+                    if (getApiKeyByApiName(select_apis[j].value) === a['apiKey']) {
+                        select_apis[j].selected = true;
+                        break
+                    }
+                }
+                for (let j = 0; j < Object.keys(a["params"]).length; j++) {
+                    const paramN = addParam2View(apiN);
+                    var keys = $('.select-param'+ paramN).find('.param-option');
+                    var value = $('.param-value'+ paramN);
+                    var param = Object.keys(a["params"])[j];
+                    for (let k = 0; k < keys.length; k++) {
+                        if (keys[k].value === param) {
+                            keys[k].selected = true;
+                            break
+                        }
+                    }
+                    value.val(Object.values(a["params"])[j])
+                }
+                cnt.val(a['cnt'])
+            }
+        });
+    }
+}
+
+function getApiKeyByApiName(apiName) {
+    const len_ = Object.keys(apis).length;
+    let apiKey = "";
+    for (let j = 0; j < len_; j++) {
+        if (Object.values(apis)[j]['name'] === apiName) {
+            apiKey = Object.keys(apis)[j];
+            break
+        }
+    }
+    return apiKey
 }
 
 function save_setting(setting) {

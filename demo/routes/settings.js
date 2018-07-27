@@ -18,6 +18,7 @@ function write(path, file, txt, res){
                 if (err){
                     return false;
                 } else{
+                    res.send("文件内容替换成功");
                     res.end();
                 }
             });
@@ -30,6 +31,7 @@ function write(path, file, txt, res){
                         if (err){
                             return false;
                         } else{
+                            res.send("文件内容写入成功");
                             res.end();
                         }
                     });
