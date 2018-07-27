@@ -338,15 +338,18 @@ function get_test_result(setting, serverName, apiKey, cnt, params, apiN) {
                 '        </button>\n' +
                 '      </div>\n' +
                 '      <div class="modal-body">' +
-                // '<textarea class="w-100" wrap="hard">' +
-                // formatJson(data) +
-                // '</textarea>' +
-                data +
+                '<textarea id="textarea" class="w-100" wrap="off">' +
+                        _tmp(data) +
+                '</textarea>' +
                 '      </div>\n' +
                 '    </div>\n' +
                 '  </div>\n' +
                 '</div>');
             $('.result' + apiN).append(t);
+            $('#modalLong'+apiN).on('shown.bs.modal', function () {
+                const text = document.getElementById("textarea");
+                autoTextarea(text);// 调用
+            });
         },
         error: function () {
             $('.result' + apiN).find('.loading' + apiN).length === 0 ? '' : $('.loading' + apiN).remove();
@@ -355,6 +358,14 @@ function get_test_result(setting, serverName, apiKey, cnt, params, apiN) {
 
         }
     });
+}
+
+function _tmp(data) {
+    try {
+        return formatJson(JSON.parse(data))
+    }catch (e) {
+        return data
+    }
 }
 
 function get_setting(setting_name, callback) {

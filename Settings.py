@@ -3,11 +3,15 @@
 # create by ye jiaquan in 2018/07/23
 
 import yaml
+import sys
+
+reload(sys)
+sys.setdefaultencoding("utf8")
 
 settings = {}
 
 
 def setSetting(name):
     global settings
-    with open(name, "r") as yaml_file:
+    with open(str(name).decode('utf8'), "r") as yaml_file:
         settings = yaml.load(yaml_file.read())

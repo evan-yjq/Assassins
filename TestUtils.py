@@ -7,6 +7,10 @@ import random
 import time
 import hashlib
 import Settings as st
+import sys
+
+reload(sys)
+sys.setdefaultencoding("utf8")
 
 
 # done(开发完成)
@@ -99,17 +103,20 @@ class TestInfo:
 # 2018/07/19 by ye jiaquan     删除传入sign参数，将自动生成sys放进此方法
 def selectApi(setting, api, edit):
     set = st.settings
-    apis = set['apis']
-    settings = set['settings']
-    url = "http://%s:%s%s" % (settings[setting]['ip'], settings[setting]['port'], apis[api]['url'])
+    api = set['apis'][str(api).decode('utf-8')]
+    setting = set['settings'][str(setting).decode('utf8')]
+    url = "http://%s:%s%s" % (setting['ip'], setting['port'], api['url'])
     for i in edit:
-        apis[api]['body'][i] = edit[i]
-    print '"请求方式":"%s","测试URI":"%s",' % (apis[api]['type'], url)
+        api['body'][i] = edit[i]
+    print '"请求方式":"%s","测试URI":"%s",' % (api['type'], url)
     print '"请求参数":{'
-    for i in apis[api]['body']:
-        print '"%s":"%s",' % (i, apis[api]['body'][i])
+    outputs = []
+    for i in api['body']:
+        outputs.append('"%s":"%s"' % (i, str(api['body'][i]).encode('utf8')))
+    print ','.join(outputs)
     print '},'
-    if apis[api]['type'] == 'post':
-        return post(url, apis[api]['body'], settings['headers'])
+
+    if api['type'] == 'post':
+        return post(url, api['body'], set['settings']['headers'])
     else:
-        return get(url + apis[api]['body']['param'], apis[api]['body'], settings['headers'])
+        return get(url + api['body']['param'], api['body'], set['settings']['headers'])

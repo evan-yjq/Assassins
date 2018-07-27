@@ -1,9 +1,9 @@
 settings:
     headers: {Content-Type: 'application/x-www-form-urlencoded; charset=UTF-8'}
-    dev: {ip: localhost, port: '3000'}
+    本地: {ip: localhost, port: '3000'}
 apis:
     GetSetNameList: {name: 获取设置名list, type: get, url: /get_setting_name_list, body: {param: ""}}
     GetSetting: {name: 获取配置信息, type: get, url: /get_settings, body: {param: "", setting_name: ""}}
     GetTodoList: {name: 获取执行列表, type: get, url: /get_todo_list, body: {param: ""}}
-    SaveSetting: {name: 保存设置, type: post, url: /setting/save, body: {settings: "", settingName: ""}}
+    测试: {name: 保存设置, type: post, url: /settings/save, body: {settings: '{}', settingName: ""}}
     GetTestResult: {name: 获取测试结果, type: get, url: /get_test_result, body: {setting: "", serverName: "", apiKey: "", cnt: "", sys: "", param: "", params: ""}}

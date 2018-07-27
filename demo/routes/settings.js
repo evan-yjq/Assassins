@@ -12,17 +12,17 @@ router.post('/save', function (req, res) {
 
 function write(path, file, txt, res){
     fs.exists(path, function (exists) {  //path为文件夹路径
-        var retTxt = exists ? '文件存在' : '文件不存在';
-        if(retTxt === '文件存在'){
+        var retTxt = exists ? '1' : '0';
+        if(retTxt === '1'){
             fs.writeFile(file, txt, function (err) {
                 if (err){
                     return false;
                 } else{
-                    res.send("文件内容替换成功");
+                    res.send("写入成功");
                     res.end();
                 }
             });
-        }else if(retTxt === '文件不存在'){
+        }else if(retTxt === '0'){
             fs.mkdir(path, function (err) {
                 if(err){
                     return false;
@@ -31,7 +31,7 @@ function write(path, file, txt, res){
                         if (err){
                             return false;
                         } else{
-                            res.send("文件内容写入成功");
+                            res.send("写入成功");
                             res.end();
                         }
                     });

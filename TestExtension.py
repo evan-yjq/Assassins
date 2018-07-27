@@ -9,8 +9,9 @@ from TestUtils import TestInfo as info
 import Settings as st
 
 import sys
+
 reload(sys)
-sys.setdefaultencoding('utf8')
+sys.setdefaultencoding("utf8")
 
 # 主方法
 if __name__ == '__main__':
@@ -24,7 +25,13 @@ if __name__ == '__main__':
     parser.add_argument('params')
     args = parser.parse_args()
 
-    st.setSetting("./demo/settings/" + args.setting + ".yaml")
+    # 解决中文乱码
+    setting = str(args.setting).decode('mbcs').encode('utf8')
+    serverName = str(args.serverName).decode('mbcs').encode('utf8')
+    apiKey = str(args.apiKey).decode('mbcs').encode('utf8')
+    params = str(args.params).decode('mbcs').encode('utf8')
+
+    st.setSetting("./demo/settings/" + setting + ".yaml")
     # 初始化总时间
     t = 0
     max = 0
@@ -33,21 +40,18 @@ if __name__ == '__main__':
     print "{"
     edit = {}
     try:
-        edit = json.loads(args.params)
+        edit = json.loads(params)
         for i in edit:
             if i == 'sys':
                 utils.autoSys(edit[i])
                 edit[i] = st.settings['sys'][edit[i]]
     except:
+        print '"log":"解析参数出错",'
         pass
-    test = info(args.serverName, args.apiKey, edit)
+    test = info(serverName, apiKey, edit)
     size = int(args.cnt)
     # for i in testNo:
     for i in range(size):
-        # test = tests[i]
-        # 自定义参数
-        # if test.api == 'EBidPr':
-        #     test.edit['price'] = utils.randomPrice(0.00, 3.00)
         # 设置开始计时时间
         print '"test%s":{' % i
         start = int(round(time.time() * 1000))
@@ -55,9 +59,9 @@ if __name__ == '__main__':
         result = utils.selectApi(test.setting, test.api, test.edit)
         # 设置结束计时时间
         stop = int(round(time.time() * 1000))
-        print '"请求结果":%s,' % result
-        space = utils.logTimeConsum(desc='"耗时":"%s",', start=start, stop=stop)
-        print "}"
+        print '"请求结果":"%s",' % result
+        space = utils.logTimeConsum(desc='"耗时":"%s"', start=start, stop=stop)
+        print "},"
 
         if i == 0:
             min = space
@@ -69,8 +73,6 @@ if __name__ == '__main__':
 
     utils.logTimeConsum(desc='"总耗时":"%s"', space=t)
     # 平均值去掉最小值与最大值(因为第一次连接耗时长)
-    # if len(testNo) > 2:
-    #     utils.logTimeConsum(desc="去最值平均耗时：", space=(t - max - min) / (len(testNo) - 2))
     if size > 2:
-        utils.logTimeConsum(desc='",去最值平均耗时":"%s"', space=(t - max - min) / (size - 2))
+        utils.logTimeConsum(desc=',"去最值平均耗时":"%s"', space=(t - max - min) / (size - 2))
     print "}"
