@@ -36,8 +36,21 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser('demo'));
 app.use(express.static(path.join(__dirname, 'public')));
 
+//获取url请求客户端ip
+var get_client_ip = function(req) {
+    var ip = req.headers['x-forwarded-for'] ||
+        req.ip ||
+        req.connection.remoteAddress ||
+        req.socket.remoteAddress ||
+        req.connection.socket.remoteAddress || '';
+    if(ip.split(',').length>0){
+        ip = ip.split(',')[0]
+    }
+    return ip;
+};
+
 app.use(function (req, res, next) {
-    var meta = '[' + new Date() + '] '+ req.method + ' ' + req.url + '\t';
+    var meta = '[' + new Date() + '] ' + get_client_ip(req) + '\t' + req.method + '\t' + req.url + '\t';
     var tmp;
     if (req.method === 'GET') {
         tmp = req.query
