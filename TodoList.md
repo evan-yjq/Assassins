@@ -3,11 +3,13 @@
 ##### 上午：
 
 - 创建后台>>>使用python脚本语言<<<功能 / ok
+
 - 主要代码编写<<<功能 / ok
 
 ##### 下午：
 
 - 分离代码>>>功能可配置<<<功能 / ok
+
 - 扩展代码编写<<<功能 / ok
 
 ## 2018/07/24（周二 / ok
@@ -19,7 +21,9 @@
 ##### 下午：
 
 - 搭建前端框架>>>使用nodejs作为后台与前端的连接工具<<<功能 / ok
+
 - 创建nodejs调度<<<功能 / ok
+
 - 前端界面>>>完成静态测试界面<<<界面 / ok
 
 ## 2018/07/25（周三 / ok
@@ -32,27 +36,34 @@
 
 - 传输数据到后台，调用python并获取返回值<<<功能 / ok
 
-## 2018/07/26（周四 / doing
+## 2018/07/26（周四 / ok
 
 ##### 上午：
 
 - 显示所有配置信息<<<功能 / ok
+
 - 生成yaml>>>生成配置信息<<<功能 / ok
+
 - 写入文件>>>保存配置信息<<<功能 / ok
+
 - 配置信息>>>在页面上修改总配置<<<界面 / ok
 
 ##### 下午：
 
 - 保存测试配置<<<界面，功能 / ok
+
 - 导入测试配置<<<界面，功能 / ok
+
 - 松耦合<<<功能 / doing, 任重而道远
 
-## 2018/07/27（周五 / todo
+## 2018/07/27（周五 / ok
 
 ##### 上午：
 
 - 选择使用sqlite数据库 / ok
+
 - 轻量数据库>>>存储账号密码，配置文件名<<<功能
+
 - 页面登陆<<<功能，注册
 
 ##### 下午：
@@ -61,32 +72,46 @@
 
 - 同步配置到不同的组
 
-## 2018/07/28
+## 2018/07/28 / ok
 
 - 构建docker镜像，统一运行环境 / ok
 
-- #### [最新镜像文件下载](http://115.28.216.244/share/docker-images/TestEx.tar)
+- [最新镜像文件下载](http://115.28.216.244/share/docker-images/TestEx.tar)
 
 - 运行方式：
-    ```
-    # docker load < TestEx.tar
-    # docker run -p 3000:3000 -v 替换为项目路径:/home/Assassins --name testE -d evan/test-ex:latest /bin/bash ./home/start.sh
-    ```
 
+    - docker load < TestEx.tar
+    
+    - docker run -p 3000:3000 -v 替换为项目路径:/home/Assassins --name testE -d evan/test-ex:latest /bin/bash ./home/start.sh
+    
+   
 ## Next （2018/07/26 01:28:45 / idea
 
 - 数据表：
+
   - group(group_id, group_name); -- 分组信息，每个用户拥有只含其一人的一个分组
+  
   - user(user_id, user_account, user_pwd); -- 用户信息，用于登录
+  
   - group_user(id, user_id, group_id); -- 分组-用户关联，可通过user_id找到其归属的group_id，也可通过group_id获取分组内的成员user_id
+  
   - setting(setting_id, setting_file); -- 配置信息，存储配置信息的文件路径
+  
   - group_setting(id, group_id, setting_id); -- 分组-配置关联，一般通过group_id获取setting_id
+
 - 更改配置读取方式
+
 - 配置可勾选，只测试勾选的配置
+
 - 后台返回数据的处理，更好的显示方式
+
 - 后台返回数据过长的处理，一个好的解决方案（过长的返回结果拒绝打印？
+
 - 手机端界面的适配
+
 - 保存配置时可以命名，检查重复，最终生成文件名为：自定义名+‘-userID’
+
 - 保存修改后内容和按钮不消失，给出提示‘保存成功’，反之提示‘保存失败，JSON解析失败’
+
 - 项目运行环境的文档
 
