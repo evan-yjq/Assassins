@@ -34,10 +34,13 @@ router.get('/get_setting_name_list', function (req, res) {
     res.end()
 });
 
-router.get('/get_test_result', function (req, res) {
+router.get('/get_test_result', function (req, res, next) {
     var option = req.query.setting+' '+req.query.serverName+' '+req.query.apiKey+' '+req.query.cnt+' \''+req.query.params+'\' ';
     cp.exec('python2.7 TestExtension.py '+option, function(err, stdout, stderr){
-        if (err) console.log('stderr', err);
+        if (err){
+            console.log('stderr', err);
+            next(err)
+        }
         if (stdout) {
             res.send(stdout);
             res.end()

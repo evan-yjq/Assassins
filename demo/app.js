@@ -14,8 +14,8 @@ var settings = require('./routes/settings');
 
 var app = express();
 
-var errorLogfile = fs.createWriteStream('error.log', {flags: 'a'});
-var accessLogfile = fs.createWriteStream('access.log', {flags: 'a'});
+var errorLogfile = fs.createWriteStream('logs/error.log', {flags: 'a'});
+var accessLogfile = fs.createWriteStream('logs/info.log', {flags: 'a'});
 
 // view engine setup
 app.engine('html', ejs.__express);
@@ -48,7 +48,7 @@ app.use(function (req, res, next) {
     for (let i = 0; i < Object.keys(tmp).length; i++) {
         s.push(Object.keys(tmp)[i] + ': ' + Object.values(tmp)[i]);
     }
-    const a = s.join(',t');
+    const a = s.join(',\t');
     accessLogfile.write(meta + a + '\n');
     next();
 });

@@ -7,11 +7,11 @@ import json
 import TestUtils as utils
 from TestUtils import TestInfo as info
 import Settings as st
-
-import sys
-
-reload(sys)
-sys.setdefaultencoding("utf8")
+#
+# import sys
+#
+# reload(sys)
+# sys.setdefaultencoding("utf8")
 
 # 主方法
 if __name__ == '__main__':
@@ -26,10 +26,14 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # 解决中文乱码
-    setting = str(args.setting).decode('mbcs').encode('utf8')
-    serverName = str(args.serverName).decode('mbcs').encode('utf8')
-    apiKey = str(args.apiKey).decode('mbcs').encode('utf8')
-    params = str(args.params).decode('mbcs').encode('utf8')
+    # setting = str(args.setting).decode('mbcs').encode('utf8')
+    # serverName = str(args.serverName).decode('mbcs').encode('utf8')
+    # apiKey = str(args.apiKey).decode('mbcs').encode('utf8')
+    # params = str(args.params).decode('mbcs').encode('utf8')
+    setting = str(args.setting)
+    serverName = str(args.serverName)
+    apiKey = str(args.apiKey)
+    params = str(args.params)
 
     st.setSetting("./demo/settings/" + setting + ".yaml")
     # 初始化总时间
