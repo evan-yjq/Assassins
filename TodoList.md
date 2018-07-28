@@ -67,6 +67,12 @@
 
 - #### [最新镜像文件下载](http://115.28.216.244/share/docker-images/TestEx.tar)
 
+- 运行方式：
+    ```
+    # docker load < TestEx.tar
+    # docker run -p 3000:3000 -v 替换为项目路径:/home/Assassins --name testE -d evan/test-ex:latest /bin/bash ./home/start.sh
+    ```
+
 ## Next （2018/07/26 01:28:45 / idea
 
 - 数据表：
