@@ -1,0 +1,35 @@
+input[type="password"][required]:focus + label[placeholder]:before,
+input[type="text"][required]:focus + label[placeholder]:before {
+  color: #00bafa;
+}
+input[type="password"][required]:focus + label[placeholder]:before,
+input[type="password"][required]:valid + label[placeholder]:before,
+input[type="text"][required]:focus + label[placeholder]:before,
+input[type="text"][required]:valid + label[placeholder]:before {
+  -webkit-transition-duration: .2s;
+  transition-duration: .2s;
+  -webkit-transform: translate(0, -2.3em) scale(1, 1);
+  -ms-transform: translate(0, -2.3em) scale(1, 1);
+  transform: translate(0, -2.3em) scale(1, 1);
+}
+input[type="password"][required] + label[placeholder],
+input[type="text"][required] + label[placeholder] {
+  display: block;
+  pointer-events: none;
+  line-height: 2.3em;
+  margin-top: -webkit-calc(-3em - 2px);
+  margin-top: calc(-2.3em - 2px);
+  margin-bottom: -webkit-calc((3em - 1em) + 2px);
+  margin-bottom: calc((2.3em - 1em) + 2px);
+}
+input[type="password"][required] + label[placeholder]:before,
+input[type="text"][required] + label[placeholder]:before {
+  content: attr(placeholder);
+  display: inline-block;
+  margin: 0 calc(1em + 0px);
+  color: #898989;
+  white-space: nowrap;
+  -webkit-transition: 0.3s ease-in-out;
+  transition: 0.3s ease-in-out;
+  -webkit-background-size: 100% 5px;
+}

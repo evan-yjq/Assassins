@@ -84,22 +84,26 @@
     
     - docker run -p 3000:3000 -v 替换为项目路径:/home/Assassins --name testE -d evan/test-ex:latest /bin/bash ./home/start.sh
     
+## 2018/07/29 / doing
+
+
+- 数据表： / ok
+
+  - T_GROUP(group_id, group_name); -- 分组信息，每个用户拥有只含其一人的一个分组
+  
+  - T_USER(user_id, user_account, user_pwd); -- 用户信息，用于登录
+  
+  - T_GROUP_USER(user_id, group_id); -- 分组-用户关联，可通过user_id找到其归属的group_id，也可通过group_id获取分组内的成员user_id
+  
+  - T_SETTING(setting_id, setting_file); -- 配置信息，存储配置信息的文件路径
+  
+  - T_GROUP_SETTING(group_id, setting_id); -- 分组-配置关联，一般通过group_id获取setting_id
+
+- 更改配置读取方式
    
 ## Next （2018/07/26 01:28:45 / idea
 
-- 数据表：
-
-  - group(group_id, group_name); -- 分组信息，每个用户拥有只含其一人的一个分组
-  
-  - user(user_id, user_account, user_pwd); -- 用户信息，用于登录
-  
-  - group_user(id, user_id, group_id); -- 分组-用户关联，可通过user_id找到其归属的group_id，也可通过group_id获取分组内的成员user_id
-  
-  - setting(setting_id, setting_file); -- 配置信息，存储配置信息的文件路径
-  
-  - group_setting(id, group_id, setting_id); -- 分组-配置关联，一般通过group_id获取setting_id
-
-- 更改配置读取方式
+- 账户信息不够安全
 
 - 配置可勾选，只测试勾选的配置
 

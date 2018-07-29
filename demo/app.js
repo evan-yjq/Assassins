@@ -10,7 +10,7 @@ var fs = require('fs');
 
 var index = require('./routes/index');
 var settings = require('./routes/settings');
-// var search = require('./routes/search');
+var user = require('./routes/user');
 
 var app = express();
 
@@ -33,7 +33,7 @@ app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
-app.use(cookieParser('demo'));
+app.use(cookieParser('TestEx'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 //获取url请求客户端ip
@@ -50,7 +50,16 @@ var get_client_ip = function(req) {
 };
 
 app.use(function (req, res, next) {
-    var meta = '[' + new Date() + '] ' + get_client_ip(req) + '\t' + req.method + '\t' + req.url + '\t';
+    if (req.url !== '/user/check') {
+        if (req.cookies["testEx_username"] == null || req.cookies["testEx_password"] == null) {
+            res.render('login')
+        }
+    }
+    next();
+});
+
+app.use(function (req, res, next) {
+    var meta = '[' + new Date() + '] ' + get_client_ip(req) + ' \t' + req.method + ' \t' + req.url + ' \t';
     var tmp;
     if (req.method === 'GET') {
         tmp = req.query
@@ -68,7 +77,7 @@ app.use(function (req, res, next) {
 
 app.use('/', index);
 app.use('/settings', settings);
-// app.use('/search', search);
+app.use('/user', user);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

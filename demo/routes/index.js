@@ -6,8 +6,6 @@ const join = require('path').join;
 const pa = require('path');
 const cp=require('child_process');
 var markdown = require( "markdown" ).markdown;
-var sql = require('../comm/testSql');
-
 
 router.get('/', function (req, res) {
     res.render('hello');
