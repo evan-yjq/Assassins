@@ -63,7 +63,10 @@ if __name__ == '__main__':
         result = utils.selectApi(test.setting, test.api, test.edit)
         # 设置结束计时时间
         stop = int(round(time.time() * 1000))
-        print '"请求结果":"%s",' % result
+        result = '"请求结果":"%s",' % result
+        result = result.replace('"{', '{')
+        result = result.replace('}"', '}')
+        print result
         space = utils.logTimeConsum(desc='"耗时":"%s"', start=start, stop=stop)
         print "},"
 

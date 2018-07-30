@@ -1,10 +1,15 @@
+let setting_list;
 $(function () {
     get_setting_name_list();
 });
 
 $('body').on('change', '.select-setting', function (){
     const s = document.getElementById("InputSettings").value;
-    const setting_name = s.length >= 1 ? s : "";
+    let setting_name = s.length >= 1 ? s : "";
+    for (let i = 0; i < setting_list.length; i++) {
+        if (setting_list[i]['setting_file']===setting_name)
+            setting_name = setting_list[i]['group_name'] + '/' + setting_name;
+    }
     get_setting(setting_name)
 });
 
@@ -48,9 +53,10 @@ function get_setting_name_list() {
         data: {},
         timeout: 20000,
         success: function (data) {
+            setting_list = data;
             let t = '';
             for (let i = 0; i < data.length; i++) {
-                t = t + '<option class="setting-option">' + data[i] + '</option>'
+                t = t + '<option class="setting-option">' + data[i]['setting_file'] + '</option>'
             }
             $('.select-setting').append($(t))
         },

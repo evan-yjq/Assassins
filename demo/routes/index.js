@@ -6,6 +6,7 @@ const join = require('path').join;
 const pa = require('path');
 const cp=require('child_process');
 var markdown = require( "markdown" ).markdown;
+var userDB = require('../comm/userDB');
 
 router.get('/', function (req, res) {
     res.render('hello');
@@ -14,23 +15,34 @@ router.get('/', function (req, res) {
 router.get('/get_todo_list', function (req, res) {
     const mark = fs.readFileSync("TodoList.md").toString();
     res.send(markdown.toHTML(mark));
-    res.end();
+    return res.end();
+});
+
+router.get('/get_group', function (req, res) {
+    var account = req.cookies["testEx_username"];
+    userDB.GET_GROUP(account).then(function (data) {
+        res.send(data);
+        return res.end()
+    })
 });
 
 router.get('/get_settings', function (req, res) {
     var file = req.query.setting_name;
     if (file === ""){
-        res.end();
+        return res.end();
     } else{
         const data = YAML.parse(fs.readFileSync("demo/settings/"+req.query.setting_name+".yaml").toString());
         res.send(data);
-        res.end();
+        return res.end();
     }
 });
 
 router.get('/get_setting_name_list', function (req, res) {
-    res.send(findSync("demo/settings/"));
-    res.end()
+    var account = req.cookies["testEx_username"];
+    userDB.GET_SET(account).then(function (data) {
+        res.send(data);
+        return res.end()
+    });
 });
 
 router.get('/get_test_result', function (req, res, next) {
@@ -42,7 +54,7 @@ router.get('/get_test_result', function (req, res, next) {
         }
         if (stdout) {
             res.send(stdout);
-            res.end()
+            return res.end()
         }
     });
 });

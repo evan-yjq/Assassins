@@ -5,6 +5,7 @@ let setting;
 let apiNo = 0;
 let paramNo = 0;
 let apiAndParam = {};
+let setting_list;
 let main;
 
 $(function () {
@@ -13,7 +14,11 @@ $(function () {
 
 function changeSelectSetting(callback) {
     const s = document.getElementById("InputSettings").value;
-    const setting_name = s.length >= 1 ? s : "";
+    let setting_name = s.length >= 1 ? s.split('-')[1] : "";
+    for (let i = 0; i < setting_list.length; i++) {
+        if (setting_list[i]['setting_file']===setting_name)
+            setting_name = setting_list[i]['group_name'] + '/' + setting_name;
+    }
     get_setting(setting_name, callback);
 }
 
@@ -26,7 +31,8 @@ $('body').on('click', '.importApiButton', function () {
 });
 
 $('body').on('click', '.go', function () {
-    const setting = document.getElementById("InputSettings").value;
+    const s = document.getElementById("InputSettings").value;
+    let setting = s.length >= 1 ? s.split('-')[1] : "";
     for (let i = 0; i < apiAndParam.length; i++) {
         if (apiAndParam[i] === undefined) continue;
         const serverName = $('.row' + i).find('.serverName').val();
@@ -46,9 +52,8 @@ $('body').on('click', '.go', function () {
             const key = $('.select-param' + paramN).val();
             const value = $('.param-value' + paramN).val();
             params = params + '\"' + key + '\":\"' + value + '\",';
-            if (j === apiAndParam[i].length - 1) {
+            if (j === apiAndParam[i].length - 1)
                 params = params.substring(0, params.lastIndexOf(','));
-            }
         }
         params = params + '}';
 
@@ -62,6 +67,7 @@ $('body').on('click', '.go', function () {
 });
 
 $('body').on('click', '.save-settings', function () {
+    $('#saveModal').modal('hide');
     let setting = '{';
     setting = setting + '\"setting\":\"' + document.getElementById("InputSettings").value + '\",';
     setting = setting + '\"api\":{';
@@ -108,6 +114,10 @@ $('body').on('click', '.save-settings', function () {
         alert("参数错误")
     }
     save_setting(setting)
+});
+
+$('#saveModal').on('show.bs.modal', function () {
+    get_group()
 });
 
 function removeApi(apiN) {
@@ -338,7 +348,7 @@ function get_test_result(setting, serverName, apiKey, cnt, params, apiN) {
                 '        </button>\n' +
                 '      </div>\n' +
                 '      <div class="modal-body">' +
-                '<textarea id="textarea" class="w-100" wrap="off">' +
+                '<textarea id="textarea' + apiN + '" class="w-100" wrap="off">' +
                         _tmp(data) +
                 '</textarea>' +
                 '      </div>\n' +
@@ -347,7 +357,7 @@ function get_test_result(setting, serverName, apiKey, cnt, params, apiN) {
                 '</div>');
             $('.result' + apiN).append(t);
             $('#modalLong'+apiN).on('shown.bs.modal', function () {
-                const text = document.getElementById("textarea");
+                const text = document.getElementById("textarea" + apiN);
                 autoTextarea(text);// 调用
             });
         },
@@ -404,10 +414,35 @@ function get_setting(setting_name, callback) {
     });
 }
 
+function get_group() {
+    if ($('.select-group').find('.setting-option').length !== 0) {
+        $('.select-group').find('.setting-option').remove();
+    }
+    $.ajax({
+        type: 'get',
+        url: '/get_group',
+        data: {},
+        timeout: 20000,
+        success: function (data) {
+            let t = '';
+            for (let i = 0; i < data.length; i++) {
+                t = t + '<option class="setting-option">' + data[i]['group_name'] + '</option>'
+            }
+            $('.select-group').append($(t))
+        },
+        error: function () {
+
+        },
+        complete: function () {
+
+        }
+    })
+}
+
 function get_setting_name_list(select) {
     if ($('.select-setting').find('.setting-option').length !== 0) {
         $('.error-info').remove();
-        $('.setting-option').remove();
+        $('.select-setting').find('.setting-option').remove();
     }
     $.ajax({
         type: 'get',
@@ -415,12 +450,13 @@ function get_setting_name_list(select) {
         data: {},
         timeout: 20000,
         success: function (data) {
+            setting_list = data;
             let t = '';
             for (let i = 0; i < data.length; i++) {
-                if (data[i] === select){
-                    t = t + '<option class="setting-option" selected = "selected">' + data[i] + '</option>'
+                if (data[i]['group_name'] + '-' + data[i]['setting_file'] === select){
+                    t = t + '<option class="setting-option" selected = "selected">' + data[i]['group_name']+'-'+data[i]['setting_file'] + '</option>'
                 } else {
-                    t = t + '<option class="setting-option">' + data[i] + '</option>'
+                    t = t + '<option class="setting-option">' + data[i]['group_name'] + '-' + data[i]['setting_file'] + '</option>'
                 }
             }
             $('.select-setting').append($(t))
@@ -505,7 +541,9 @@ function getApiKeyByApiName(apiName) {
 
 function save_setting(setting) {
     $('.saveResult').remove();
-    const settingName = document.getElementById("InputSettings").value + "-1";
+    const settingName = document.getElementById("file-name").value;
+    const groupName = document.getElementById("group-name").value;
+    document.getElementById("file-name").value="";
     const loading = $(
         '<div class="col-md-auto loading">' +
         '<div class="loader-inner">\n' +
@@ -531,7 +569,7 @@ function save_setting(setting) {
     $.ajax({
         type: 'post',
         url: '/settings/save',
-        data: {'settingName': settingName, 'settings': setting},
+        data: {'settingName': settingName, 'settings': setting, 'groupName': groupName},
         timeout: 20000,
         success: function (data) {
             $('.loading').remove();

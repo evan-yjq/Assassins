@@ -87,8 +87,19 @@ app.use(function (req, res, next) {
 });
 
 app.use(function(err, req, res, next){
-    var meta = '[' + new Date() + '] ' + req.url + '\n';
-    errorLogfile.write(meta + err.stack + '\n');
+    var meta = '[' + new Date() + '] ' + get_client_ip(req) + ' \t' + req.method + ' \t' + req.url + ' \t';
+    var tmp;
+    if (req.method === 'GET') {
+        tmp = req.query
+    } else if (req.method === 'POST') {
+        tmp = req.body
+    }
+    let s = [];
+    for (let i = 0; i < Object.keys(tmp).length; i++) {
+        s.push(Object.keys(tmp)[i] + ': ' + Object.values(tmp)[i]);
+    }
+    const a = s.join(',\t');
+    errorLogfile.write(meta + a + err.stack + '\n');
     next(err);
 });
 
