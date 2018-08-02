@@ -5,7 +5,6 @@ let setting;
 let apiNo = 0;
 let paramNo = 0;
 let apiAndParam = {};
-let setting_list;
 let main;
 
 $(function () {
@@ -14,11 +13,7 @@ $(function () {
 
 function changeSelectSetting(callback) {
     const s = document.getElementById("InputSettings").value;
-    let setting_name = s.length >= 1 ? s.split('-')[1] : "";
-    for (let i = 0; i < setting_list.length; i++) {
-        if (setting_list[i]['setting_file']===setting_name)
-            setting_name = setting_list[i]['group_name'] + '/' + setting_name;
-    }
+    let setting_name = s.length >= 1 ? s : "";
     get_setting(setting_name, callback);
 }
 
@@ -32,7 +27,7 @@ $('body').on('click', '.importApiButton', function () {
 
 $('body').on('click', '.go', function () {
     const s = document.getElementById("InputSettings").value;
-    let setting = s.length >= 1 ? s.split('-')[1] : "";
+    let setting = s.length >= 1 ? s : "";
     for (let i = 0; i < apiAndParam.length; i++) {
         if (apiAndParam[i] === undefined) continue;
         const serverName = $('.row' + i).find('.serverName').val();
@@ -450,13 +445,12 @@ function get_setting_name_list(select) {
         data: {},
         timeout: 20000,
         success: function (data) {
-            setting_list = data;
             let t = '';
             for (let i = 0; i < data.length; i++) {
-                if (data[i]['group_name'] + '-' + data[i]['setting_file'] === select){
-                    t = t + '<option class="setting-option" selected = "selected">' + data[i]['group_name']+'-'+data[i]['setting_file'] + '</option>'
+                if (data[i]['group_name'] + '/' + data[i]['setting_file'] === select){
+                    t = t + '<option class="setting-option" selected = "selected">' + data[i]['group_name']+'/'+data[i]['setting_file'] + '</option>'
                 } else {
-                    t = t + '<option class="setting-option">' + data[i]['group_name'] + '-' + data[i]['setting_file'] + '</option>'
+                    t = t + '<option class="setting-option">' + data[i]['group_name'] + '/' + data[i]['setting_file'] + '</option>'
                 }
             }
             $('.select-setting').append($(t))
@@ -541,8 +535,9 @@ function getApiKeyByApiName(apiName) {
 
 function save_setting(setting) {
     $('.saveResult').remove();
-    const settingName = document.getElementById("file-name").value;
+    let settingName = document.getElementById("file-name").value;
     const groupName = document.getElementById("group-name").value;
+    settingName = groupName + "/" + settingName;
     document.getElementById("file-name").value="";
     const loading = $(
         '<div class="col-md-auto loading">' +
@@ -569,7 +564,7 @@ function save_setting(setting) {
     $.ajax({
         type: 'post',
         url: '/settings/save',
-        data: {'settingName': settingName, 'settings': setting, 'groupName': groupName},
+        data: {'settingName': settingName, 'settings': setting},
         timeout: 20000,
         success: function (data) {
             $('.loading').remove();
