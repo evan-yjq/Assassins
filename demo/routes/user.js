@@ -28,4 +28,13 @@ router.post('/check', function (req, res) {
         })
 });
 
+router.get('/get_user_id_by_account', function (req, res) {
+    const account = req.cookies["testEx_username"];
+    userDB.GET_ID_BY_ACCOUNT(account)
+        .then(function (data) {
+            res.send(data.user_id.toString());
+            res.end()
+        })
+});
+
 module.exports = router;

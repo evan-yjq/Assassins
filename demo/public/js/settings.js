@@ -1,4 +1,3 @@
-let setting_list;
 $(function () {
     get_setting_name_list();
 });
@@ -54,6 +53,7 @@ function get_setting_name_list() {
                 t = t + '<option class="setting-option">' + data[i]['group_name'] + '/' + data[i]['setting_file'] + '</option>'
             }
             $('.select-setting').append($(t))
+            setting_list = data
         },
         error: function () {
 

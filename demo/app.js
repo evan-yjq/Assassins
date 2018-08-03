@@ -53,9 +53,12 @@ app.use(function (req, res, next) {
     if (req.url !== '/user/check') {
         if (req.cookies["testEx_username"] == null || req.cookies["testEx_password"] == null) {
             res.render('login')
+        } else{
+            next();
         }
+    }else{
+        next();
     }
-    next();
 });
 
 app.use(function (req, res, next) {

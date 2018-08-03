@@ -84,7 +84,7 @@
     
     - docker run -p 3000:3000 -v 替换为项目路径:/home/Assassins --name testE -d evan/test-ex:latest /bin/bash ./home/start.sh
     
-## 2018/07/29 / doing
+## 2018/07/29 / ok
 
 
 - 数据表： / ok
@@ -93,13 +93,15 @@
   
   - T_USER(user_id, user_account, user_pwd); -- 用户信息，用于登录
   
-  - T_GROUP_USER(user_id, group_id); -- 分组-用户关联，可通过user_id找到其归属的group_id，也可通过group_id获取分组内的成员user_id
+  - T_GROUP_USER(user_id, group_id, identity); -- 分组-用户关联，可通过user_id找到其归属的group_id，也可通过group_id获组内的成员user_id，identity为在组内的身份
   
   - T_SETTING(setting_id, setting_file); -- 配置信息，存储配置信息的文件路径
   
-  - T_GROUP_SETTING(group_id, setting_id); -- 分组-配置关联，一般通过group_id获取setting_id
+  - T_GROUP_SETTING(group_id, setting_id); -- 分组-配置关联，必须是通过group_id获取setting_id，一对多
 
-- 更改配置读取方式
+  - T_USER_SETTING(setting_id, user_id, permission); -- 用户-配置关联，用户对每个配置的权限
+  
+- 更改配置读取方式 / ok
    
 ## Next （2018/07/26 01:28:45 / idea
 
@@ -107,7 +109,7 @@
 
 - 配置可勾选，只测试勾选的配置
 
-- 后台返回数据的处理，更好的显示方式
+- 后台返回数据的处理，更好的显示方式 / ok
 
 - 后台返回数据过长的处理，一个好的解决方案（过长的返回结果拒绝打印？
 
@@ -115,9 +117,15 @@
 
 - 火狐浏览器中侧边栏被遮挡
 
-- 保存配置时可以命名，检查重复，最终生成文件名为：自定义名+‘-userID’
+- 保存配置时可以命名，检查重复，如果拥有写入权限，提示后覆盖，如果没有，则返回权限警告
 
 - 保存修改后内容和按钮不消失，给出提示‘保存成功’，反之提示‘保存失败，JSON解析失败’
 
 - 项目运行环境的文档
+
+- 只能把配置保存到相同setting—id对应的group组里，必定上是原有组里
+
+- 同一个组里默认拥有读取权限，写入权限和移除读取权限需要额外配置，创建者默认拥有写入权限，写入权限需要基于读取权限
+
+- 组的管理员拥有读写组里所有文件的权限
 

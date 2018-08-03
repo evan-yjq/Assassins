@@ -9,6 +9,7 @@ let main;
 
 $(function () {
     get_setting_name_list();
+    get_user_id();
 });
 
 function changeSelectSetting(callback) {
@@ -17,14 +18,17 @@ function changeSelectSetting(callback) {
     get_setting(setting_name, callback);
 }
 
+// 添加API点击
 $('body').on('click', '.addApiButton', function () {
     addApi2View()
 });
 
+// 导入API点击
 $('body').on('click', '.importApiButton', function () {
     import_setting()
 });
 
+// 测试按钮点击
 $('body').on('click', '.go', function () {
     const s = document.getElementById("InputSettings").value;
     let setting = s.length >= 1 ? s : "";
@@ -61,6 +65,7 @@ $('body').on('click', '.go', function () {
     }
 });
 
+// 保存设置点击
 $('body').on('click', '.save-settings', function () {
     $('#saveModal').modal('hide');
     let setting = '{';
@@ -111,15 +116,25 @@ $('body').on('click', '.save-settings', function () {
     save_setting(setting)
 });
 
-$('#saveModal').on('show.bs.modal', function () {
-    get_group()
-});
+// 模态显示前加载
+// $('#saveModal').on('show.bs.modal', function () {
+//     const s = document.getElementById("InputSettings").value;
+//     let setting_id;
+//     for (let i = 0; i < setting_list.length; i++) {
+//         if (setting_list[i]['group_name'] + '/' + setting_list[i]['setting_file'] === s)
+//             setting_id = setting_list[i]['setting_id']
+//     }
+//     get_setting_group(setting_id)
+// });
 
+//根据API_ID移除API
 function removeApi(apiN) {
     $('.addApiView').find('.row' + apiN).length === 0 ? '' : $('.row' + apiN).remove();
     delete apiAndParam[apiN];
 }
 
+// 根据API_ID移除所有参数
+// 根据param_ID 移除对应参数
 function removeParam(apiN, paramN) {
     if (paramN === undefined) {
         if ($('.result' + apiN).find('.resultA' + apiN).length !== 0) {
@@ -139,6 +154,7 @@ function removeParam(apiN, paramN) {
     }
 }
 
+// 添加参数到对应API_ID下
 function addParam2View(apiN) {
     let i;
     const apiName = document.getElementById("InputApis" + apiN).value;
@@ -195,6 +211,7 @@ function addParam2View(apiN) {
     return paramNo-1;
 }
 
+// 添加API到界面
 function addApi2View() {
     let len_api;
     let len_setting;
@@ -281,6 +298,7 @@ function addApi2View() {
     return apiNo-1;
 }
 
+// 选择显示添加或导入按钮
 function showAddApiButton() {
     if (main === 1) {
         const s = $('<button class="btn btn-success d-block w-100 addApiButton">\n' +
@@ -293,6 +311,7 @@ function showAddApiButton() {
     }
 }
 
+// 从服务器获取测试结果
 function get_test_result(setting, serverName, apiKey, cnt, params, apiN) {
     if ($('.result' + apiN).find('.resultA' + apiN).length !== 0) {
         $('.resultA' + apiN).remove();
@@ -365,6 +384,7 @@ function get_test_result(setting, serverName, apiKey, cnt, params, apiN) {
     });
 }
 
+// 对数据的转制
 function _tmp(data) {
     try {
         return formatJson(JSON.parse(data))
@@ -373,6 +393,7 @@ function _tmp(data) {
     }
 }
 
+// 根据配置名获取配置内所有信息
 function get_setting(setting_name, callback) {
     $('.saveResult').remove();
     $('body').find('.error-info').length === 0 ? '' : $('.error-info').remove();
@@ -396,8 +417,7 @@ function get_setting(setting_name, callback) {
             apiAndParam = [];
             apiNo = 0;
             showAddApiButton();
-            if (callback !== undefined)
-                callback();
+            if (callback) callback();
         },
         error: function () {
             apiAndParam = [];
@@ -409,31 +429,7 @@ function get_setting(setting_name, callback) {
     });
 }
 
-function get_group() {
-    if ($('.select-group').find('.setting-option').length !== 0) {
-        $('.select-group').find('.setting-option').remove();
-    }
-    $.ajax({
-        type: 'get',
-        url: '/get_group',
-        data: {},
-        timeout: 20000,
-        success: function (data) {
-            let t = '';
-            for (let i = 0; i < data.length; i++) {
-                t = t + '<option class="setting-option">' + data[i]['group_name'] + '</option>'
-            }
-            $('.select-group').append($(t))
-        },
-        error: function () {
-
-        },
-        complete: function () {
-
-        }
-    })
-}
-
+// 获取配置名列表
 function get_setting_name_list(select) {
     if ($('.select-setting').find('.setting-option').length !== 0) {
         $('.error-info').remove();
@@ -454,6 +450,7 @@ function get_setting_name_list(select) {
                 }
             }
             $('.select-setting').append($(t))
+            setting_list = data
         },
         error: function () {
 
@@ -464,6 +461,7 @@ function get_setting_name_list(select) {
     });
 }
 
+// 导入配置文件
 function import_setting() {
     const len_setting = $('.setting-option').length;
     var setting_select = document.getElementById("InputSettings");
@@ -521,6 +519,7 @@ function import_setting() {
     }
 }
 
+// 根据API名获得APIKEY
 function getApiKeyByApiName(apiName) {
     const len_ = Object.keys(apis).length;
     let apiKey = "";
@@ -533,10 +532,12 @@ function getApiKeyByApiName(apiName) {
     return apiKey
 }
 
+// 向服务器保存配置
 function save_setting(setting) {
     $('.saveResult').remove();
     let settingName = document.getElementById("file-name").value;
-    const groupName = document.getElementById("group-name").value;
+    let groupName = document.getElementById("InputSettings").value;
+    groupName = groupName.split('/')[0];
     settingName = groupName + "/" + settingName;
     document.getElementById("file-name").value="";
     const loading = $(

@@ -2,29 +2,43 @@ const express = require('express');
 const router = express.Router();
 const YAML = require('yamljs');
 const fs = require("fs");
-const join = require('path').join;
-const pa = require('path');
 const cp=require('child_process');
 var markdown = require( "markdown" ).markdown;
 var userDB = require('../comm/userDB');
+var settingDB = require('../comm/settingDB');
 
+//返回测试界面
 router.get('/', function (req, res) {
     res.render('hello');
 });
 
+//返回开发界面
 router.get('/get_todo_list', function (req, res) {
     const mark = fs.readFileSync("TodoList.md").toString();
     res.send(markdown.toHTML(mark));
     return res.end();
 });
 
-router.get('/get_group', function (req, res) {
+//获取用户所属分组
+router.get('/get_user_group', function (req, res) {
     var account = req.cookies["testEx_username"];
     userDB.GET_GROUP(account).then(function (data) {
         res.send(data);
         return res.end()
     })
 });
+
+//获取配置所属分组
+router.get('/get_user_setting_group', function (req, res) {
+    let user_id = req.query.user_id;
+    let setting_id = req.query.setting_id;
+    settingDB.GET_SETTING_GROUP(setting_id, user_id)
+        .then(function (data) {
+            res.send(data);
+            res.end()
+        })
+});
+
 
 router.get('/get_settings', function (req, res) {
     var file = req.query.setting_name;
@@ -67,18 +81,4 @@ router.get('/jump_todo', function (req, res) {
     res.render('todo')
 });
 
-function findSync(startPath) {
-    let result=[];
-    function finder(path) {
-        let files=fs.readdirSync(path);
-        files.forEach((val,index) => {
-            let fPath=join(path, val);
-            let stats=fs.statSync(fPath);
-            if(stats.isFile())
-                result.push(pa.basename(val, '.yaml'));
-        });
-    }
-    finder(startPath);
-    return result;
-}
 module.exports = router;
