@@ -2,10 +2,10 @@ const express = require('express');
 const router = express.Router();
 const YAML = require('yamljs');
 const fs = require("fs");
-const cp=require('child_process');
-var markdown = require( "markdown" ).markdown;
-var userDB = require('../comm/userDB');
-var settingDB = require('../comm/settingDB');
+const exec=require('child_process').exec;
+const markdown = require("markdown").markdown;
+const userDB = require('../comm/userDB');
+const settingDB = require('../comm/settingDB');
 
 //返回测试界面
 router.get('/', function (req, res) {
@@ -39,7 +39,6 @@ router.get('/get_user_setting_group', function (req, res) {
         })
 });
 
-
 router.get('/get_settings', function (req, res) {
     var file = req.query.setting_name;
     if (file === ""){
@@ -60,17 +59,24 @@ router.get('/get_setting_name_list', function (req, res) {
 });
 
 router.get('/get_test_result', function (req, res, next) {
-    var option = req.query.setting+' '+req.query.serverName+' '+req.query.apiKey+' '+req.query.cnt+' \''+req.query.params+'\' ';
-    cp.exec('python2.7 TestExtension.py '+option, function(err, stdout, stderr){
-        if (err){
-            console.log('stderr', err);
-            next(err)
-        }
-        if (stdout) {
-            res.send(stdout);
-            return res.end()
-        }
-    });
+    let option = req.query.setting+' '+req.query.serverName+' '+req.query.apiKey+' '+req.query.cnt+' \''+req.query.params+'\' ';
+    exec('python2.7 TestExtension.py '+option,
+        {
+            encoding: 'utf8',
+            timeout: 0,
+            maxBuffer: 10000 * 1024, // 默认 200 * 1024
+            killSignal: 'SIGTERM'
+        },
+        function(err, stdout, stderr){
+            if (err){
+                console.log('stderr', err);
+                next(err)
+            }
+            if (stdout) {
+                res.send(stdout);
+                return res.end()
+            }
+        });
 });
 
 router.get('/jump_settings', function (req, res) {

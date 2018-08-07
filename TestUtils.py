@@ -18,9 +18,12 @@ sys.setdefaultencoding("utf8")
 # 自动调用
 # create by ye jiaquan in 2018/07/18
 def get(url, data, headers):
-    data = urllib.urlencode(data)
-    req = urllib2.Request(url='%s%s%s' % (url, '?', data), headers=headers)
-    res = urllib2.urlopen(req)
+    try:
+        data = urllib.urlencode(data)
+        req = urllib2.Request(url='%s%s%s' % (url, '?', data), headers=headers)
+        res = urllib2.urlopen(req)
+    except (urllib2.HTTPError, TypeError, ValueError, AttributeError), e:
+        return e
     return res.read()
 
 
@@ -29,11 +32,14 @@ def get(url, data, headers):
 # 自动调用
 # create by ye jiaquan in 2018/07/18
 def post(url, data, headers):
-    data = urllib.urlencode(data)
-    req = urllib2.Request(url, data, headers)
-    opener = urllib2.build_opener(urllib2.HTTPCookieProcessor())
-    response = opener.open(req, data)
-    return response.read()
+    try:
+        data = urllib.urlencode(data)
+        req = urllib2.Request(url, data, headers)
+        opener = urllib2.build_opener(urllib2.HTTPCookieProcessor())
+        res = opener.open(req, data)
+    except (urllib2.HTTPError, TypeError, ValueError, AttributeError), e:
+        return e
+    return res.read()
 
 
 # done(开发完成)
@@ -92,7 +98,6 @@ class TestInfo:
 # editing(正在开发)
 # 自动拼接apiUrl
 # @setting  服务器配置名
-# @signUser sign用户名
 # @api      接口配置名
 # @edit     需要实时修改的参数变量
 #           参数类型为数组，数组中为set

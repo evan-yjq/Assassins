@@ -3,6 +3,7 @@ $(function () {
 });
 
 $('body').on('change', '.select-setting', function (){
+    $('.alert').remove();
     const s = document.getElementById("InputSettings").value;
     let setting_name = s.length >= 1 ? s : "";
     get_setting(setting_name)
@@ -41,7 +42,6 @@ function get_setting(setting_name) {
 }
 
 function get_setting_name_list() {
-    $('.select-setting').find('.setting-option').length === 0 ? '' : $('.error-info').remove();
     $.ajax({
         type: 'get',
         url: '/get_setting_name_list',
@@ -52,7 +52,7 @@ function get_setting_name_list() {
             for (let i = 0; i < data.length; i++) {
                 t = t + '<option class="setting-option">' + data[i]['group_name'] + '/' + data[i]['setting_file'] + '</option>'
             }
-            $('.select-setting').append($(t))
+            $('.select-setting').append($(t));
             setting_list = data
         },
         error: function () {
@@ -65,9 +65,18 @@ function get_setting_name_list() {
 }
 
 function save_setting() {
-    $('.saveSettingsButtonView').remove();
     const settings = document.getElementById("textarea").value;
     const settingName = document.getElementById("InputSettings").value;
+    for (let i = 0; i < setting_list.length; i++) {
+        if (setting_list[i]['group_name']+'/'+setting_list[i]['setting_file'] === settingName) {
+            let permission = setting_list[i]['permission'].split('/');
+            if (permission.indexOf('w') < 0){
+                showMessage($('.button-view'), 'danger', '该用户没有写入权限，请向组管理员获取权限')
+                return
+            }
+        }
+    }
+    $('.saveSettingsButtonView').remove();
     const loading = $(
         '<div class="col-md-auto loading">' +
         '<div class="loader-inner">\n' +
@@ -95,13 +104,15 @@ function save_setting() {
         url: '/settings/save',
         data: {'settingName': settingName, 'settings': settings},
         timeout: 20000,
-        success: function (data) {
+        success: function () {
             $('.loading').remove();
-            $('#textarea').remove();
+            show_save_btn();
+            showMessage($('.button-view'), 'success', '保存成功')
         },
         error: function () {
             $('.loading').remove();
-            show_save_btn()
+            show_save_btn();
+            showMessage($('.button-view'), 'warning', '保存失败，请仔细检查JSON格式')
         },
         complete: function () {
 

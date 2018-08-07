@@ -1,21 +1,23 @@
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var session = require('express-session');
-var bodyParser = require('body-parser');
-var ejs = require('ejs');
-var fs = require('fs');
+const express = require('express');
+const path = require('path');
+const favicon = require('serve-favicon');
+const logger = require('morgan');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const bodyParser = require('body-parser');
+const ejs = require('ejs');
+const fs = require('fs');
 
-var index = require('./routes/index');
-var settings = require('./routes/settings');
-var user = require('./routes/user');
+const index = require('./routes/index');
+const settings = require('./routes/settings');
+const user = require('./routes/user');
+const userDB = require('./comm/userDB');
 
-var app = express();
 
-var errorLogfile = fs.createWriteStream('logs/error.log', {flags: 'a'});
-var accessLogfile = fs.createWriteStream('logs/info.log', {flags: 'a'});
+const app = express();
+
+const errorLogfile = fs.createWriteStream('logs/error.log', {flags: 'a'});
+const accessLogfile = fs.createWriteStream('logs/info.log', {flags: 'a'});
 
 // view engine setup
 app.engine('html', ejs.__express);
@@ -37,8 +39,8 @@ app.use(cookieParser('TestEx'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 //获取url请求客户端ip
-var get_client_ip = function(req) {
-    var ip = req.headers['x-forwarded-for'] ||
+let get_client_ip = function(req) {
+    let ip = req.headers['x-forwarded-for'] ||
         req.ip ||
         req.connection.remoteAddress ||
         req.socket.remoteAddress ||
@@ -54,7 +56,14 @@ app.use(function (req, res, next) {
         if (req.cookies["testEx_username"] == null || req.cookies["testEx_password"] == null) {
             res.render('login')
         } else{
-            next();
+            userDB.CHECK(req.cookies["testEx_username"])
+                .then(function (result) {
+                    if (result.user_pwd === req.cookies["testEx_password"]) {
+                        next()
+                    }else {
+                        res.render('login')
+                    }
+                })
         }
     }else{
         next();
@@ -62,8 +71,9 @@ app.use(function (req, res, next) {
 });
 
 app.use(function (req, res, next) {
-    var meta = '[' + new Date() + '] ' + get_client_ip(req) + ' \t' + req.method + ' \t' + req.url + ' \t';
-    var tmp;
+    let meta = '[' + new Date() + '] ' + get_client_ip(req) + '\n' + req.method + ' \t' + req.url + '\n';
+    accessLogfile.write(meta);
+    let tmp;
     if (req.method === 'GET') {
         tmp = req.query
     } else if (req.method === 'POST') {
@@ -74,7 +84,7 @@ app.use(function (req, res, next) {
         s.push(Object.keys(tmp)[i] + ': ' + Object.values(tmp)[i]);
     }
     const a = s.join(',\t');
-    accessLogfile.write(meta + a + '\n');
+    if (a.length>0) accessLogfile.write(a + '\n');
     next();
 });
 
@@ -84,14 +94,15 @@ app.use('/user', user);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-    var err = new Error('Not Found');
+    let err = new Error('Not Found');
     err.status = 404;
     next(err);
 });
 
 app.use(function(err, req, res, next){
-    var meta = '[' + new Date() + '] ' + get_client_ip(req) + ' \t' + req.method + ' \t' + req.url + ' \t';
-    var tmp;
+    let meta = '[' + new Date() + '] ' + get_client_ip(req) + '\n' + req.method + ' \t' + req.url + '\n';
+    accessLogfile.write(meta);
+    let tmp;
     if (req.method === 'GET') {
         tmp = req.query
     } else if (req.method === 'POST') {
@@ -102,12 +113,13 @@ app.use(function(err, req, res, next){
         s.push(Object.keys(tmp)[i] + ': ' + Object.values(tmp)[i]);
     }
     const a = s.join(',\t');
-    errorLogfile.write(meta + a + err.stack + '\n');
+    if (a.length>0) accessLogfile.write(a + '\n');
+    errorLogfile.write(err.stack + '\n');
     next(err);
 });
 
 // error handler
-app.use(function (err, req, res, next) {
+app.use(function (err, req, res) {
     // set locals, only providing error in development
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};

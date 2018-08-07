@@ -34,6 +34,7 @@ $('body').on('click', '.go', function () {
     let setting = s.length >= 1 ? s : "";
     for (let i = 0; i < apiAndParam.length; i++) {
         if (apiAndParam[i] === undefined) continue;
+        if (!document.getElementById("checkbox"+i).checked) continue;
         const serverName = $('.row' + i).find('.serverName').val();
         const apiName = $('.row' + i).find('.select-api').val();
         const cnt = $('.row' + i).find('.cnt').val();
@@ -239,6 +240,10 @@ function addApi2View() {
     }
     const tmp = $(
         '<div class="row apiRow row' + apiNo + '">\n' +
+        '                    <!--选择api-->\n' +
+        '                    <div class="col-md-auto">\n' +
+        '                        <input type="checkbox" class="checkbox-inline" id="checkbox'+apiNo+'" checked="checked">\n' +
+        '                    </div>' +
         '                    <!--服务器配置名-->\n' +
         '                    <div class="col-md-auto">\n' +
         '                        <label>\n' +
@@ -464,8 +469,9 @@ function get_setting_name_list(select) {
 // 导入配置文件
 function import_setting() {
     const len_setting = $('.setting-option').length;
-    var setting_select = document.getElementById("InputSettings");
-    var setting_f = false;
+    let setting_select = document.getElementById("InputSettings");
+    let setting_name = setting_select.value;
+    let setting_f = false;
     for (let i = 0; i <= len_setting; i++) {
         if (setting_select[i].value === setting) {
             setting_select[i].selected = true;
@@ -477,8 +483,7 @@ function import_setting() {
         if ($('.error-info').length !== 0) {
             $('.error-info').remove();
         }
-        const t = $('<p class="error-info" style="color: red">没有该配置的主配置文件</p>');
-        $('.SettingLabel').append(t);
+        showMessage($('.select-view'), 'danger', '没有该配置的主配置文件')
     } else {
         changeSelectSetting(function () {
             const len_api = Object.keys(api).length;
@@ -502,9 +507,9 @@ function import_setting() {
                 }
                 for (let j = 0; j < Object.keys(a["params"]).length; j++) {
                     const paramN = addParam2View(apiN);
-                    var keys = $('.select-param'+ paramN).find('.param-option');
-                    var value = $('.param-value'+ paramN);
-                    var param = Object.keys(a["params"])[j];
+                    let keys = $('.select-param'+ paramN).find('.param-option');
+                    let value = $('.param-value'+ paramN);
+                    let param = Object.keys(a["params"])[j];
                     for (let k = 0; k < keys.length; k++) {
                         if (keys[k].value === param) {
                             keys[k].selected = true;
@@ -516,6 +521,7 @@ function import_setting() {
                 cnt.val(a['cnt'])
             }
         });
+        document.getElementById("file-name").value = setting_name.split('/')[1];
     }
 }
 
@@ -534,7 +540,6 @@ function getApiKeyByApiName(apiName) {
 
 // 向服务器保存配置
 function save_setting(setting) {
-    $('.saveResult').remove();
     let settingName = document.getElementById("file-name").value;
     let groupName = document.getElementById("InputSettings").value;
     groupName = groupName.split('/')[0];
@@ -570,13 +575,13 @@ function save_setting(setting) {
         success: function (data) {
             $('.loading').remove();
             $('#textarea').remove();
-            $('.button-view').append($('<p class="saveResult">保存成功</p>'));
-            var tmp = document.getElementById("InputSettings").value;
+            showMessage($('.button-view'), 'success', '保存成功');
+            let tmp = document.getElementById("InputSettings").value;
             get_setting_name_list(tmp);
         },
         error: function () {
             $('.loading').remove();
-            $('.button-view').append($('<p class="saveResult">保存成功</p>'))
+            showMessage($('.button-view'), 'danger', '保存失败');
         },
         complete: function () {
 
