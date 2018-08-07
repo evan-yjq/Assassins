@@ -3,13 +3,20 @@ var DB = require("./DB");
 var sql = {
     SELECT: "select * from T_USER",
     CHECK: "select * from T_USER where user_account = ?",
-    GET_SET:"select s.setting_id, s.setting_file, us.permission, gs.group_id, g.group_name from T_SETTING s\n" +
-    "  left join T_GROUP_SETTING gs on gs.setting_id = s.setting_id\n" +
-    "  left join T_GROUP_USER gu on gu.group_id = gs.group_id\n" +
-    "  left join T_USER u on u.user_id = gu.user_id\n" +
-    "  left join T_USER_SETTING us on us.user_id = u.user_id and s.setting_id=us.setting_id\n" +
-    "  left join T_GROUP g on g.group_id = gs.group_id\n" +
-    "where u.user_account = ?",
+    GET_SET:"select s.setting_id, s.setting_file, gs.group_id, g.group_name, u.user_account,\n" +
+        "       case\n" +
+        "           when gu.identity = 'admin' then 'w/r'\n" +
+        "           when us.permission is null then 'r'\n" +
+        "           else us.permission\n" +
+        "       end as permission\n" +
+        "  from T_SETTING s\n" +
+        "  left join T_GROUP_SETTING gs on gs.setting_id = s.setting_id\n" +
+        "  left join T_GROUP_USER gu on gu.group_id = gs.group_id\n" +
+        "  left join T_USER u on u.user_id = gu.user_id\n" +
+        "  left join T_USER_SETTING us on us.user_id = u.user_id and s.setting_id=us.setting_id\n" +
+        "  left join T_GROUP g on g.group_id = gs.group_id\n" +
+        "where u.user_account = ?\n" +
+        "order by gs.group_id",
     GET_GROUP: "select group_name from T_GROUP\n" +
     "where group_id in (\n" +
     "  select group_id from T_GROUP_USER\n" +

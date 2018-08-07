@@ -25,3 +25,25 @@ let typeAll = {
         'content':'失败!'
     }
 };
+// 加载动画
+const loading = $(
+        '<div class="col-md-auto loading">' +
+        '<div class="loader-inner">\n' +
+        '<div class="loader-line-wrap">\n' +
+        '<div class="loader-line"></div>\n' +
+        '</div>\n' +
+        '<div class="loader-line-wrap">\n' +
+        '<div class="loader-line"></div>\n' +
+        '</div>\n' +
+        '<div class="loader-line-wrap">\n' +
+        '<div class="loader-line"></div>\n' +
+        '</div>\n' +
+        '<div class="loader-line-wrap">\n' +
+        '<div class="loader-line"></div>\n' +
+        '</div>\n' +
+        '<div class="loader-line-wrap">\n' +
+        '<div class="loader-line"></div>\n' +
+        '</div>\n' +
+        '</div>' +
+        '</div>'
+    );

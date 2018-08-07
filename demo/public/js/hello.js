@@ -539,42 +539,28 @@ function getApiKeyByApiName(apiName) {
 }
 
 // 向服务器保存配置
-function save_setting(setting) {
+function save_setting(settings) {
     let settingName = document.getElementById("file-name").value;
     let groupName = document.getElementById("InputSettings").value;
     groupName = groupName.split('/')[0];
     settingName = groupName + "/" + settingName;
-    document.getElementById("file-name").value="";
-    const loading = $(
-        '<div class="col-md-auto loading">' +
-        '<div class="loader-inner">\n' +
-        '<div class="loader-line-wrap">\n' +
-        '<div class="loader-line"></div>\n' +
-        '</div>\n' +
-        '<div class="loader-line-wrap">\n' +
-        '<div class="loader-line"></div>\n' +
-        '</div>\n' +
-        '<div class="loader-line-wrap">\n' +
-        '<div class="loader-line"></div>\n' +
-        '</div>\n' +
-        '<div class="loader-line-wrap">\n' +
-        '<div class="loader-line"></div>\n' +
-        '</div>\n' +
-        '<div class="loader-line-wrap">\n' +
-        '<div class="loader-line"></div>\n' +
-        '</div>\n' +
-        '</div>' +
-        '</div>'
-    );
+    for (let i = 0; i < setting_list.length; i++) {
+        if (setting_list[i]['group_name']+'/'+setting_list[i]['setting_file'] === settingName) {
+            let permission = setting_list[i]['permission'].split('/');
+            if (permission.indexOf('w') < 0){
+                showMessage($('.button-view'), 'danger', '该用户没有写入权限，请向组管理员获取权限')
+                return
+            }
+        }
+    }
     $('.button-view').append(loading);
     $.ajax({
         type: 'post',
         url: '/settings/save',
-        data: {'settingName': settingName, 'settings': setting},
+        data: {'settingName': settingName, 'settings': settings},
         timeout: 20000,
-        success: function (data) {
+        success: function () {
             $('.loading').remove();
-            $('#textarea').remove();
             showMessage($('.button-view'), 'success', '保存成功');
             let tmp = document.getElementById("InputSettings").value;
             get_setting_name_list(tmp);

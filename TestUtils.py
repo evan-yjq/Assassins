@@ -18,12 +18,9 @@ sys.setdefaultencoding("utf8")
 # 自动调用
 # create by ye jiaquan in 2018/07/18
 def get(url, data, headers):
-    try:
-        data = urllib.urlencode(data)
-        req = urllib2.Request(url='%s%s%s' % (url, '?', data), headers=headers)
-        res = urllib2.urlopen(req)
-    except (urllib2.HTTPError, TypeError, ValueError, AttributeError), e:
-        return e
+    data = urllib.urlencode(data)
+    req = urllib2.Request(url='%s%s%s' % (url, '?', data), headers=headers)
+    res = urllib2.urlopen(req)
     return res.read()
 
 
@@ -32,13 +29,10 @@ def get(url, data, headers):
 # 自动调用
 # create by ye jiaquan in 2018/07/18
 def post(url, data, headers):
-    try:
-        data = urllib.urlencode(data)
-        req = urllib2.Request(url, data, headers)
-        opener = urllib2.build_opener(urllib2.HTTPCookieProcessor())
-        res = opener.open(req, data)
-    except (urllib2.HTTPError, TypeError, ValueError, AttributeError), e:
-        return e
+    data = urllib.urlencode(data)
+    req = urllib2.Request(url, data, headers)
+    opener = urllib2.build_opener(urllib2.HTTPCookieProcessor())
+    res = opener.open(req, data)
     return res.read()
 
 
@@ -121,7 +115,12 @@ def selectApi(setting, api, edit):
     print ','.join(outputs)
     print '},'
 
-    if api['type'] == 'post':
-        return post(url, api['body'], set['settings']['headers'])
-    else:
-        return get(url + api['body']['param'], api['body'], set['settings']['headers'])
+    try:
+        if api['type'] == 'post':
+            return post(url, api['body'], set['settings']['headers'])
+        else:
+            return get(url + api['body']['param'], api['body'], set['settings']['headers'])
+    except urllib2.HTTPError, e:
+        return e
+    except urllib2.URLError:
+        return '服务器地址无法访问'
