@@ -71,33 +71,12 @@ function save_setting() {
         if (setting_list[i]['group_name']+'/'+setting_list[i]['setting_file'] === settingName) {
             let permission = setting_list[i]['permission'].split('/');
             if (permission.indexOf('w') < 0){
-                showMessage($('.button-view'), 'danger', '该用户没有写入权限，请向组管理员获取权限')
+                showMessage($('.button-view'), 'danger', '该用户没有写入权限，请向组管理员获取权限');
                 return
             }
         }
     }
     $('.saveSettingsButtonView').remove();
-    const loading = $(
-        '<div class="col-md-auto loading">' +
-        '<div class="loader-inner">\n' +
-        '<div class="loader-line-wrap">\n' +
-        '<div class="loader-line"></div>\n' +
-        '</div>\n' +
-        '<div class="loader-line-wrap">\n' +
-        '<div class="loader-line"></div>\n' +
-        '</div>\n' +
-        '<div class="loader-line-wrap">\n' +
-        '<div class="loader-line"></div>\n' +
-        '</div>\n' +
-        '<div class="loader-line-wrap">\n' +
-        '<div class="loader-line"></div>\n' +
-        '</div>\n' +
-        '<div class="loader-line-wrap">\n' +
-        '<div class="loader-line"></div>\n' +
-        '</div>\n' +
-        '</div>' +
-        '</div>'
-    );
     $('.button-view').append(loading);
     $.ajax({
         type: 'post',

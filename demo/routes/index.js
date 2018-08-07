@@ -60,23 +60,29 @@ router.get('/get_setting_name_list', function (req, res) {
 
 router.get('/get_test_result', function (req, res, next) {
     let option = req.query.setting+' '+req.query.serverName+' '+req.query.apiKey+' '+req.query.cnt+' \''+req.query.params+'\' ';
-    exec('python2.7 TestExtension.py '+option,
+    try {
+        exec('python2.7 TestExtension.py '+option,
         {
             encoding: 'utf8',
             timeout: 0,
-            maxBuffer: 10000 * 1024, // 默认 200 * 1024
+            maxBuffer: 8 * 1024 * 1024 * req.query.cnt + 200 * 1024, // 默认 200 * 1024
             killSignal: 'SIGTERM'
         },
         function(err, stdout, stderr){
             if (err){
                 console.log('stderr', err);
-                next(err)
+                res.send(err);
+                return res.end()
             }
             if (stdout) {
                 res.send(stdout);
                 return res.end()
             }
         });
+    }catch (e) {
+        res.send(e);
+        return res.end()
+    }
 });
 
 router.get('/jump_settings', function (req, res) {

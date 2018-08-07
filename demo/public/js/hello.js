@@ -224,7 +224,7 @@ function addApi2View() {
             $('.error-info').remove();
         }
         const t = $('<p class="error-info" style="color: red"> 请选择正确的配置文件</p>');
-        $('.SettingLabel').append(t)
+        $('.SettingLabel').append(t);
         return
     }
 
@@ -322,25 +322,6 @@ function get_test_result(setting, serverName, apiKey, cnt, params, apiN) {
         $('.resultA' + apiN).remove();
         $('#modalLong' + apiN).remove();
     }
-    const loading = $(
-        '<div class="loader-inner loading' + apiN + '">\n' +
-        '<div class="loader-line-wrap">\n' +
-        '<div class="loader-line"></div>\n' +
-        '</div>\n' +
-        '<div class="loader-line-wrap">\n' +
-        '<div class="loader-line"></div>\n' +
-        '</div>\n' +
-        '<div class="loader-line-wrap">\n' +
-        '<div class="loader-line"></div>\n' +
-        '</div>\n' +
-        '<div class="loader-line-wrap">\n' +
-        '<div class="loader-line"></div>\n' +
-        '</div>\n' +
-        '<div class="loader-line-wrap">\n' +
-        '<div class="loader-line"></div>\n' +
-        '</div>\n' +
-        '</div>'
-    );
     $('.result' + apiN).append(loading);
     $.ajax({
         type: 'get',
@@ -454,7 +435,7 @@ function get_setting_name_list(select) {
                     t = t + '<option class="setting-option">' + data[i]['group_name'] + '/' + data[i]['setting_file'] + '</option>'
                 }
             }
-            $('.select-setting').append($(t))
+            $('.select-setting').append($(t));
             setting_list = data
         },
         error: function () {
@@ -548,7 +529,7 @@ function save_setting(settings) {
         if (setting_list[i]['group_name']+'/'+setting_list[i]['setting_file'] === settingName) {
             let permission = setting_list[i]['permission'].split('/');
             if (permission.indexOf('w') < 0){
-                showMessage($('.button-view'), 'danger', '该用户没有写入权限，请向组管理员获取权限')
+                showMessage($('.button-view'), 'danger', '该用户没有写入权限，请向组管理员获取权限');
                 return
             }
         }
