@@ -1,8 +1,8 @@
-var DB = require("./DB");
+const DB = require("./DB");
 
-var sql = {
+const sql = {
     GET_ID_BY_NAME: "select group_id from T_GROUP\n" +
-    "where group_name = ?"
+        "where group_name = ?"
 };
 
 function get_id_by_name(name){

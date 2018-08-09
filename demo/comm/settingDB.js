@@ -1,17 +1,17 @@
-var DB = require("./DB");
+const DB = require("./DB");
 
-var sql = {
+const sql = {
     INSERT_SETTING: "insert into T_SETTING(setting_file)VALUES (?)",
     SELECT_LAST_SETTING: "select last_insert_rowid()",
     INSERT_GROUP_SETTING: "insert into T_GROUP_SETTING (group_id, setting_id) VALUES (?, ?)",
     INSERT_USER_SETTING: "insert into T_USER_SETTING(permission, setting_id, user_id) VALUES ('w/r', ?, ?)",
     SELECT_SETTING_GROUP: "select group_name from T_GROUP\n" +
-    "  where group_id in (\n" +
-    "    select gs.group_id from T_GROUP_SETTING gs\n" +
-    "      left join T_GROUP_USER gu on gs.group_id = gu.group_id\n" +
-    "    where gs.setting_id = ?\n" +
-    "    and gu.user_id = ?\n" +
-    "  )"
+        "  where group_id in (\n" +
+        "    select gs.group_id from T_GROUP_SETTING gs\n" +
+        "      left join T_GROUP_USER gu on gs.group_id = gu.group_id\n" +
+        "    where gs.setting_id = ?\n" +
+        "    and gu.user_id = ?\n" +
+        "  )"
 };
 
 function insert_setting(setting_file, group_id, user_id){

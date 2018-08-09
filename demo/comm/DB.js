@@ -1,7 +1,7 @@
-var file = "/home/Assassins/test.db";
-var sqlite3 = require("sqlite3").verbose();
-var db = new sqlite3.Database(file);
-var Promise = require("bluebird");
+const file = "/home/Assassins/test.db";
+const sqlite3 = require("sqlite3").verbose();
+const db = new sqlite3.Database(file);
+const Promise = require("bluebird");
 
 function promiseQuery(sql, param, mode) {
     mode = mode === 'all' ? 'all' : mode === 'get' ? 'get' : 'run';

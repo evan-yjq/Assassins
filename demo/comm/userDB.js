@@ -1,9 +1,9 @@
-var DB = require("./DB");
+const DB = require("./DB");
 
-var sql = {
+const sql = {
     SELECT: "select * from T_USER",
     CHECK: "select * from T_USER where user_account = ?",
-    GET_SET:"select s.setting_id, s.setting_file, gs.group_id, g.group_name, u.user_account,\n" +
+    GET_SET: "select s.setting_id, s.setting_file, gs.group_id, g.group_name, u.user_account,\n" +
         "       case\n" +
         "           when gu.identity = 'admin' then 'w/r'\n" +
         "           when us.permission is null then 'r'\n" +
@@ -18,15 +18,15 @@ var sql = {
         "where u.user_account = ?\n" +
         "order by gs.group_id",
     GET_GROUP: "select group_name from T_GROUP\n" +
-    "where group_id in (\n" +
-    "  select group_id from T_GROUP_USER\n" +
-    "  where user_id = (\n" +
-    "    select user_id from T_USER\n" +
-    "    where user_account = ?\n" +
-    "  )\n" +
-    ")",
-    GET_ID_BY_ACCOUNT:"select user_id from T_USER\n" +
-    "where user_account = ?"
+        "where group_id in (\n" +
+        "  select group_id from T_GROUP_USER\n" +
+        "  where user_id = (\n" +
+        "    select user_id from T_USER\n" +
+        "    where user_account = ?\n" +
+        "  )\n" +
+        ")",
+    GET_ID_BY_ACCOUNT: "select user_id from T_USER\n" +
+        "where user_account = ?"
 };
 
 function get_id_by_account(account) {

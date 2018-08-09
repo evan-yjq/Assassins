@@ -4,11 +4,11 @@ const YAML = require('yamljs');
 const fs = require("fs");
 const join = require('path').join;
 const pa = require('path');
-var settingDB = require('../comm/settingDB');
-var userDB = require('../comm/userDB');
-var groupDB = require('../comm/groupDB');
+const settingDB = require('../comm/settingDB');
+const userDB = require('../comm/userDB');
+const groupDB = require('../comm/groupDB');
 
-router.post('/save', function (req, res) {
+router.post('/save', function (req, res, next) {
     const settings = req.body.settings;
     let settingName = req.body.settingName;
     const account = req.cookies["testEx_username"];
@@ -31,7 +31,7 @@ router.post('/save', function (req, res) {
     finder(path);
     if (result.indexOf(settingName) >= 0) f = true;
     fs.writeFile(file, txt, function (err) {
-        if (err) return false;
+        if (err) next();
         if (!f) {
             intertDB(account, groupName, settingName, function () {
                 console.log(file+"写入成功");

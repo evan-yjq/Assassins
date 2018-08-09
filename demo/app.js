@@ -103,7 +103,7 @@ app.use(function (req, res, next) {
 // 打印错误日志
 app.use(function(err, req, res, next){
     let meta = '[' + new Date() + '] ' + get_client_ip(req) + '\n' + req.method + ' \t' + req.url + '\n';
-    accessLogfile.write(meta);
+    errorLogfile.write(meta);
     let tmp;
     if (req.method === 'GET') {
         tmp = req.query
@@ -115,7 +115,7 @@ app.use(function(err, req, res, next){
         s.push(Object.keys(tmp)[i] + ': ' + Object.values(tmp)[i]);
     }
     const a = s.join(',\t');
-    if (a.length>0) accessLogfile.write(a + '\n');
+    if (a.length>0) errorLogfile.write(a + '\n');
     errorLogfile.write(err.stack + '\n');
     next(err);
 });
