@@ -13,7 +13,6 @@ const settings = require('./routes/settings');
 const user = require('./routes/user');
 const userDB = require('./comm/userDB');
 
-
 const app = express();
 
 const errorLogfile = fs.createWriteStream('logs/error.log', {flags: 'a'});
@@ -38,7 +37,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser('TestEx'));
 app.use(express.static(path.join(__dirname, 'public')));
 
-//获取url请求客户端ip
+// 获取url请求客户端ip
 let get_client_ip = function(req) {
     let ip = req.headers['x-forwarded-for'] ||
         req.ip ||
@@ -51,6 +50,7 @@ let get_client_ip = function(req) {
     return ip;
 };
 
+// 拦截未登录用户
 app.use(function (req, res, next) {
     if (req.url !== '/user/check') {
         if (req.cookies["testEx_username"] == null || req.cookies["testEx_password"] == null) {
@@ -70,6 +70,7 @@ app.use(function (req, res, next) {
     }
 });
 
+// 打印访问接口日志
 app.use(function (req, res, next) {
     let meta = '[' + new Date() + '] ' + get_client_ip(req) + '\n' + req.method + ' \t' + req.url + '\n';
     accessLogfile.write(meta);
@@ -99,6 +100,7 @@ app.use(function (req, res, next) {
     next(err);
 });
 
+// 打印错误日志
 app.use(function(err, req, res, next){
     let meta = '[' + new Date() + '] ' + get_client_ip(req) + '\n' + req.method + ' \t' + req.url + '\n';
     accessLogfile.write(meta);

@@ -52,14 +52,14 @@ def randomPrice(s=0.0, p=5.0):
 # done(开发完成)
 # 自动生成sys
 # create by ye jiaquan in 2018/07/19
-def autoSys(signUser):
-    millis = int(round(time.time() * 1000))
-    setting = st.settings['settings']
-    sys = st.settings['sys']
-    strs = "%s&%s&%s&%s&%s&%s" % (millis, setting['sysSetting'][signUser], sys[signUser]['city'],
-                                  sys[signUser]['county'], sys[signUser]['industry'], signUser)
-    sys[signUser]['timestamp'] = str(millis)
-    sys[signUser]['sign'] = hashlib.md5(strs.encode('utf-8').lower()).hexdigest()
+# def autoSys(signUser):
+#     millis = int(round(time.time() * 1000))
+#     setting = st.settings['settings']
+#     sys = st.settings['sys']
+#     strs = "%s&%s&%s&%s&%s&%s" % (millis, setting['sysSetting'][signUser], sys[signUser]['city'],
+#                                   sys[signUser]['county'], sys[signUser]['industry'], signUser)
+#     sys[signUser]['timestamp'] = str(millis)
+#     sys[signUser]['sign'] = hashlib.md5(strs.encode('utf-8').lower()).hexdigest()
 
 
 # done(开发完成)

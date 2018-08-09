@@ -59,7 +59,18 @@ router.get('/get_setting_name_list', function (req, res) {
 });
 
 router.get('/get_test_result', function (req, res, next) {
-    let option = req.query.setting+' '+req.query.serverName+' '+req.query.apiKey+' '+req.query.cnt+' \''+req.query.params+'\' ';
+    let setting = req.query.setting;
+    let params = req.query.params;
+    // 尝试载入自定义插件
+    try {
+        let plugin = require('../settings/'+setting);
+        const data = YAML.parse(fs.readFileSync("demo/settings/"+setting+".yaml").toString());
+        params = JSON.stringify(plugin.handle(data, JSON.parse(params)));
+    }catch (e) {
+        console.log(setting+'没有自定义插件,或插件内部报错')
+    }
+
+    let option = req.query.setting+' '+req.query.serverName+' '+req.query.apiKey+' '+req.query.cnt+' \''+params+'\' ';
     try {
         exec('python2.7 TestExtension.py '+option,
         {

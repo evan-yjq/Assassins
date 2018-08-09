@@ -45,10 +45,6 @@ if __name__ == '__main__':
     edit = {}
     try:
         edit = json.loads(params)
-        for i in edit:
-            if i == 'sys':
-                utils.autoSys(edit[i])
-                edit[i] = st.settings['sys'][edit[i]]
     except:
         print '"log":"解析参数出错",'
         pass

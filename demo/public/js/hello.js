@@ -306,6 +306,7 @@ function addApi2View() {
     return apiNo-1;
 }
 
+/**checkAll----------------------------------------*/
 // 扫描所有checkbox
 function syncCheckBox() {
     let all = 0;
@@ -342,6 +343,7 @@ function checkAll(isCheck) {
         document.getElementById("checkbox"+i).checked = isCheck
     }
 }
+/**----------------------------------------*/
 
 // 选择显示添加或导入按钮
 function showAddApiButton() {
@@ -403,6 +405,7 @@ function get_test_result(setting, serverName, apiKey, cnt, params, apiN) {
             });
         },
         error: function () {
+            $('.go').removeAttr("disabled");
             $('.result' + apiN).find('.loading').remove();
         },
         complete: function () {
@@ -424,9 +427,12 @@ function _tmp(data) {
 function get_setting(setting_name, callback) {
     $('.saveResult').remove();
     $('body').find('.error-info').length === 0 ? '' : $('.error-info').remove();
-    $('.addApiView').find('.apiRow').length === 0 ? '' : $('.apiRow').remove();
     $('.addApiButtonView').find('.addApiButton').length === 0 ? '' : $('.addApiButton').remove();
     $('.addApiButtonView').find('.importApiButton').length === 0 ? '' : $('.importApiButton').remove();
+    for (let i = 0; i < apiAndParam.length; i++) {
+        if (apiAndParam[i] === undefined) continue;
+        removeApi(i)
+    }
     $.ajax({
         type: 'get',
         url: '/get_settings',
