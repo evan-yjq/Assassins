@@ -2,9 +2,66 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+
+    <script src="/js/jquery-1.11.1.min.js"></script>
+    <script src="/js/bootstrap/bootstrap.min.js"></script>
+    <title>测试扩展-用户配置</title>
 </head>
 <body>
+<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
+    <a class="navbar-brand col-sm-3 col-md-1 mr-0" href="/todo">测试扩展</a>
+    <input class="form-control form-control-dark w-100" type="text" placeholder="搜索" aria-label="Search">
+    <ul class="navbar-nav px-3">
+        <li class="nav-item text-nowrap">
+            <a class="nav-link" onclick="logout()" href="/">登出</a>
+        </li>
+    </ul>
+</nav>
+<div class="container-fluid">
+    <div class="row">
+        <nav class="col-md-1 d-none d-md-block bg-light sidebar">
+            <div class="sidebar-sticky">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <span data-feather="home"></span>
+                            测试设置
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/settings">
+                            <span data-feather="file"></span>
+                            配置信息
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href='#'>
+                            <span data-feather="file"></span>
+                            账号设置
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link">
+                            <button type="button" class="btn btn-primary">
+                                同步
+                            </button>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <main role="main" class="col-md-11 ml-sm-auto col-lg-11 pt-3 px-4">
+            <div>Group(1/4)|Setting(1/4)|Member(1/4)|Info(1/4)</div>
+        </main>
+    </div>
+</div>
+
+<script src="/js/data.js"></script>
+<script src="/js/all.js"></script>
+<script src="/js/utils.js"></script>
+<script src="/js/user.js"></script>
 
 </body>
 </html>

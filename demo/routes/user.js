@@ -3,7 +3,7 @@ const router = express.Router();
 const userDB = require('../comm/userDB');
 
 router.get('/', function (req, res) {
-    res.render('login')
+    res.render('account')
 });
 
 router.post('/check', function (req, res) {

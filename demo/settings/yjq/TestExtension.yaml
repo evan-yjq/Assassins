@@ -1,3 +1,7 @@
+note:
+    '配置文件编写示例': ''
+    '总配置文件中必须存在settings和apis两个配置': ''
+    '其中settings中必须要有headers，可参考此配置填写，否则就无法识别为总配置文件': ''
 settings:
     headers: {Content-Type: 'application/x-www-form-urlencoded; charset=UTF-8'}
     本地: {ip: localhost, port: '3000'}

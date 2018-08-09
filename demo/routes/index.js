@@ -96,11 +96,8 @@ router.get('/get_test_result', function (req, res, next) {
     }
 });
 
-router.get('/jump_settings', function (req, res) {
-    res.render('settings');
-});
 
-router.get('/jump_todo', function (req, res) {
+router.get('/todo', function (req, res) {
     res.render('todo')
 });
 

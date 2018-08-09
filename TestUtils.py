@@ -4,8 +4,8 @@
 import urllib
 import urllib2
 import random
-import time
-import hashlib
+# import time
+# import hashlib
 import Settings as st
 import sys
 

@@ -1,4 +1,4 @@
-const file = "/home/Assassins/test.db";
+const file = "./test.db";
 const sqlite3 = require("sqlite3").verbose();
 const db = new sqlite3.Database(file);
 const Promise = require("bluebird");
