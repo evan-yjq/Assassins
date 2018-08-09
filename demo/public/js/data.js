@@ -26,7 +26,8 @@ let typeAll = {
     }
 };
 // 加载动画
-const loading = $(
+const loading = function () {
+    return $(
         '<div class="col-md-auto loading">' +
         '<div class="loader-inner">\n' +
         '<div class="loader-line-wrap">\n' +
@@ -47,3 +48,4 @@ const loading = $(
         '</div>' +
         '</div>'
     );
+};

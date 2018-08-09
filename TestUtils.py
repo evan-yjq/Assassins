@@ -111,7 +111,7 @@ def selectApi(setting, api, edit):
     print '"请求参数":{'
     outputs = []
     for i in api['body']:
-        outputs.append('"%s":"%s"' % (i, str(api['body'][i]).encode('utf8')))
+        outputs.append('"%s":"%s"' % (i, str(api['body'][i]).encode('utf8').replace('"', "'")))
     print ','.join(outputs)
     print '},'
 

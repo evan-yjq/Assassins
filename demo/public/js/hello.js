@@ -30,6 +30,7 @@ $('body').on('click', '.importApiButton', function () {
 
 // 测试按钮点击
 $('body').on('click', '.go', function () {
+    $('.go').attr('disabled',"true");
     const s = document.getElementById("InputSettings").value;
     let setting = s.length >= 1 ? s : "";
     for (let i = 0; i < apiAndParam.length; i++) {
@@ -132,6 +133,7 @@ $('body').on('click', '.save-settings', function () {
 function removeApi(apiN) {
     $('.addApiView').find('.row' + apiN).length === 0 ? '' : $('.row' + apiN).remove();
     delete apiAndParam[apiN];
+    syncCheckBox();
 }
 
 // 根据API_ID移除所有参数
@@ -242,7 +244,7 @@ function addApi2View() {
         '<div class="row apiRow row' + apiNo + '">\n' +
         '                    <!--选择api-->\n' +
         '                    <div class="col-md-auto">\n' +
-        '                        <input type="checkbox" class="checkbox-inline" id="checkbox'+apiNo+'" checked="checked">\n' +
+        '                        <input type="checkbox" class="checkbox-inline" id="checkbox'+apiNo+'" checked="checked" onchange="syncCheckBox()">\n' +
         '                    </div>' +
         '                    <!--服务器配置名-->\n' +
         '                    <div class="col-md-auto">\n' +
@@ -299,8 +301,46 @@ function addApi2View() {
         '                <br class="apiRow row' + apiNo + '">');
     $('.addApiView').append(tmp);
     apiAndParam[apiNo] = [];
+    syncCheckBox();
     apiNo = apiNo + 1;
     return apiNo-1;
+}
+
+// 扫描所有checkbox
+function syncCheckBox() {
+    let all = 0;
+    let ischeck = 0;
+    for (let i = 0; i < apiAndParam.length; i++) {
+        if (apiAndParam[i] === undefined) continue;
+        all++;
+        if (document.getElementById("checkbox"+i).checked) ischeck++;
+    }
+    checkHidden(all !== 0);
+    if (all !== 0) showCheck(all === ischeck);
+}
+
+//是否显示checkAll
+function checkHidden(isShow) {
+    if (isShow) document.getElementById('checkAll').style.display='block';
+    else document.getElementById('checkAll').style.display='none'
+}
+
+// checkAll状态更改
+function checkAllOnChange() {
+    checkAll(document.getElementById("checkAll").checked);
+}
+
+// 更改checkAll的状态
+function showCheck(isCheck) {
+    document.getElementById("checkAll").checked = isCheck
+}
+
+// checkAll的操作
+function checkAll(isCheck) {
+    for (let i = 0; i < apiAndParam.length; i++) {
+        if (apiAndParam[i] === undefined) continue;
+        document.getElementById("checkbox"+i).checked = isCheck
+    }
 }
 
 // 选择显示添加或导入按钮
@@ -335,7 +375,8 @@ function get_test_result(setting, serverName, apiKey, cnt, params, apiN) {
         },
         timeout: 120000 * cnt,
         success: function (data) {
-            $('.result' + apiN).find('.loading' + apiN).length === 0 ? '' : $('.loading' + apiN).remove();
+            $('.go').removeAttr("disabled");
+            $('.result' + apiN).find('.loading').remove();
             const t = $('<button data-toggle="modal" data-target="#modalLong' + apiN + '" class="btn btn-dark w-100 resultA' + apiN + '">Info</button>' +
                 '<!-- Modal -->\n' +
                 '<div align="left" class="modal fade" id="modalLong' + apiN + '" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">\n' +
@@ -362,7 +403,7 @@ function get_test_result(setting, serverName, apiKey, cnt, params, apiN) {
             });
         },
         error: function () {
-            $('.result' + apiN).find('.loading' + apiN).length === 0 ? '' : $('.loading' + apiN).remove();
+            $('.result' + apiN).find('.loading').remove();
         },
         complete: function () {
 

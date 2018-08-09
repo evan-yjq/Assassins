@@ -45,23 +45,23 @@
 - (done in 18-07-28) / (update in 18-08-03) / 最新镜像文件下载 docker pull evanyjq/testex:latest<<<维护
 
 - (done in 18-07-28) / (update in 18-08-03) / 运行方式：<<<维护
-    
+
     - docker run -p 3000:3000 -v 替换为项目路径:/home/Assassins --name TestEx -d evanyjq/testex:latest /bin/bash ./home/start.sh
 
 - (done in 18-07-29) / 数据表：<<<维护
 
   - T_GROUP(group_id, group_name); -- 分组信息，每个用户拥有只含其一人的一个分组
-  
+
   - T_USER(user_id, user_account, user_pwd); -- 用户信息，用于登录
-  
+
   - T_GROUP_USER(user_id, group_id, identity); -- 分组-用户关联，可通过user_id找到其归属的group_id，也可通过group_id获组内的成员user_id，identity为在组内的身份
-  
+
   - T_SETTING(setting_id, setting_file); -- 配置信息，存储配置信息的文件路径
-  
+
   - T_GROUP_SETTING(group_id, setting_id); -- 分组-配置关联，必须是通过group_id获取setting_id，一对多
 
   - T_USER_SETTING(setting_id, user_id, permission); -- 用户-配置关联，用户对每个配置的权限
-  
+
 - (done in 18-07-29) / 更改配置读取方式<<<功能
 
 - (done in 18-08-03) / 后台返回数据的处理，更好的显示方式<<<界面
@@ -82,11 +82,15 @@
 
 - (done in 18-08-07) / 组的管理员拥有读写组里所有文件的权限<<<功能
 
-## Next （2018/08/08 00:40:51 / idea
+- (done in 18-08-09) / 配置可全选，反选<<<界面
+
+## Next （2018/08/09 15:08:00 / idea
 
 - (doing in 18-07-26) / 松耦合<<<功能
 
-- (todo in 18-08-08) / 账户信息不够安全<<<界面
+- (todo in 18-08-..) / 界面开发可以随时上传前端文件（Interface development）<<<功能>>>界面
+
+- (todo in 18-..-..) / 账户信息不够安全<<<界面
 
 - (todo in 18-..-..) / 手机端界面的适配<<<界面
 
