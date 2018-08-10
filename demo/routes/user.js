@@ -27,6 +27,28 @@ router.post('/check', function (req, res) {
         })
 });
 
+//返回用户所属分组
+router.get('/get_group', function (req, res) {
+    let account = req.cookies["testEx_username"];
+    userDB.GET_GROUP(account).then(function (data) {
+        return res.send(data).end();
+    })
+});
+
+router.get('/get_group_setting', function (req, res) {
+    let group_name = req.query.groupName;
+    userDB.GET_GROUP_SETTING(group_name).then(function (data) {
+        return res.send(data).end();
+    })
+});
+
+router.get('/get_group_member', function (req, res) {
+    let group_name = req.query.groupName;
+    userDB.GET_GROUP_MEMBER(group_name).then(function (data) {
+        return res.send(data).end();
+    })
+});
+
 router.get('/get_user_id_by_account', function (req, res) {
     const account = req.cookies["testEx_username"];
     userDB.GET_ID_BY_ACCOUNT(account)

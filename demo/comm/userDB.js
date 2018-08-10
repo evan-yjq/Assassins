@@ -25,6 +25,18 @@ const sql = {
         "    where user_account = ?\n" +
         "  )\n" +
         ")",
+    GET_GROUP_SETTING: "select setting_file from T_SETTING\n" +
+        "where setting_id in (\n" +
+        "select setting_id from T_GROUP_SETTING\n" +
+        "where group_id = (\n" +
+        "select group_id from T_GROUP\n" +
+        "where group_name = ?))",
+    GET_GROUP_MEMBER: "select user_account from T_USER\n" +
+        "where user_id in (\n" +
+        "select user_id from T_GROUP_USER\n" +
+        "where group_id = (\n" +
+        "select group_id from T_GROUP\n" +
+        "where group_name = ?))",
     GET_ID_BY_ACCOUNT: "select user_id from T_USER\n" +
         "where user_account = ?"
 };
@@ -49,10 +61,20 @@ function get_group(account){
     return DB.QUERY(sql.GET_GROUP, [account], 'all')
 }
 
+function get_group_setting(group_name){
+    return DB.QUERY(sql.GET_GROUP_SETTING, [group_name], 'all')
+}
+
+function get_group_member(group_name){
+    return DB.QUERY(sql.GET_GROUP_MEMBER, [group_name], 'all')
+}
+
 module.exports = {
     SELECT_ALL: select_all_user,
     CHECK: check,
     GET_SET: get_settings,
     GET_GROUP: get_group,
-    GET_ID_BY_ACCOUNT: get_id_by_account
+    GET_ID_BY_ACCOUNT: get_id_by_account,
+    GET_GROUP_SETTING: get_group_setting,
+    GET_GROUP_MEMBER: get_group_member
 };

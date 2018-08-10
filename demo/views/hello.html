@@ -3,97 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/offcanvas.css">
     <link rel="stylesheet" href="/css/style.css">
-
-    <script src="/js/jquery-1.11.1.min.js"></script>
-    <script src="/js/bootstrap/bootstrap.min.js"></script>
     <title>测试扩展</title>
 </head>
-<body>
-<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
-    <a class="navbar-brand col-sm-3 col-md-1 mr-0" href="/todo">测试扩展</a>
-    <input class="form-control form-control-dark w-100" type="text" placeholder="搜索" aria-label="Search">
-    <ul class="navbar-nav px-3">
-        <li class="nav-item text-nowrap">
-            <a class="nav-link" onclick="logout()" href="/">登出</a>
-        </li>
-    </ul>
-</nav>
-<div class="container-fluid">
-    <div class="row">
-        <nav class="col-md-1 d-none d-md-block bg-light sidebar">
-            <div class="sidebar-sticky">
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#">
-                            <span data-feather="home"></span>
-                            测试设置
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/settings">
-                            <span data-feather="file"></span>
-                            配置信息
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/user">
-                            <span data-feather="file"></span>
-                            账号设置
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link">
-                            <button type="button" class="btn btn-primary">
-                                同步
-                            </button>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-        <main role="main" class="col-md-11 ml-sm-auto col-lg-11 pt-3 px-4">
-            <div class="row select-view">
-                <div class="col-md-auto">
-                    <label class="SettingLabel" for="InputSettings">
-                        配置文件
-                    </label>
-                    <div>
-                        <select class="custom-select d-block w-100 select-setting" id="InputSettings" onchange="changeSelectSetting()" required="">
-                            <option value="">选择...</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-auto">
-                    <label style="visibility: hidden">'</label>
-                    <div class="addApiButtonView"></div>
-                </div>
-            </div>
-            <br>
-            <div class="form-group addApiView">
-            </div>
-
-            <div class="row button-view">
-                <div class="col-md-auto">
-                    <input type="checkbox" class="checkbox-inline" id="checkAll" style="display: none" onchange="checkAllOnChange()">
-                </div>
-                <div class="col-md-auto">
-                    <button class="btn btn-primary go">
-                        提交
-                    </button>
-                </div>
-                <div class="col-md-auto">
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#saveModal">
-                        保存配置到
-                    </button>
-                </div>
-            </div>
-
-            <div id="result"></div>
-        </main>
+<body class="bg-light">
+<nav class="navbar navbar-expand-md fixed-top navbar-dark bg-dark">
+    <a class="navbar-brand" href="/todo">测试扩展</a>
+    <button class="navbar-toggler p-0 border-0" type="button" data-toggle="offcanvas">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link active" href="#">测试设置</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/settings">配置信息</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/user">账号设置</a>
+            </li>
+        </ul>
+        <div class="my-2 my-lg-0">
+            <a class="btn btn-outline-primary mr-sm-2" href="#">同步</a>
+            <a class="btn btn-outline-warning my-2 my-sm-0" onclick="logout()" href="/">登出</a>
+        </div>
     </div>
-</div>
+</nav>
+
+<main role="main" class="container-fluid">
+    <div class="row select-view p-3 my-3 bg-white box-shadow">
+        <div class="row">
+            <div class="col-md-auto">
+                <label class="SettingLabel" for="InputSettings">
+                    配置文件
+                </label>
+                <div>
+                    <select class="custom-select d-block w-100 select-setting" id="InputSettings" onchange="changeSelectSetting()" required="">
+                        <option value="">选择...</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-auto">
+                <label style="visibility: hidden">'</label>
+                <div class="addApiButtonView"></div>
+            </div>
+        </div>
+    </div>
+    <div class="row form-group addApiView p-3 my-3"></div>
+
+    <div class="row p-3 my-3 bg-white box-shadow" style="display: none" id="bottom-line">
+        <div class="row button-view ">
+            <div class="col-md-auto">
+                <input type="checkbox" class="checkbox-inline" id="checkAll" onchange="checkAllOnChange()">
+            </div>
+            <div class="col-md-auto">
+                <button class="btn btn-primary go">
+                    提交
+                </button>
+            </div>
+            <div class="col-md-auto">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#saveModal">
+                    保存配置到
+                </button>
+            </div>
+        </div>
+    </div>
+</main>
+<!--模态-->
 <div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="saveModal" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
@@ -124,6 +102,12 @@
     </div>
   </div>
 </div>
+
+
+<script src="/js/jquery-1.11.1.min.js"></script>
+<script src="/js/bootstrap/bootstrap.min.js"></script>
+<script src="/js/offcanvas.js"></script>
+
 <script src="/js/data.js"></script>
 <script src="/js/all.js"></script>
 <script src="/js/utils.js"></script>

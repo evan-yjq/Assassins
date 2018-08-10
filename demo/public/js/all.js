@@ -1,58 +1,62 @@
 function get_user_group(start, finish) {
-    start();
-    if ($('.select-group').find('.setting-option').length !== 0) {
-        $('.select-group').find('.setting-option').remove();
-    }
+    if (start) start();
     $.ajax({
         type: 'get',
-        url: '/get_user_group',
+        url: '/user/get_group',
         data: {},
         timeout: 20000,
         success: function (data) {
-            let t = '';
-            for (let i = 0; i < data.length; i++) {
-                t = t + '<option class="setting-option">' + data[i]['group_name'] + '</option>'
-            }
-            $('.select-group').append($(t));
             user_group = data;
-            finish('success')
+            if (finish) finish('success')
         },
         error: function () {
-            finish('error')
+            if (finish) finish('error')
         },
         complete: function () {
-            finish('complete')
+            if (finish) finish('complete')
         }
     })
 }
 
-// function get_setting_group(setting_id, start, finish) {
-//     if (start) start();
-//     if ($('.select-group').find('.setting-option').length !== 0) {
-//         $('.select-group').find('.setting-option').remove();
-//     }
-//     $.ajax({
-//         type: 'get',
-//         url: '/get_user_setting_group',
-//         data: {'user_id': user_id,'setting_id': setting_id},
-//         timeout: 20000,
-//         success: function (data) {
-//             let t = '';
-//             for (let i = 0; i < data.length; i++) {
-//                 t = t + '<option class="setting-option">' + data[i]['group_name'] + '</option>'
-//             }
-//             $('.select-group').append($(t));
-//             setting_group = data;
-//             if (finish) finish('success')
-//         },
-//         error: function () {
-//             if (finish) finish('error')
-//         },
-//         complete: function () {
-//             if (finish) finish('complete')
-//         }
-//     })
-// }
+function get_group_setting(group_name, start, finish) {
+    if (start) start();
+    $.ajax({
+        type: 'get',
+        url: '/user/get_group_setting',
+        data: {'groupName':group_name},
+        timeout: 20000,
+        success: function (data) {
+            group_setting = data;
+            if (finish) finish('success')
+        },
+        error: function () {
+            if (finish) finish('error')
+        },
+        complete: function () {
+            if (finish) finish('complete')
+        }
+    })
+}
+
+function get_group_member(group_name, start, finish) {
+    if (start) start();
+    $.ajax({
+        type: 'get',
+        url: '/user/get_group_member',
+        data: {'groupName':group_name},
+        timeout: 20000,
+        success: function (data) {
+            group_member = data;
+            if (finish) finish('success')
+        },
+        error: function () {
+            if (finish) finish('error')
+        },
+        complete: function () {
+            if (finish) finish('complete')
+        }
+    })
+}
 
 function get_user_id(start, finish) {
     if (start) start();

@@ -7,28 +7,24 @@ const markdown = require("markdown").markdown;
 const userDB = require('../comm/userDB');
 const settingDB = require('../comm/settingDB');
 
-//返回测试界面
+//跳转测试界面
 router.get('/', function (req, res) {
     res.render('hello');
 });
 
-//返回开发界面
+//跳转todo界面
+router.get('/todo', function (req, res) {
+    res.render('todo')
+});
+
+//返回todoList内容
 router.get('/get_todo_list', function (req, res) {
     const mark = fs.readFileSync("TodoList.md").toString();
     res.send(markdown.toHTML(mark));
     return res.end();
 });
 
-//获取用户所属分组
-router.get('/get_user_group', function (req, res) {
-    var account = req.cookies["testEx_username"];
-    userDB.GET_GROUP(account).then(function (data) {
-        res.send(data);
-        return res.end()
-    })
-});
-
-//获取配置所属分组
+//返回配置所属分组
 router.get('/get_user_setting_group', function (req, res) {
     let user_id = req.query.user_id;
     let setting_id = req.query.setting_id;
@@ -39,8 +35,9 @@ router.get('/get_user_setting_group', function (req, res) {
         })
 });
 
+//返回配置内容
 router.get('/get_settings', function (req, res) {
-    var file = req.query.setting_name;
+    let file = req.query.setting_name;
     if (file === ""){
         return res.end();
     } else{
@@ -50,14 +47,16 @@ router.get('/get_settings', function (req, res) {
     }
 });
 
+//返回用户配置列表
 router.get('/get_setting_name_list', function (req, res) {
-    var account = req.cookies["testEx_username"];
+    let account = req.cookies["testEx_username"];
     userDB.GET_SET(account).then(function (data) {
         res.send(data);
         return res.end()
     });
 });
 
+//返回测试结果
 router.get('/get_test_result', function (req, res, next) {
     let setting = req.query.setting;
     let params = req.query.params;
@@ -67,7 +66,7 @@ router.get('/get_test_result', function (req, res, next) {
         const data = YAML.parse(fs.readFileSync("demo/settings/"+setting+".yaml").toString());
         params = JSON.stringify(plugin.handle(data, JSON.parse(params)));
     }catch (e) {
-        console.log(setting+'没有自定义插件,或插件内部报错')
+        console.log(setting+'没有自定义插件或插件内部报错')
     }
 
     let option = req.query.setting+' '+req.query.serverName+' '+req.query.apiKey+' '+req.query.cnt+' \''+params+'\' ';
@@ -96,9 +95,5 @@ router.get('/get_test_result', function (req, res, next) {
     }
 });
 
-
-router.get('/todo', function (req, res) {
-    res.render('todo')
-});
 
 module.exports = router;

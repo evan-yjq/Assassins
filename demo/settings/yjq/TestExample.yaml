@@ -1,5 +1,5 @@
 note:
-    '不建议手动更改导入配置文件': ''
-setting: yjq/TestExtension
+    不建议手动更改导入配置文件: ""
+setting: yjq/TestExtension1
 api:
     '0': {serverName: 本地, cnt: '1', apiKey: GetSetNameList, params: {}}
