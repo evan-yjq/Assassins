@@ -25,7 +25,7 @@ function get_setting(setting_name) {
         data: {'setting_name': setting_name},
         timeout: 20000,
         success: function (data) {
-            const dv = $('<textarea id="textarea" class="data-view w-100" wrap="off">'+formatJson(data)+'</textarea>');
+            const dv = $('<textarea id="textarea" class="data-view w-100" wrap="off">' + formatJson(data) + '</textarea>');
             $('.dataT').append(dv);
             const text = document.getElementById("textarea");
             autoTextarea(text);// 调用

@@ -20,8 +20,7 @@ router.get('/todo', function (req, res) {
 //返回todoList内容
 router.get('/get_todo_list', function (req, res) {
     const mark = fs.readFileSync("TodoList.md").toString();
-    res.send(markdown.toHTML(mark));
-    return res.end();
+    return res.send(markdown.toHTML(mark)).end();
 });
 
 //返回配置所属分组
@@ -30,8 +29,7 @@ router.get('/get_user_setting_group', function (req, res) {
     let setting_id = req.query.setting_id;
     settingDB.GET_SETTING_GROUP(setting_id, user_id)
         .then(function (data) {
-            res.send(data);
-            res.end()
+            return res.send(data).end();
         })
 });
 
@@ -41,9 +39,12 @@ router.get('/get_settings', function (req, res) {
     if (file === ""){
         return res.end();
     } else{
-        const data = YAML.parse(fs.readFileSync("demo/settings/"+req.query.setting_name+".yaml").toString());
-        res.send(data);
-        return res.end();
+        try {
+            const data = YAML.parse(fs.readFileSync("demo/settings/"+req.query.setting_name+".yaml").toString());
+            return res.send(data).end();
+        }catch (e) {
+            return res.end();
+        }
     }
 });
 

@@ -17,26 +17,33 @@ const sql = {
         "  left join T_GROUP g on g.group_id = gs.group_id\n" +
         "where u.user_account = ?\n" +
         "order by gs.group_id",
-    GET_GROUP: "select group_name from T_GROUP\n" +
-        "where group_id in (\n" +
-        "  select group_id from T_GROUP_USER\n" +
-        "  where user_id = (\n" +
-        "    select user_id from T_USER\n" +
-        "    where user_account = ?\n" +
-        "  )\n" +
-        ")",
-    GET_GROUP_SETTING: "select setting_file from T_SETTING\n" +
-        "where setting_id in (\n" +
-        "select setting_id from T_GROUP_SETTING\n" +
-        "where group_id = (\n" +
-        "select group_id from T_GROUP\n" +
-        "where group_name = ?))",
-    GET_GROUP_MEMBER: "select user_account from T_USER\n" +
-        "where user_id in (\n" +
-        "select user_id from T_GROUP_USER\n" +
-        "where group_id = (\n" +
-        "select group_id from T_GROUP\n" +
-        "where group_name = ?))",
+    GET_GROUP: "select group_name from T_GROUP g\n" +
+        "left join T_GROUP_USER gu on gu.group_id = g.group_id\n" +
+        "left join T_USER u on u.user_id = gu.user_id\n" +
+        "where u.user_account = ?",
+    GET_GROUP_SETTING: "select setting_file from T_SETTING s\n" +
+        "  left join T_GROUP_SETTING gs on gs.setting_id = s.setting_id\n" +
+        "  left join T_GROUP g on gs.group_id = g.group_id\n" +
+        "where g.group_name = ?",
+    GET_GROUP_MEMBER: "select user_account,identity from T_USER u\n" +
+        "  left join T_GROUP_USER gu on gu.user_id = u.user_id\n" +
+        "  left join T_GROUP g on g.group_id = gu.group_id\n" +
+        "where g.group_name = ?",
+    GET_USER_SETTING: "select s.setting_file,gu.group_id,u.user_account,\n" +
+        "  case\n" +
+        "    when gu.identity = 'admin' then 'w/r'\n" +
+        "    when us.permission is null then 'r'\n" +
+        "    else us.permission\n" +
+        "  end as permission\n" +
+        "from T_SETTING s\n" +
+        "left join T_GROUP_SETTING gs on gs.setting_id = s.setting_id\n" +
+        "left join T_GROUP_USER gu on gu.group_id = gs.group_id\n" +
+        "left join T_USER u on u.user_id = gu.user_id\n" +
+        "left join T_USER_SETTING us on us.user_id = u.user_id and s.setting_id=us.setting_id\n" +
+        "left join T_GROUP g on g.group_id = gs.group_id\n" +
+        "where u.user_account = ?\n" +
+        "and s.setting_file = ?\n" +
+        "and g.group_name = ?",
     GET_ID_BY_ACCOUNT: "select user_id from T_USER\n" +
         "where user_account = ?"
 };
@@ -69,6 +76,10 @@ function get_group_member(group_name){
     return DB.QUERY(sql.GET_GROUP_MEMBER, [group_name], 'all')
 }
 
+function get_user_setting(user_account, setting_file, group_name){
+    return DB.QUERY(sql.GET_USER_SETTING, [user_account, setting_file, group_name], 'get')
+}
+
 module.exports = {
     SELECT_ALL: select_all_user,
     CHECK: check,
@@ -76,5 +87,6 @@ module.exports = {
     GET_GROUP: get_group,
     GET_ID_BY_ACCOUNT: get_id_by_account,
     GET_GROUP_SETTING: get_group_setting,
-    GET_GROUP_MEMBER: get_group_member
+    GET_GROUP_MEMBER: get_group_member,
+    GET_USER_SETTING: get_user_setting
 };

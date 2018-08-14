@@ -38,6 +38,25 @@ function get_group_setting(group_name, start, finish) {
     })
 }
 
+function get_user_setting(user_account, setting_file, group_name, start, finish) {
+    if (start) start();
+    $.ajax({
+        type: 'get',
+        url: '/user/get_user_setting',
+        data: {'userAccount':user_account,'settingFile':setting_file,'groupName':group_name},
+        timeout: 20000,
+        success: function (data) {
+            if (finish) finish('success', data)
+        },
+        error: function () {
+            if (finish) finish('error')
+        },
+        complete: function () {
+            if (finish) finish('complete')
+        }
+    })
+}
+
 function get_group_member(group_name, start, finish) {
     if (start) start();
     $.ajax({

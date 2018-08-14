@@ -1,3 +1,17 @@
+function IsPC() {
+    let userAgentInfo = navigator.userAgent;
+    let Agents = ["Android", "iPhone",
+        "SymbianOS", "Windows Phone",
+        "iPad", "iPod"];
+    window.flag = true;
+    for (let v = 0; v < Agents.length; v++) {
+        if (userAgentInfo.indexOf(Agents[v]) > 0) {
+            window.flag = false;
+            break;
+        }
+    }
+}
+
 $('body').on('click','.check',function(){
     let username = document.getElementById("username").value;
     let password = document.getElementById("password").value;
@@ -6,6 +20,7 @@ $('body').on('click','.check',function(){
 });
 
 window.onload=function(){
+    IsPC();
     checkCookie();
 };
 
@@ -26,14 +41,18 @@ function login(username, password, result) {
         timeout: 20000,
         success: function (data) {
             let value = '';
-            if (data === '1'){
-                getCookie('testEx_username') === username ? "" : setCookie('testEx_username', username, 1);
-                getCookie('testEx_password') === password ? "" : setCookie('testEx_password', password, 1);
-                window.location.href = "/";
-            }else if (data === '0') {
-                value = '用户名或密码不能为空'
-            }else if (data === '-1'){
-                value = '用户名或密码错误'
+            if (flag) {
+                if (data === '1') {
+                    getCookie('testEx_username') === username ? "" : setCookie('testEx_username', username, 1);
+                    getCookie('testEx_password') === password ? "" : setCookie('testEx_password', password, 1);
+                    window.location.href = "/";
+                } else if (data === '0') {
+                    value = '用户名或密码不能为空'
+                } else if (data === '-1') {
+                    value = '用户名或密码错误'
+                }
+            }else{
+                value = '目前只支持PC端操作';
             }
             result.length !== 0 ? $('.text-danger').remove() : '';
             let re = $('<labe class="text-danger">' + value + '</labe>');
