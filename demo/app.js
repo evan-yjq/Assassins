@@ -7,6 +7,7 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const ejs = require('ejs');
 const fs = require('fs');
+const md5 = require("md5");
 
 const index = require('./routes/index');
 const settings = require('./routes/settings');
@@ -53,12 +54,12 @@ let get_client_ip = function(req) {
 // 拦截未登录用户
 app.use(function (req, res, next) {
     if (req.url !== '/user/check') {
-        if (req.cookies["testEx_username"] == null || req.cookies["testEx_password"] == null) {
+        if (decodeURI(req.cookies["testEx_username"]) == null || decodeURI(req.cookies["testEx_password"]) == null) {
             res.render('login')
         } else{
-            userDB.CHECK(req.cookies["testEx_username"])
+            userDB.CHECK(decodeURI(req.cookies["testEx_username"]))
                 .then(function (result) {
-                    if (result.user_pwd === req.cookies["testEx_password"]) {
+                    if (result.user_pwd === md5('#*'+decodeURI(req.cookies["testEx_password"])+"*&")) {
                         next()
                     }else {
                         res.render('login')

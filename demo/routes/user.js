@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const md5 = require("md5");
 const userDB = require('../comm/userDB');
 
 router.get('/', function (req, res) {
@@ -15,7 +16,7 @@ router.post('/check', function (req, res) {
     }
     userDB.CHECK(account)
         .then(function (result) {
-            if (result.user_pwd === pwd){
+            if (result.user_pwd === md5("#*"+pwd+"*&")){
                 res.send('1');
             }else{
                 res.send('-1')
@@ -29,7 +30,7 @@ router.post('/check', function (req, res) {
 
 //返回用户所属分组
 router.get('/get_group', function (req, res) {
-    let account = req.cookies["testEx_username"];
+    let account = decodeURI(req.cookies["testEx_username"]);
     userDB.GET_GROUP(account).then(function (data) {
         return res.send(data).end();
     })
@@ -60,7 +61,7 @@ router.get('/get_user_setting', function (req, res) {
 });
 
 router.get('/get_user_id_by_account', function (req, res) {
-    const account = req.cookies["testEx_username"];
+    const account = decodeURI(req.cookies["testEx_username"]);
     userDB.GET_ID_BY_ACCOUNT(account)
         .then(function (data) {
             res.send(data.user_id.toString());

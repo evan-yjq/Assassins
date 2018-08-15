@@ -50,7 +50,7 @@ router.get('/get_settings', function (req, res) {
 
 //返回用户配置列表
 router.get('/get_setting_name_list', function (req, res) {
-    let account = req.cookies["testEx_username"];
+    let account = decodeURI(req.cookies["testEx_username"]);
     userDB.GET_SET(account).then(function (data) {
         res.send(data);
         return res.end()

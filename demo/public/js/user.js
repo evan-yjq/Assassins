@@ -107,7 +107,7 @@ function show_info_base_selection() {
     if ((si=setting_selection())!==undefined) setting_select = document.getElementById("setting"+si).innerHTML;
     if ((mi=member_selection())!==undefined) member_select = document.getElementById("member"+mi).innerHTML;
     if (group_select !== undefined && member_select !== undefined)
-        append_info("身份:"+group_member[mi]['identity']);
+        append_info("身份:"+group_member[mi]['identity'].replace('admin','管理员').replace('member','成员'));
     if (group_select !== undefined && setting_select !== undefined && member_select !== undefined)
         get_user_setting(member_select,setting_select,group_select,undefined, (status, data) => {
             if (status === 'success') {

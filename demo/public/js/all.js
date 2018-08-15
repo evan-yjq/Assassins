@@ -97,23 +97,26 @@ function get_user_id(start, finish) {
     })
 }
 
-function getCookie(cname){
-    let name = cname + "=";
-    let ca = document.cookie.split(';');
-    for(let i=0; i<ca.length; i++) {
-        let c = ca[i].trim();
-        if (c.indexOf(name)===0) {
-            return c.substring(name.length,c.length);
-        }
-    }
-    return "";
+function getCookie(name) {
+    let start = document.cookie.indexOf(name+"=");
+    let len = start+name.length+1;
+    if ((!start) && (name !== document.cookie.substring(0,name.length))) return null;
+    if (start === -1) return null;
+    let end = document.cookie.indexOf(";",len);
+    if (end === -1) end = document.cookie.length;
+    return decodeURI(document.cookie.substring(len,end));
 }
 
-function setCookie(cname, cvalue, exdays) {
-    let d = new Date();
-    d.setTime(d.getTime()+(exdays*24*60*60*1000));
-    let expires = "expires=" + d.toGMTString();
-    document.cookie = cname + "=" + cvalue + "; " + expires;
+function setCookie(name,value,expires,path,domain,secure) {
+    expires = expires * 60*60*24*1000;
+    let today = new Date();
+    let expires_date = new Date( today.getTime() + (expires) );
+    let cookieString = name + "=" +encodeURIComponent(value) +
+        ( (expires) ? ";expires=" + expires_date.toGMTString() : "") +
+        ( (path) ? ";path=" + path : "") +
+        ( (domain) ? ";domain=" + domain : "") +
+        ( (secure) ? ";secure" : "");
+    document.cookie = cookieString;
 }
 
 function logout() {

@@ -15,7 +15,7 @@ router.get('/', function (req, res) {
 router.post('/save', function (req, res, next) {
     const settings = req.body.settings;
     let settingName = req.body.settingName;
-    const account = req.cookies["testEx_username"];
+    const account = decodeURI(req.cookies["testEx_username"]);
     let file = 'demo/settings/' + settingName+'.yaml';
     let groupName = settingName.split('/')[0];
     settingName = settingName.split('/')[1];
