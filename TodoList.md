@@ -105,6 +105,12 @@
 
 - (todo in 18-08-..) / 总配置可继承多个，按加载顺序替换相同项，子配置继承后替换相同项<<<功能
 
+- (todo in 18-08-..) / 将dashboard整合为一个页面，并添加切换效果<<<页面
+
+- (todo in 18-08-..) / group表加入新字段access(访问)public为公有/private为私有，两者可互相转变，私有组-邀请，共有组申请/邀请
+
+- (todo in 18-08-..) / group-user表加入新字段apply(申请)resolve为通过/reject为拒绝/wait为审核中，此时identity为applicant
+
 - (todo in 18-08-..) / 界面开发可以随时上传前端文件（Interface development）<<<功能>>>界面
 
 - (todo in 18-..-..) / 账户信息不够安全<<<界面

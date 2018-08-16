@@ -6,6 +6,7 @@ const sql = {
     GET_SET: "select s.setting_id, s.setting_file, gs.group_id, g.group_name, u.user_account,\n" +
         "       case\n" +
         "           when gu.identity = 'admin' then 'w/r'\n" +
+        "           when gu.identity = 'applicant' then ''\n" +
         "           when us.permission is null then 'r'\n" +
         "           else us.permission\n" +
         "       end as permission\n" +
@@ -32,6 +33,7 @@ const sql = {
     GET_USER_SETTING: "select s.setting_file,gu.group_id,u.user_account,\n" +
         "  case\n" +
         "    when gu.identity = 'admin' then 'w/r'\n" +
+        "    when gu.identity = 'applicant' then ''\n" +
         "    when us.permission is null then 'r'\n" +
         "    else us.permission\n" +
         "  end as permission\n" +
