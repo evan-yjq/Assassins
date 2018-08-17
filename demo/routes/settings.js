@@ -37,7 +37,7 @@ router.post('/save', function (req, res, next) {
     fs.writeFile(file, txt, function (err) {
         if (err) next();
         if (!f) {
-            intertDB(account, groupName, settingName, function () {
+            insertDB(account, groupName, settingName, function () {
                 console.log(file+"写入成功");
                 return res.end()
             })
@@ -47,7 +47,7 @@ router.post('/save', function (req, res, next) {
     });
 });
 
-function intertDB(account, groupName, settingName, onFinish){
+function insertDB(account, groupName, settingName, onFinish){
     let user_id;
     let group_id;
     userDB.GET_ID_BY_ACCOUNT(account).then(function (data) {
