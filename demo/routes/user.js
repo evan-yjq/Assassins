@@ -61,11 +61,29 @@ router.get('/get_user_setting', function (req, res) {
 });
 
 router.get('/get_user_id_by_account', function (req, res) {
-    const account = decodeURI(req.cookies["testEx_username"]);
+    let account = decodeURI(req.cookies["testEx_username"]);
     userDB.GET_ID_BY_ACCOUNT(account)
         .then(function (data) {
             res.send(data.user_id.toString());
             res.end()
+        })
+});
+
+router.get('/change_permission', function (req, res) {
+    let by_user = decodeURI(req.cookies["testEx_username"]);
+    let account = req.query.account;
+    let setting_id = req.query.settingId;
+    let permission = req.query.permission;
+    userDB.GET_PERMISSION(account, setting_id)
+        .then(function (data) {
+            let type = "";
+            if (data.permission === undefined) {
+                type = "insert";
+            }
+            userDB.CHANGE_PERMISSION(type, permission, account, setting_id)
+                .then(function (data) {
+                    return res.send('修改成功').end()
+                });
         })
 });
 

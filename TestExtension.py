@@ -60,8 +60,7 @@ if __name__ == '__main__':
         # 设置结束计时时间
         stop = int(round(time.time() * 1000))
         result = '"请求结果":"%s",' % result
-        result = result.replace('"{', '{')
-        result = result.replace('}"', '}')
+        result = result.replace('"{', '{').replace('}"', '}')
         print result
         space = utils.logTimeConsum(desc='"耗时":"%s"', start=start, stop=stop)
         print "},"

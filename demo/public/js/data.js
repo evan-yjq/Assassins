@@ -1,11 +1,13 @@
 // 配置所属的用户所属的分组
-let setting_group;
+// let setting_group;
 // 用户所属的分组
-let user_group = [];
+// let user_group = [];
 // 分组内配置
 let group_setting = [];
 // 分组内成员
 let group_member = [];
+// 用户对应的分组权限
+let user_setting_permission = [];
 // 用户ID
 let user_id;
 // 设置列表

@@ -6,8 +6,8 @@ function get_user_group(start, finish) {
         data: {},
         timeout: 20000,
         success: function (data) {
-            user_group = data;
-            if (finish) finish('success')
+            // user_group = data;
+            if (finish) finish('success', data)
         },
         error: function () {
             if (finish) finish('error')
@@ -27,7 +27,7 @@ function get_group_setting(group_name, start, finish) {
         timeout: 20000,
         success: function (data) {
             group_setting = data;
-            if (finish) finish('success')
+            if (finish) finish('success', data)
         },
         error: function () {
             if (finish) finish('error')
@@ -46,6 +46,7 @@ function get_user_setting(user_account, setting_file, group_name, start, finish)
         data: {'userAccount':user_account,'settingFile':setting_file,'groupName':group_name},
         timeout: 20000,
         success: function (data) {
+            user_setting_permission = data;
             if (finish) finish('success', data)
         },
         error: function () {
@@ -66,7 +67,7 @@ function get_group_member(group_name, start, finish) {
         timeout: 20000,
         success: function (data) {
             group_member = data;
-            if (finish) finish('success')
+            if (finish) finish('success', data)
         },
         error: function () {
             if (finish) finish('error')
@@ -86,7 +87,27 @@ function get_user_id(start, finish) {
         timeout: 20000,
         success: function (data) {
             user_id = data;
-            if (finish) finish('success')
+            if (finish) finish('success', data)
+        },
+        error: function () {
+            if (finish) finish('error')
+        },
+        complete: function () {
+            if (finish) finish('complete')
+        }
+    })
+}
+
+function change_permission(permission, user_account, setting_id, start, finish) {
+    if (start) start;
+    console.log(permission+'/'+user_account+'/'+setting_id);
+    $.ajax({
+        type: 'get',
+        url: '/user/change_permission',
+        data: {'permission': permission, 'account': user_account, 'settingId': setting_id},
+        timeout: 20000,
+        success: function (data) {
+            if (finish) finish('success', data)
         },
         error: function () {
             if (finish) finish('error')

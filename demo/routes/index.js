@@ -36,6 +36,9 @@ router.get('/get_user_setting_group', function (req, res) {
 //返回配置内容
 router.get('/get_settings', function (req, res) {
     let file = req.query.setting_name;
+    // todo 验证读取权限
+
+
     if (file === ""){
         return res.end();
     } else{
@@ -61,6 +64,9 @@ router.get('/get_setting_name_list', function (req, res) {
 router.get('/get_test_result', function (req, res, next) {
     let setting = req.query.setting;
     let params = req.query.params;
+    // todo 验证读取权限
+
+
     // 尝试载入自定义插件
     try {
         let plugin = require('../settings/'+setting);

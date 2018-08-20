@@ -31,12 +31,13 @@ router.post('/save', function (req, res, next) {
                 result.push(pa.basename(val, '.yaml'));
         });
     }
-    let f;
     finder(path);
-    if (result.indexOf(settingName) >= 0) f = true;
     fs.writeFile(file, txt, function (err) {
         if (err) next();
-        if (!f) {
+        if (result.indexOf(settingName) < 0) {
+            // todo 验证写入权限
+
+
             insertDB(account, groupName, settingName, function () {
                 console.log(file+"写入成功");
                 return res.end()

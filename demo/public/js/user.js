@@ -1,12 +1,12 @@
 
 $(function () {
-    get_user_group(undefined, (status) => {if (status === 'success') show_group()})
+    get_user_group(undefined, (status, data) => {if (status === 'success') show_group(data)})
 });
 
 /**Group-------------------------------------------------*/
 //显示group
-function show_group() {
-    for (let i = 0; i < user_group.length; i++) append_group(user_group[i], i);
+function show_group(data) {
+    for (let i = 0; i < data.length; i++) append_group(data[i], i);
 }
 
 //加入Group
@@ -21,8 +21,8 @@ function click_group(n) {
     if (gi !== undefined) document.getElementById("group"+gi).classList.remove("active");
     if (gi !== n) {
         document.getElementById("group"+n).classList.add("active");
-        get_group_setting(document.getElementById("group"+n).innerHTML, () => remove_all_setting(), (status) => {if (status === 'success') show_setting()});
-        get_group_member(document.getElementById("group"+n).innerHTML, () => remove_all_member(), (status) => {if (status === 'success') show_member()})
+        get_group_setting(document.getElementById("group"+n).innerHTML, () => remove_all_setting(), (status, data) => {if (status === 'success') show_setting(data)});
+        get_group_member(document.getElementById("group"+n).innerHTML, () => remove_all_member(), (status, data) => {if (status === 'success') show_member(data)})
     }else{
         remove_all_setting();
         remove_all_member();
@@ -32,13 +32,13 @@ function click_group(n) {
 
 //获取当前group选中的id
 function group_selection() {
-    if ($('.Group-list').find('.active').length > 0) for (let i = 0; i < user_group.length; i++) if (document.getElementById("group"+i).classList.contains('active')) return i;
+    if ($('.Group-list').find('.active').length > 0) for (let i = 0; i < $('.Group-list').find('.group-item').length; i++) if (document.getElementById("group"+i).classList.contains('active')) return i;
 }
 
 /**Setting-----------------------------------------------*/
 //显示setting
-function show_setting() {
-    for (let i = 0; i < group_setting.length; i++) append_setting(group_setting[i], i)
+function show_setting(data) {
+    for (let i = 0; i < data.length; i++) append_setting(data[i], i)
 }
 
 //加入Setting
@@ -63,13 +63,13 @@ function remove_all_setting() {
 
 //获取当前setting选中的id
 function setting_selection() {
-    if ($('.Setting-list').find('.active').length > 0) for (let i = 0; i < group_setting.length; i++) if (document.getElementById("setting"+i).classList.contains('active')) return i;
+    if ($('.Setting-list').find('.active').length > 0) for (let i = 0; i < $('.Setting-list').find('.setting-item').length; i++) if (document.getElementById("setting"+i).classList.contains('active')) return i;
 }
 
 /**Member------------------------------------------------*/
 //显示member
-function show_member() {
-    for (let i = 0; i < group_member.length; i++) append_member(group_member[i], i)
+function show_member(data) {
+    for (let i = 0; i < data.length; i++) append_member(data[i], i)
 }
 
 //加入Member
@@ -94,7 +94,7 @@ function remove_all_member() {
 
 //获取当前member选中的id
 function member_selection() {
-    if ($('.Member-list').find('.active').length > 0) for (let i = 0; i < group_member.length; i++) if (document.getElementById("member"+i).classList.contains('active')) return i;
+    if ($('.Member-list').find('.active').length > 0) for (let i = 0; i < $('.Member-list').find('.member-item').length; i++) if (document.getElementById("member"+i).classList.contains('active')) return i;
 }
 
 /**Info------------------------------------------------*/
@@ -111,18 +111,74 @@ function show_info_base_selection() {
     if (group_select !== undefined && setting_select !== undefined && member_select !== undefined)
         get_user_setting(member_select,setting_select,group_select,undefined, (status, data) => {
             if (status === 'success') {
+                account = member_select;
+                setting_id = data['setting_id'];
                 data = data['permission'].replace('w','写入').replace('r','读取').replace('/',',');
-                append_info('权限:'+data)
+                let i = 0;
+                for (; i < $('.Member-list').find('.member-item').length; i++) if (document.getElementById("member"+i).innerHTML === getCookie('testEx_username')) break;
+                if (group_member[i]['identity'] === 'admin') append_info('权限:'+data, '修改', 'permission');
+                else append_info('权限:'+data)
             }
         })
 }
+let account,setting_id;
 //显示Info
-function append_info(info) {
+function append_info(info, btn, type) {
     let i = $('.info-item').length;
-    let _ = $('<li class="list-group-item info-item" id="info'+i+'">'+info+'</li>');
-    $('.Info-list').append(_);
+    if (type) add_modal($('.Info-list'), type);
+    let _ = '<li class="list-group-item info-item" id="info'+i+'">'+info;
+    if (btn) _ = _ + ' <a class="link" href="#" data-toggle="modal" data-target="#modal">'+btn+'</a>';
+    _ = _ + '</li>';
+    $('.Info-list').append($(_));
 }
 //移除Info
 function remove_all_info() {
-    $('.info-item').remove()
+    $('.info-item').remove();
+    user_setting_permission = []
 }
+
+/**Modal-----------------------------------------------*/
+function add_modal(p, type) {
+    let form = '';
+    let title = '';
+    if (type === 'permission') {
+        title = '修改权限';
+        form = '<div class="form-group">\n' +
+            '<label for="group-name" class="col-form-label">权限</label>\n' +
+            '<select class="custom-select d-block w-100 select-permission" required="">\n' +
+            '<option>读取</option>\n' +
+            '<option>写入/读取</option>\n' +
+            '<option>无</option>\n' +
+            '</select>\n' +
+            '</div>'
+    }
+    let _ = '<!--模态-->\n' +
+        '<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modal" aria-hidden="true">\n' +
+        '<div class="modal-dialog modal-dialog-centered" role="document">\n' +
+        '<div class="modal-content">\n' +
+        '<div class="modal-header">\n' +
+        '<h5 class="modal-title" id="modalTitle">'+title+'</h5>\n' +
+        '<button type="button" class="close" data-dismiss="modal" aria-label="Close">\n' +
+        '<span aria-hidden="true">&times;</span>\n' +
+        '</button>\n' +
+        '</div>\n' +
+        '<div class="modal-body">\n' +
+        '<form class="form">\n' +
+        form +
+        '</form>\n' +
+        '</div>\n' +
+        '<div class="modal-footer">\n' +
+        '<button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>\n' +
+        '<button type="button" class="btn btn-primary model-ok">确定</button>\n' +
+        '</div>\n' +
+        '</div>\n' +
+        '</div>\n' +
+        '</div>';
+    p.append($(_))
+}
+
+$('body').on('click', '.model-ok', function () {
+    $('#modal').modal('hide');
+    change_permission($('.select-permission').val().replace('读取','r').replace('写入','w').replace('无',''), account, setting_id,
+        undefined, (status, data) => {if (status === 'success') show_info_base_selection()})
+});

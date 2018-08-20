@@ -30,7 +30,7 @@ const sql = {
         "  left join T_GROUP_USER gu on gu.user_id = u.user_id\n" +
         "  left join T_GROUP g on g.group_id = gu.group_id\n" +
         "where g.group_name = ?",
-    GET_USER_SETTING: "select s.setting_file,gu.group_id,u.user_account,\n" +
+    GET_USER_SETTING: "select s.setting_id, s.setting_file, gu.group_id, u.user_account,\n" +
         "  case\n" +
         "    when gu.identity = 'admin' then 'w/r'\n" +
         "    when gu.identity = 'applicant' then ''\n" +
@@ -47,7 +47,14 @@ const sql = {
         "and s.setting_file = ?\n" +
         "and g.group_name = ?",
     GET_ID_BY_ACCOUNT: "select user_id from T_USER\n" +
-        "where user_account = ?"
+        "where user_account = ?",
+    INSERT_PERMISSION: "insert into T_USER_SETTING VALUES (?, ?, ?)",
+    UPDATE_PERMISSION: "update T_USER_SETTING set permission = ?\n" +
+        "where setting_id = ?\n" +
+        "and user_id = ?",
+    GET_PERMISSION:"select permission from T_USER_SETTING\n" +
+        "where user_id = (select user_id from T_USER where user_account = ?)\n" +
+        "and setting_id = ?",
 };
 
 function get_id_by_account(account) {
@@ -82,6 +89,21 @@ function get_user_setting(user_account, setting_file, group_name){
     return DB.QUERY(sql.GET_USER_SETTING, [user_account, setting_file, group_name], 'get')
 }
 
+function get_permission(user_account, setting_id){
+    return DB.QUERY(sql.GET_PERMISSION, [user_account, setting_id], 'get')
+}
+
+function change_permission(type, permission, user_account, setting_id){
+    return get_id_by_account(user_account).then(function (data) {
+        let user_id = data.user_id;
+        if (type === "insert") {
+            return DB.QUERY(sql.INSERT_PERMISSION, [permission, setting_id, user_id])
+        }else {
+            return DB.QUERY(sql.UPDATE_PERMISSION, [permission, setting_id, user_id])
+        }
+    })
+}
+
 module.exports = {
     SELECT_ALL: select_all_user,
     CHECK: check,
@@ -90,5 +112,7 @@ module.exports = {
     GET_ID_BY_ACCOUNT: get_id_by_account,
     GET_GROUP_SETTING: get_group_setting,
     GET_GROUP_MEMBER: get_group_member,
-    GET_USER_SETTING: get_user_setting
+    GET_USER_SETTING: get_user_setting,
+    GET_PERMISSION: get_permission,
+    CHANGE_PERMISSION: change_permission
 };
