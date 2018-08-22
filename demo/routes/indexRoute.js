@@ -9,7 +9,7 @@ const settingDB = require('../comm/settingDB');
 
 //跳转测试界面
 router.get('/', function (req, res) {
-    res.render('hello');
+    res.render('index');
 });
 
 //跳转todo界面

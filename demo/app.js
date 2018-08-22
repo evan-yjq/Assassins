@@ -9,9 +9,9 @@ const ejs = require('ejs');
 const fs = require('fs');
 const md5 = require("md5");
 
-const index = require('./routes/index');
-const settings = require('./routes/settings');
-const user = require('./routes/user');
+const index = require('./routes/indexRoute');
+const settings = require('./routes/settingsRoute');
+const user = require('./routes/userRoute');
 const userDB = require('./comm/userDB');
 
 const app = express();
