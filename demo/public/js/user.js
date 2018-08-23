@@ -1,8 +1,4 @@
 
-$(function () {
-    get_user_group(undefined, (status, data) => {if (status === 'success') show_group(data)})
-});
-
 /**Group-------------------------------------------------*/
 //显示group
 function show_group(data) {

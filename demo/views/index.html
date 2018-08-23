@@ -9,112 +9,40 @@
 </head>
 <body class="bg-light">
 <nav class="navbar navbar-expand-md fixed-top navbar-dark bg-dark">
-    <a class="navbar-brand" href="/todo">测试扩展</a>
+    <a class="navbar-brand" id="btn_nav_todo" href="javascript:void (0)" onclick="goto_label('todo_list')">测试扩展</a>
     <button class="navbar-toggler p-0 border-0" type="button" data-toggle="offcanvas">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <a class="nav-link active" href="javascript:void(0)">测试设置</a>
+                <a class="nav-link" id="btn_nav_test" href="javascript:void (0)" onclick="goto_label('test_setting')">测试设置</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/settings">配置信息</a>
+                <a class="nav-link" id="btn_nav_setting" href="javascript:void (0)" onclick="goto_label('setting_info')">配置信息</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/user">账号设置</a>
+                <a class="nav-link" id="btn_nav_account" href="javascript:void (0)" onclick="goto_label('account_setting')">账号设置</a>
             </li>
         </ul>
         <div class="my-2 my-lg-0">
+            <label class="text-white mr-sm-2" id="account"></label>
             <a class="btn btn-outline-primary mr-sm-2" href="javascript:void(0)">同步</a>
             <a class="btn btn-outline-warning my-2 my-sm-0" onclick="logout()" href="/">登出</a>
         </div>
     </div>
 </nav>
 
-<main role="main" class="container-fluid">
-    <div class="row select-view p-3 my-3 bg-white box-shadow">
-        <div class="row">
-            <div class="col-md-auto">
-                <label class="SettingLabel" for="InputSettings">
-                    配置文件
-                </label>
-                <div>
-                    <select class="custom-select d-block w-100 select-setting" id="InputSettings" onchange="changeSelectSetting()" required="">
-                        <option value="">选择...</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-md-auto">
-                <label style="visibility: hidden">'</label>
-                <div class="addApiButtonView"></div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row form-group addApiView p-3 my-3"></div>
-    <!--<div class="row">-->
-        <!--<div class="col-md-12 addApiView"></div>-->
-    <!--</div>-->
-
-    <div class="row p-3 my-3 bg-white box-shadow" style="display: none" id="bottom-line">
-        <div class="row button-view ">
-            <div class="col-md-auto">
-                <input type="checkbox" class="checkbox-inline" id="checkAll" onchange="checkAllOnChange()">
-            </div>
-            <div class="col-md-auto">
-                <button class="btn btn-primary go">
-                    提交
-                </button>
-            </div>
-            <div class="col-md-auto">
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#saveModal">
-                    保存配置到
-                </button>
-            </div>
-        </div>
-    </div>
-</main>
-<!--模态-->
-<div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="saveModal" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="saveModalTitle">保存配置</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="form-group">
-                        <label for="file-name" class="col-form-label">文件名</label>
-                        <input type="text" class="form-control" id="file-name">
-                  </div>
-                  <!--<div class="form-group">-->
-                      <!--<label for="group-name" class="col-form-label">保存到组</label>-->
-                      <!--<select class="custom-select d-block w-100 select-group" id="group-name" required="">-->
-                          <!--<option value="">选择...</option>-->
-                      <!--</select>-->
-                  <!--</div>-->
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
-                <button type="button" class="btn btn-primary save-settings">保存</button>
-            </div>
-        </div>
-    </div>
-</div>
-
+<main role="main" class="container-fluid" id="content"></main>
 
 <script src="/js/jquery-1.11.1.min.js"></script>
 <script src="/js/bootstrap/bootstrap.min.js"></script>
-<script src="/js/offcanvas.js"></script>
-
-<script src="/js/data.js"></script>
-<script src="/js/all.js"></script>
 <script src="/js/utils.js"></script>
+
+<script src="/js/label-selector.js"></script>
 <script src="/js/index.js"></script>
+<script src="/js/settings.js"></script>
+<script src="/js/user.js"></script>
+<script src="/js/data-load.js"></script>
 </body>
 </html>

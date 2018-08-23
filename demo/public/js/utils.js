@@ -100,7 +100,6 @@ function autoTextarea(elem, extra, maxHeight) {
     change();
 }
 
-
 /**
  * 在页面显示返回信息
  * @param elem  {HTMLElement}   页面元素
@@ -117,3 +116,56 @@ function showMessage(elem, type, msg) {
         '  </div>');
     elem.append(div);
 }
+
+/**
+ * 获取Cookie值
+ * @param name      Cookie名
+ * @returns {*}     Cookie值
+ */
+function getCookie(name) {
+    let start = document.cookie.indexOf(name+"=");
+    let len = start+name.length+1;
+    if ((!start) && (name !== document.cookie.substring(0,name.length))) return null;
+    if (start === -1) return null;
+    let end = document.cookie.indexOf(";",len);
+    if (end === -1) end = document.cookie.length;
+    return decodeURI(document.cookie.substring(len,end));
+}
+
+/**
+ * 插入Cookie
+ * @param name      Cookie名
+ * @param value     Cookie值
+ * @param expires   有效时长
+ * @param path      路径
+ * @param domain
+ * @param secure
+ */
+function setCookie(name,value,expires,path,domain,secure) {
+    expires = expires * 60*60*24*1000;
+    let today = new Date();
+    let expires_date = new Date( today.getTime() + (expires) );
+    document.cookie = name + "=" +encodeURIComponent(value) +
+        ( (expires) ? ";expires=" + expires_date.toGMTString() : "") +
+        ( (path) ? ";path=" + path : "") +
+        ( (domain) ? ";domain=" + domain : "") +
+        ( (secure) ? ";secure" : "");
+}
+
+/**
+ * 退出登录
+ */
+function logout() {
+    setCookie('testEx_username', "", 0);
+    setCookie('testEx_password', "", 0);
+}
+
+/**
+ * 页面样式(转载
+ */
+$(function () {
+    'use strict';
+    $('[data-toggle="offcanvas"]').on('click', function () {
+        $('.offcanvas-collapse').toggleClass('open')
+    })
+});

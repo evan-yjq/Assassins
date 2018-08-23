@@ -12,11 +12,6 @@ router.get('/', function (req, res) {
     res.render('index');
 });
 
-//跳转todo界面
-router.get('/todo', function (req, res) {
-    res.render('todo')
-});
-
 //返回todoList内容
 router.get('/get_todo_list', function (req, res) {
     const mark = fs.readFileSync("TodoList.md").toString();

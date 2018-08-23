@@ -3,10 +3,6 @@ const router = express.Router();
 const md5 = require("md5");
 const userDB = require('../comm/userDB');
 
-router.get('/', function (req, res) {
-    res.render('account')
-});
-
 router.post('/check', function (req, res) {
     let account = req.body.username;
     let pwd = req.body.password;

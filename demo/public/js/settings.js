@@ -1,21 +1,18 @@
-$(function () {
-    get_setting_name_list();
-});
 
-$('body').on('change', '.select-setting', function (){
+function changeSelectSetting_s() {
     $('.alert').remove();
     const s = document.getElementById("InputSettings").value;
     let setting_name = s.length >= 1 ? s : "";
-    get_setting(setting_name)
-});
+    get_setting_s(setting_name)
+}
 
 function show_save_btn() {
     $('.button-view').find('.saveSettingsButtonView').length === 0 ? '' : $('.saveSettingsButtonView').remove();
-    const save_btn = $('<div class="col-md-auto saveSettingsButtonView"><button class="btn btn-primary d-block w-100" onclick="save_setting()">保存修改</button></div>');
+    const save_btn = $('<div class="col-md-auto saveSettingsButtonView"><button class="btn btn-primary d-block w-100" onclick="save_setting_s()">保存修改</button></div>');
     $('.button-view').append(save_btn)
 }
 
-function get_setting(setting_name) {
+function get_setting_s(setting_name) {
     $('body').find('.data-view').length === 0 ? '' : $('.data-view').remove();
     $('.saveSettingsButtonView').remove();
     if (setting_name === '') return;
@@ -33,7 +30,6 @@ function get_setting(setting_name) {
         },
         error: function () {
             apiAndParam = [];
-            apiNo = 0
         },
         complete: function () {
 
@@ -41,7 +37,7 @@ function get_setting(setting_name) {
     });
 }
 
-function get_setting_name_list() {
+function get_setting_name_list_s() {
     $.ajax({
         type: 'get',
         url: '/get_setting_name_list',
@@ -64,7 +60,7 @@ function get_setting_name_list() {
     });
 }
 
-function save_setting() {
+function save_setting_s() {
     const settings = document.getElementById("textarea").value;
     const settingName = document.getElementById("InputSettings").value;
     for (let i = 0; i < setting_list.length; i++) {

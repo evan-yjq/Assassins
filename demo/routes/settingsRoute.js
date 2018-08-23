@@ -8,10 +8,6 @@ const settingDB = require('../comm/settingDB');
 const userDB = require('../comm/userDB');
 const groupDB = require('../comm/groupDB');
 
-router.get('/', function (req, res) {
-    res.render('settings');
-});
-
 router.post('/save', function (req, res, next) {
     const settings = req.body.settings;
     let settingName = req.body.settingName;

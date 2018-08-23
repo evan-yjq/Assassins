@@ -7,11 +7,6 @@ let paramNo = 0;
 let apiAndParam = {};
 let main;
 
-$(function () {
-    get_setting_name_list();
-    get_user_id();
-});
-
 function changeSelectSetting(callback) {
     const s = document.getElementById("InputSettings").value;
     let setting_name = s.length >= 1 ? s : "";
@@ -222,11 +217,7 @@ function addApi2View() {
         len_api = Object.keys(apis).length;
         len_setting = Object.keys(settings).length;
     } catch (e) {
-        if ($('.error-info').length !== 0) {
-            $('.error-info').remove();
-        }
-        const t = $('<p class="error-info" style="color: red"> 请选择正确的配置文件</p>');
-        $('.SettingLabel').append(t);
+        showMessage($('.SettingLabel'),'danger','请选择正确的配置文件')
         return
     }
 
@@ -426,7 +417,6 @@ function _tmp(data) {
 // 根据配置名获取配置内所有信息
 function get_setting(setting_name, callback) {
     $('.saveResult').remove();
-    $('body').find('.error-info').length === 0 ? '' : $('.error-info').remove();
     $('.addApiButtonView').find('.addApiButton').length === 0 ? '' : $('.addApiButton').remove();
     $('.addApiButtonView').find('.importApiButton').length === 0 ? '' : $('.importApiButton').remove();
     for (let i = 0; i < apiAndParam.length; i++) {
@@ -442,7 +432,6 @@ function get_setting(setting_name, callback) {
             if (data['apis'] !== undefined) main = 1;
             else if (data['api'] !== undefined) main = 2;
             else main = 3;
-
             apis = data['apis'] === undefined ? apis : data['apis'];
             settings = data['settings'] === undefined ? settings : data['settings'];
             api = data['api'] === undefined ? api : data['api'];
@@ -464,10 +453,7 @@ function get_setting(setting_name, callback) {
 
 // 获取配置名列表
 function get_setting_name_list(select) {
-    if ($('.select-setting').find('.setting-option').length !== 0) {
-        $('.error-info').remove();
-        $('.select-setting').find('.setting-option').remove();
-    }
+    $('.select-setting').find('.setting-option').remove();
     $.ajax({
         type: 'get',
         url: '/get_setting_name_list',
@@ -508,9 +494,6 @@ function import_setting() {
         }
     }
     if (!setting_f){
-        if ($('.error-info').length !== 0) {
-            $('.error-info').remove();
-        }
         showMessage($('.select-view'), 'danger', '没有该配置的主配置文件')
     } else {
         changeSelectSetting(function () {
