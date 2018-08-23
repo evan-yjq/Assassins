@@ -2,7 +2,7 @@
     - 同一个组内的文件不能重名，主页修改/用户页新建重名必须提醒
     - 组名不能重名
     - 同一文件只能对应一个组
-    
+
 - 目前
     - 需要超级管理员：
         - 创建分组
@@ -123,18 +123,13 @@
 
 ## Next （2018/08/09 15:08:00 / idea
 
-- (todo in 18-08-..) / 总配置可继承多个，按加载顺序替换相同项，子配置继承后替换相同项<<<功能
-
 - (todo in 18-08-..) / 用户可修改密码<<<功能
-
+- (todo in 18-08-..) / 测试结果可导出为Txt或Excel<<<功能
+- (todo in 18-08-..) / group表加入新字段access(访问)public为公有/private为私有，两者可互相转变，私有组-邀请，共有组申请/邀请<<<功能
+- (todo in 18-08-..) / group-user表加入新字段apply(申请)resolve为通过/reject为拒绝/wait为审核中，此时identity为applicant<<<功能
+- (todo in 18-08-..) / 总配置可继承多个，按加载顺序替换相同项，子配置继承后替换相同项<<<功能
 - (todo in 18-08-..) / 将dashboard整合为一个页面，并添加切换效果<<<页面
-
-- (todo in 18-08-..) / group表加入新字段access(访问)public为公有/private为私有，两者可互相转变，私有组-邀请，共有组申请/邀请
-
-- (todo in 18-08-..) / group-user表加入新字段apply(申请)resolve为通过/reject为拒绝/wait为审核中，此时identity为applicant
-
 - (todo in 18-08-..) / 界面开发可以随时上传前端文件（Interface development）<<<功能>>>界面
-
 - (todo in 18-..-..) / 项目运行环境的文档<<<维护
 
 
