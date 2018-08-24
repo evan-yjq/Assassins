@@ -1,7 +1,7 @@
-let apis;
-let settings;
-let api;
-let setting;
+let apis = [];
+let settings = [];
+let api = [];
+let setting = [];
 let apiNo = 0;
 let paramNo = 0;
 let apiAndParam = {};
@@ -10,7 +10,7 @@ let main;
 function changeSelectSetting(callback) {
     const s = document.getElementById("InputSettings").value;
     let setting_name = s.length >= 1 ? s : "";
-    get_setting(setting_name, callback);
+    get_settings(setting_name, callback);
 }
 
 // 添加API点击
@@ -415,20 +415,16 @@ function _tmp(data) {
 }
 
 // 根据配置名获取配置内所有信息
-function get_setting(setting_name, callback) {
-    $('.saveResult').remove();
-    $('.addApiButtonView').find('.addApiButton').length === 0 ? '' : $('.addApiButton').remove();
-    $('.addApiButtonView').find('.importApiButton').length === 0 ? '' : $('.importApiButton').remove();
-    for (let i = 0; i < apiAndParam.length; i++) {
-        if (apiAndParam[i] === undefined) continue;
-        removeApi(i)
-    }
-    $.ajax({
-        type: 'get',
-        url: '/get_settings',
-        data: {'setting_name': setting_name},
-        timeout: 20000,
-        success: function (data) {
+function get_settings(setting_name, callback) {
+    ajax_get_settings(setting_name,()=>{
+        $('.addApiButton').remove();
+        $('.importApiButton').remove();
+        for (let i = 0; i < apiAndParam.length; i++) {
+            if (apiAndParam[i] === undefined) continue;
+            removeApi(i)
+        }
+    },(status, data)=>{
+        if (status === 'success') {
             if (data['apis'] !== undefined) main = 1;
             else if (data['api'] !== undefined) main = 2;
             else main = 3;
@@ -440,42 +436,9 @@ function get_setting(setting_name, callback) {
             apiNo = 0;
             showAddApiButton();
             if (callback) callback();
-        },
-        error: function () {
+        }else if (status === 'error') {
             apiAndParam = [];
             apiNo = 0
-        },
-        complete: function () {
-
-        }
-    });
-}
-
-// 获取配置名列表
-function get_setting_name_list(select) {
-    $('.select-setting').find('.setting-option').remove();
-    $.ajax({
-        type: 'get',
-        url: '/get_setting_name_list',
-        data: {},
-        timeout: 20000,
-        success: function (data) {
-            let t = '';
-            for (let i = 0; i < data.length; i++) {
-                if (data[i]['group_name'] + '/' + data[i]['setting_file'] === select){
-                    t = t + '<option class="setting-option" selected = "selected">' + data[i]['group_name']+'/'+data[i]['setting_file'] + '</option>'
-                } else {
-                    t = t + '<option class="setting-option">' + data[i]['group_name'] + '/' + data[i]['setting_file'] + '</option>'
-                }
-            }
-            $('.select-setting').append($(t));
-            setting_list = data
-        },
-        error: function () {
-
-        },
-        complete: function () {
-
         }
     });
 }
@@ -574,7 +537,7 @@ function save_setting(settings) {
             $('.loading').remove();
             showMessage($('.button-view'), 'success', '保存成功');
             let tmp = document.getElementById("InputSettings").value;
-            get_setting_name_list(tmp);
+            show_setting_name_list(tmp, true);
         },
         error: function () {
             $('.loading').remove();
@@ -584,4 +547,27 @@ function save_setting(settings) {
 
         }
     });
+}
+
+/**
+ * 显示配置列表名
+ * @param select        默认选中的配置
+ * @param forceRefresh  是否强制刷新数据
+ */
+function show_setting_name_list(select, forceRefresh) {
+    if (setting_list === [] || forceRefresh) {
+        ajax_get_setting_name_list(()=>{if (setting_list !== [])setting_list = []},
+            (status)=>{if (status === 'success') show_setting_name_list(select)})
+    }else{
+        let t = '';
+        for (let i = 0; i < setting_list.length; i++) {
+            let file = setting_list[i]['group_name'] + '/' + setting_list[i]['setting_file'];
+            if (file === select){
+                t = t + '<option class="setting-option" selected = "selected">' + file + '</option>'
+            } else {
+                t = t + '<option class="setting-option">' + file + '</option>'
+            }
+        }
+        $('.select-setting').append($(t));
+    }
 }

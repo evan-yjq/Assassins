@@ -17,8 +17,8 @@ function click_group(n) {
     if (gi !== undefined) document.getElementById("group"+gi).classList.remove("active");
     if (gi !== n) {
         document.getElementById("group"+n).classList.add("active");
-        get_group_setting(document.getElementById("group"+n).innerHTML, () => remove_all_setting(), (status, data) => {if (status === 'success') show_setting(data)});
-        get_group_member(document.getElementById("group"+n).innerHTML, () => remove_all_member(), (status, data) => {if (status === 'success') show_member(data)})
+        ajax_get_group_setting(document.getElementById("group"+n).innerHTML, () => remove_all_setting(), (status, data) => {if (status === 'success') show_setting(data)});
+        ajax_get_group_member(document.getElementById("group"+n).innerHTML, () => remove_all_member(), (status, data) => {if (status === 'success') show_member(data)})
     }else{
         remove_all_setting();
         remove_all_member();
@@ -105,7 +105,7 @@ function show_info_base_selection() {
     if (group_select !== undefined && member_select !== undefined)
         append_info("身份:"+group_member[mi]['identity'].replace('admin','管理员').replace('member','成员'));
     if (group_select !== undefined && setting_select !== undefined && member_select !== undefined)
-        get_user_setting(member_select,setting_select,group_select,undefined, (status, data) => {
+        ajax_get_user_setting(member_select,setting_select,group_select,undefined, (status, data) => {
             if (status === 'success') {
                 account = member_select;
                 setting_id = data['setting_id'];
@@ -175,6 +175,6 @@ function add_modal(p, type) {
 
 $('body').on('click', '.model-ok', function () {
     $('#modal').modal('hide');
-    change_permission($('.select-permission').val().replace('读取','r').replace('写入','w').replace('无',''), account, setting_id,
+    ajax_change_permission($('.select-permission').val().replace('读取','r').replace('写入','w').replace('无',''), account, setting_id,
         undefined, (status, data) => {if (status === 'success') show_info_base_selection()})
 });

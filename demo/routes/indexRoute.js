@@ -19,14 +19,14 @@ router.get('/get_todo_list', function (req, res) {
 });
 
 //返回配置所属分组
-router.get('/get_user_setting_group', function (req, res) {
-    let user_id = req.query.user_id;
-    let setting_id = req.query.setting_id;
-    settingDB.GET_SETTING_GROUP(setting_id, user_id)
-        .then(function (data) {
-            return res.send(data).end();
-        })
-});
+// router.get('/get_user_setting_group', function (req, res) {
+//     let user_id = req.query.user_id;
+//     let setting_id = req.query.setting_id;
+//     settingDB.GET_SETTING_GROUP(setting_id, user_id)
+//         .then(function (data) {
+//             return res.send(data).end();
+//         })
+// });
 
 //返回配置内容
 router.get('/get_settings', function (req, res) {
@@ -60,7 +60,6 @@ router.get('/get_test_result', function (req, res, next) {
     let setting = req.query.setting;
     let params = req.query.params;
     // todo 验证读取权限
-
 
     // 尝试载入自定义插件
     try {

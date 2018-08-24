@@ -3,7 +3,7 @@ function changeSelectSetting_s() {
     $('.alert').remove();
     const s = document.getElementById("InputSettings").value;
     let setting_name = s.length >= 1 ? s : "";
-    get_setting_s(setting_name)
+    show_settings(setting_name)
 }
 
 function show_save_btn() {
@@ -12,50 +12,20 @@ function show_save_btn() {
     $('.button-view').append(save_btn)
 }
 
-function get_setting_s(setting_name) {
-    $('body').find('.data-view').length === 0 ? '' : $('.data-view').remove();
-    $('.saveSettingsButtonView').remove();
+function show_settings(setting_name) {
     if (setting_name === '') return;
-    $.ajax({
-        type: 'get',
-        url: '/get_settings',
-        data: {'setting_name': setting_name},
-        timeout: 20000,
-        success: function (data) {
+    ajax_get_settings(setting_name,()=>{
+        $('.data-view').remove();
+        $('.saveSettingsButtonView').remove();
+    },(status, data)=>{
+        if (status === 'success') {
             const dv = $('<textarea id="textarea" class="data-view w-100" wrap="off">' + formatJson(data) + '</textarea>');
             $('.dataT').append(dv);
             const text = document.getElementById("textarea");
             autoTextarea(text);// 调用
             show_save_btn()
-        },
-        error: function () {
+        }else if (status === 'error') {
             apiAndParam = [];
-        },
-        complete: function () {
-
-        }
-    });
-}
-
-function get_setting_name_list_s() {
-    $.ajax({
-        type: 'get',
-        url: '/get_setting_name_list',
-        data: {},
-        timeout: 20000,
-        success: function (data) {
-            let t = '';
-            for (let i = 0; i < data.length; i++) {
-                t = t + '<option class="setting-option">' + data[i]['group_name'] + '/' + data[i]['setting_file'] + '</option>'
-            }
-            $('.select-setting').append($(t));
-            setting_list = data
-        },
-        error: function () {
-
-        },
-        complete: function () {
-
         }
     });
 }

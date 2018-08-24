@@ -1,5 +1,6 @@
 
 /**静态数据-------------------------------------------------------*/
+
 // 配置所属的用户所属的分组
 // let setting_group;
 // 用户所属的分组
@@ -12,8 +13,8 @@ let group_member = [];
 let user_setting_permission = [];
 // 用户ID
 let user_id;
-// 设置列表
-let setting_list;
+// 配置列表
+let setting_list = [];
 // 提示类型
 let typeAll = {
     'success'   : {'div': 'alert-success' , 'content': '成功!'},
@@ -47,34 +48,35 @@ const loading = function () {
 };
 
 /**页面数据加载----------------------------------------------------*/
+
 /**
  * 最初始数据加载
  */
 $(function () {
+    ajax_get_setting_name_list(undefined, (status)=>{if (status === 'success') goto_label('test_setting')});
     $('#account').html(getCookie('testEx_username'));
-    goto_label('test_setting')
 });
 
 /**
  * 切换到测试设置时数据加载
  */
 function load_test_setting() {
-    get_setting_name_list();
-    get_user_id();
+    show_setting_name_list();
+    ajax_get_user_id();
 }
 
 /**
  * 切换到配置信息时数据加载
  */
 function load_setting_info() {
-    get_setting_name_list_s();
+    show_setting_name_list();
 }
 
 /**
  * 切换到用户配置时数据加载
  */
 function load_account_setting() {
-    get_user_group(undefined, (status, data) => {if (status === 'success') show_group(data)})
+    ajax_get_user_group(undefined, (status, data) => {if (status === 'success') show_group(data)})
 }
 
 /**
@@ -95,12 +97,56 @@ function load_todo_list() {
 }
 
 /**从服务器拉取数据--------------------------------------------------*/
+
+/**
+ * 获取配置数据
+ */
+function ajax_get_settings(setting_name, start, finish) {
+    if (start) start();
+    $.ajax({
+        type: 'get',
+        url: '/get_settings',
+        data: {'setting_name': setting_name},
+        timeout: 20000,
+        success: function (data) {
+            if (finish) finish('success', data)
+        },
+        error: function () {
+            if (finish) finish('error')
+        },
+        complete: function () {
+            if (finish) finish('complete')
+        }
+    })
+}
+
+function ajax_get_setting_name_list(start, finish) {
+    if (start) start();
+    $.ajax({
+        type: 'get',
+        url: '/get_setting_name_list',
+        data: {},
+        timeout: 20000,
+        success: function (data) {
+            setting_list = data;
+            if (finish) finish('success', data)
+        },
+        error: function () {
+            setting_list = [];
+            if (finish) finish('error')
+        },
+        complete: function () {
+            if (finish) finish('complete')
+        }
+    })
+}
+
 /**
  * 获取用户所属分组
  * @param start
  * @param finish
  */
-function get_user_group(start, finish) {
+function ajax_get_user_group(start, finish) {
     if (start) start();
     $.ajax({
         type: 'get',
@@ -126,7 +172,7 @@ function get_user_group(start, finish) {
  * @param start
  * @param finish
  */
-function get_group_setting(group_name, start, finish) {
+function ajax_get_group_setting(group_name, start, finish) {
     if (start) start();
     $.ajax({
         type: 'get',
@@ -154,7 +200,7 @@ function get_group_setting(group_name, start, finish) {
  * @param start
  * @param finish
  */
-function get_user_setting(user_account, setting_file, group_name, start, finish) {
+function ajax_get_user_setting(user_account, setting_file, group_name, start, finish) {
     if (start) start();
     $.ajax({
         type: 'get',
@@ -180,7 +226,7 @@ function get_user_setting(user_account, setting_file, group_name, start, finish)
  * @param start
  * @param finish
  */
-function get_group_member(group_name, start, finish) {
+function ajax_get_group_member(group_name, start, finish) {
     if (start) start();
     $.ajax({
         type: 'get',
@@ -205,7 +251,7 @@ function get_group_member(group_name, start, finish) {
  * @param start
  * @param finish
  */
-function get_user_id(start, finish) {
+function ajax_get_user_id(start, finish) {
     if (start) start();
     $.ajax({
         type: 'get',
@@ -233,7 +279,7 @@ function get_user_id(start, finish) {
  * @param start
  * @param finish
  */
-function change_permission(permission, user_account, setting_id, start, finish) {
+function ajax_change_permission(permission, user_account, setting_id, start, finish) {
     if (start) start;
     console.log(permission+'/'+user_account+'/'+setting_id);
     $.ajax({
