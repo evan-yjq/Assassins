@@ -117,16 +117,19 @@ function show_info_base_selection() {
             }
         })
 }
+
 let account,setting_id;
+
 //显示Info
 function append_info(info, btn, type) {
     let i = $('.info-item').length;
-    if (type) add_modal($('.Info-list'), type);
+    if (type) add_modal($('.Info-list'), type, 'edit-perm');
     let _ = '<li class="list-group-item info-item" id="info'+i+'">'+info;
-    if (btn) _ = _ + ' <a class="link" href="#" data-toggle="modal" data-target="#modal">'+btn+'</a>';
+    if (btn) _ = _ + ' <a class="link" href="#" data-toggle="modal" data-target="#edit-perm">'+btn+'</a>';
     _ = _ + '</li>';
     $('.Info-list').append($(_));
 }
+
 //移除Info
 function remove_all_info() {
     $('.info-item').remove();
@@ -134,47 +137,79 @@ function remove_all_info() {
 }
 
 /**Modal-----------------------------------------------*/
-function add_modal(p, type) {
+//添加修改权限模态
+function add_modal(p, type, id) {
     let form = '';
     let title = '';
     if (type === 'permission') {
         title = '修改权限';
-        form = '<div class="form-group">\n' +
-            '<label for="group-name" class="col-form-label">权限</label>\n' +
-            '<select class="custom-select d-block w-100 select-permission" required="">\n' +
-            '<option>读取</option>\n' +
-            '<option>写入/读取</option>\n' +
-            '<option>无</option>\n' +
-            '</select>\n' +
-            '</div>'
+        form = '<label for="group-name" class="col-form-label">权限</label>' +
+            '<select class="custom-select d-block w-100 select-permission" required="">' +
+            '<option>读取</option>' +
+            '<option>写入/读取</option>' +
+            '<option>无</option>' +
+            '</select>'
+    }else if (type === 'edit_pwd') {
+        title = '修改密码';
+        form = '<label for="pwd" class="col-form-label">密码</label>' +
+            '<input type="password" class="form-control" id="pwd">' +
+            '<label for="new_pwd" class="col-form-label">新密码</label>' +
+            '<input type="password" class="form-control" id="new_pwd">'
     }
-    let _ = '<!--模态-->\n' +
-        '<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modal" aria-hidden="true">\n' +
-        '<div class="modal-dialog modal-dialog-centered" role="document">\n' +
-        '<div class="modal-content">\n' +
-        '<div class="modal-header">\n' +
-        '<h5 class="modal-title" id="modalTitle">'+title+'</h5>\n' +
-        '<button type="button" class="close" data-dismiss="modal" aria-label="Close">\n' +
-        '<span aria-hidden="true">&times;</span>\n' +
-        '</button>\n' +
-        '</div>\n' +
-        '<div class="modal-body">\n' +
-        '<form class="form">\n' +
+    let _ = '<!--模态-->' +
+        '<div class="modal fade" id="'+id+'" tabindex="-1" role="dialog" aria-labelledby="'+id+'" aria-hidden="true">' +
+        '<div class="modal-dialog modal-dialog-centered" role="document">' +
+        '<div class="modal-content">' +
+        '<div class="modal-header">' +
+        '<h5 class="modal-title" id="modalTitle">'+title+'</h5>' +
+        '<button type="button" class="close" data-dismiss="modal" aria-label="Close">' +
+        '<span aria-hidden="true">&times;</span>' +
+        '</button>' +
+        '</div>' +
+        '<div class="modal-body">' +
+        '<form class="form">' +
+        '<div class="form-group">' +
         form +
-        '</form>\n' +
-        '</div>\n' +
-        '<div class="modal-footer">\n' +
-        '<button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>\n' +
-        '<button type="button" class="btn btn-primary model-ok">确定</button>\n' +
-        '</div>\n' +
-        '</div>\n' +
-        '</div>\n' +
+        '</div>' +
+        '</form>' +
+        '</div>' +
+        '<div class="modal-footer">' +
+        '<button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>' +
+        '<button type="button" class="btn btn-primary '+id+'-ok">确定</button>' +
+        '</div>' +
+        '</div>' +
+        '</div>' +
         '</div>';
     p.append($(_))
 }
 
-$('body').on('click', '.model-ok', function () {
-    $('#modal').modal('hide');
+/**事件-------------------------------------------------*/
+//修改权限
+$('body').on('click', '.edit-perm-ok', function () {
+    $('#edit-perm').modal('hide');
     ajax_change_permission($('.select-permission').val().replace('读取','r').replace('写入','w').replace('无',''), account, setting_id,
         undefined, (status, data) => {if (status === 'success') show_info_base_selection()})
+});
+
+//修改密码
+$('body').on('click', '.edit-pwd-ok', function () {
+    $('#edit-pwd').modal('hide');
+    let _old = document.getElementById('pwd');
+    let _new = document.getElementById('new_pwd');
+    if (_old.value === _new.value) {
+        _old.value = '';_new.value = '';
+        showMessage($('.bar'), 'warning', '不能相同');
+        return
+    }
+    ajax_update_pwd(_old.value, _new.value, undefined, (status, data)=>{
+        if (status === 'success') {
+            if (data === '修改成功') {
+                setCookie('testEx_password', _new.value, 1);
+                showMessage($('.bar'), 'success', data);
+            } else {
+                showMessage($('.bar'), 'danger', data);
+            }
+        }
+        _old.value = '';_new.value = '';
+    })
 });

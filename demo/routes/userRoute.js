@@ -7,20 +7,15 @@ router.post('/check', function (req, res) {
     let account = req.body.username;
     let pwd = req.body.password;
     if (account === '' || pwd === '') {
-        res.send('0');
-        return res.end()
+        return res.send('0').end()
     }
     userDB.CHECK(account)
         .then(function (result) {
-            if (result.user_pwd === md5("#*"+pwd+"*&")){
-                res.send('1');
-            }else{
-                res.send('-1')
-            }
-            return res.end()
+            if (result.user_pwd === md5("#*"+pwd+"*&"))
+                return res.send('1').end();
+            else return res.send('-1').end()
         }).catch(function (err) {
-            res.send('-1');
-            return res.end()
+            return res.send('-1').end()
         })
 });
 
@@ -80,6 +75,20 @@ router.get('/change_permission', function (req, res) {
                 .then(function (data) {
                     return res.send('修改成功').end()
                 });
+        })
+});
+
+router.post('/edit_pwd', function (req, res) {
+    let old_pwd = req.body.pwd;
+    let pwd = req.body.newPwd;
+    let userId = req.body.userId;
+    userDB.CHECK('', userId)
+        .then(function (result) {
+            if (result.user_pwd === md5("#*" + old_pwd + "*&")) {
+                userDB.EDIT_PWD(md5("#*" + pwd + "*&"), userId).then(()=>{return res.send('修改成功').end()})
+            }else return res.send('原密码错误').end();
+        }).catch(function (err) {
+            return res.send('修改失败').end()
         })
 });
 

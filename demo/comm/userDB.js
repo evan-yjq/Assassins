@@ -2,7 +2,7 @@ const DB = require("./DB");
 
 const sql = {
     SELECT: "select * from T_USER",
-    CHECK: "select * from T_USER where user_account = ?",
+    CHECK: "select * from T_USER where user_account = ? or user_id = ?",
     GET_SET: "select s.setting_id, s.setting_file, gs.group_id, g.group_name, u.user_account,\n" +
         "       case\n" +
         "           when gu.identity = 'admin' then 'w/r'\n" +
@@ -55,7 +55,12 @@ const sql = {
     GET_PERMISSION:"select permission from T_USER_SETTING\n" +
         "where user_id = (select user_id from T_USER where user_account = ?)\n" +
         "and setting_id = ?",
+    EDIT_PWD:"update T_USER set user_pwd = ? where user_id = ?",
 };
+
+function edit_pwd(pwd, id) {
+    return DB.QUERY(sql.EDIT_PWD, [pwd, id], 'run')
+}
 
 function get_id_by_account(account) {
     return DB.QUERY(sql.GET_ID_BY_ACCOUNT, [account], 'get')
@@ -65,8 +70,8 @@ function select_all_user(){
     return DB.QUERY(sql.SELECT, [], 'all')
 }
 
-function check(account){
-    return DB.QUERY(sql.CHECK, [account], 'get')
+function check(account, id){
+    return DB.QUERY(sql.CHECK, [account, id], 'get')
 }
 
 function get_settings(account){
@@ -114,5 +119,6 @@ module.exports = {
     GET_GROUP_MEMBER: get_group_member,
     GET_USER_SETTING: get_user_setting,
     GET_PERMISSION: get_permission,
-    CHANGE_PERMISSION: change_permission
+    CHANGE_PERMISSION: change_permission,
+    EDIT_PWD: edit_pwd,
 };

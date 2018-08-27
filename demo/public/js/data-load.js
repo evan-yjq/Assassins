@@ -53,6 +53,7 @@ const loading = function () {
  * 最初始数据加载
  */
 $(function () {
+    ajax_get_user_id();
     ajax_get_setting_name_list(undefined, (status)=>{if (status === 'success') goto_label('test_setting')});
     $('#account').html(getCookie('testEx_username'));
 });
@@ -62,7 +63,6 @@ $(function () {
  */
 function load_test_setting() {
     show_setting_name_list();
-    ajax_get_user_id();
 }
 
 /**
@@ -96,10 +96,32 @@ function load_todo_list() {
     });
 }
 
-/**从服务器拉取数据--------------------------------------------------*/
+/**服务器接口整合--------------------------------------------------*/
+
+function ajax_update_pwd(old_pwd, new_pwd, start, finish) {
+    if (start) start();
+    $.ajax({
+        type: 'post',
+        url: '/user/edit_pwd',
+        data: {'pwd': old_pwd, 'newPwd': new_pwd, 'userId': user_id},
+        timeout: 20000,
+        success: function (data) {
+            if (finish) finish('success', data)
+        },
+        error: function () {
+            if (finish) finish('error')
+        },
+        complete: function () {
+            if (finish) finish('complete')
+        }
+    })
+}
 
 /**
  * 获取配置数据
+ * @param setting_name 配置名
+ * @param start
+ * @param finish
  */
 function ajax_get_settings(setting_name, start, finish) {
     if (start) start();
@@ -120,6 +142,11 @@ function ajax_get_settings(setting_name, start, finish) {
     })
 }
 
+/**
+ * 获取配置名列表
+ * @param start
+ * @param finish
+ */
 function ajax_get_setting_name_list(start, finish) {
     if (start) start();
     $.ajax({
